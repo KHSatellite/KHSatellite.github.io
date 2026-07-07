@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kadir Hanbaba</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    // Tema flash'ını önle: sayfa yüklenmeden önce uygula
+    (function() {
+      const saved = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ── NAVİGASYON ── -->
+  <nav class="navbar">
+    <a href="#hero" class="nav-logo">
+      <img src="img.png" alt="KH Logo" class="nav-logo-img" />
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#projects">Projeler</a></li>
+      <li><a href="#notes">Notlar</a></li>
+      <li><a href="#contact">İletişim</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+      <button class="nav-toggle" id="navToggle">☰</button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="hero">
+    <!-- Arka plan efektleri -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="hero-inner">
+      <p class="hero-greeting">
+        <span class="greeting-line"></span>
+        Merhaba, ben
+      </p>
+      <h1 class="hero-name">Kadir Hanbaba<span class="dot">.</span></h1>
+      <p class="hero-subtitle">Bilgisayar Mühendisliği Öğrencisi</p>
+
+      <!-- Navigasyon kartları -->
+      <div class="hero-cards">
+        <a href="#projects" class="hero-card">
+          <div class="hero-card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="hero-card-text">
+            <span class="hero-card-title">Projeler</span>
+            <span class="hero-card-desc">Geliştirdiğim çalışmalar</span>
+          </div>
+          <span class="hero-card-arrow">→</span>
+        </a>
+
+        <a href="#notes" class="hero-card">
+          <div class="hero-card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="hero-card-text">
+            <span class="hero-card-title">Ders Notları</span>
+            <span class="hero-card-desc">Engineering Economics ve diğerleri</span>
+          </div>
+          <span class="hero-card-arrow">→</span>
+        </a>
+
+        <a href="#contact" class="hero-card">
+          <div class="hero-card-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="hero-card-text">
+            <span class="hero-card-title">İletişim</span>
+            <span class="hero-card-desc">Mail, GitHub, LinkedIn</span>
+          </div>
+          <span class="hero-card-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Aşağı kaydır</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </section>
+
+  <!-- ── PROJELER ── -->
+  <section class="section" id="projects">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">/ projeler</span>
+        <h2 class="section-title">Neler Geliştirdim<span class="dot">?</span></h2>
+        <p class="section-sub">Üzerinde çalıştığım ve geliştirdiğim projeler.</p>
+      </div>
+
+      <div class="projects-grid">
+
+        <div class="project-card" data-color="purple">
+          <div class="project-card-glow"></div>
+          <div class="project-header">
+            <div class="project-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <a href="https://github.com/KHSatellite" target="_blank" class="project-github-link" title="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+          </div>
+          <h3 class="project-title">Proje Adı</h3>
+          <p class="project-desc">Projenin kısa açıklaması buraya gelecek. Ne yaptığını, hangi teknolojiyi kullandığını yaz.</p>
+          <div class="project-tags">
+            <span class="tag">C++</span>
+            <span class="tag">Python</span>
+          </div>
+        </div>
+
+        <div class="project-card" data-color="pink">
+          <div class="project-card-glow"></div>
+          <div class="project-header">
+            <div class="project-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <a href="https://github.com/KHSatellite" target="_blank" class="project-github-link" title="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+          </div>
+          <h3 class="project-title">Proje Adı 2</h3>
+          <p class="project-desc">İkinci projenin açıklaması. Yeni proje eklemek için bu kartı kopyalayabilirsin.</p>
+          <div class="project-tags">
+            <span class="tag">Algoritma</span>
+            <span class="tag">Veri Yapıları</span>
+          </div>
+        </div>
+
+        <div class="project-card project-card--wip" data-color="purple">
+          <div class="project-card-glow"></div>
+          <div class="project-header">
+            <div class="project-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            </div>
+            <span class="wip-badge">Geliştiriliyor</span>
+          </div>
+          <h3 class="project-title">Bu Site</h3>
+          <p class="project-desc">Kişisel portfolyo ve ders notu sitesi. Sıfırdan HTML/CSS/JS ile geliştirildi.</p>
+          <div class="project-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NOTLAR ── -->
+  <section class="section section--alt" id="notes">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">/ notlar</span>
+        <h2 class="section-title">Ders Notları<span class="dot">.</span></h2>
+        <p class="section-sub">Derslerde işlenen konuları kendi anladığım şekilde, örneklerle yazdım.</p>
+      </div>
+
+      <div class="notes-grid">
+
+        <div class="note-card">
+          <div class="note-card-top">
+            <span class="note-badge">INDR 202</span>
+            <span class="note-course-name">Engineering Economics</span>
+          </div>
+          <ul class="note-weeks">
+            <li>
+              <a href="notes/indr202-hafta1.html" class="week-link">
+                <div class="week-info">
+                  <span class="week-label">Hafta 1</span>
+                  <span class="week-topic">Time Value of Money, Faiz, MARR, Faktörler</span>
+                </div>
+                <span class="week-arrow">→</span>
+              </a>
+            </li>
+            <li class="week-soon">
+              <div class="week-info">
+                <span class="week-label">Hafta 2</span>
+                <span class="week-topic">Yakında...</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="note-card note-card--empty">
+          <div class="note-card-top">
+            <span class="note-badge note-badge--empty">+ Yeni</span>
+            <span class="note-course-name">Başka Ders</span>
+          </div>
+          <p class="note-empty-hint">Yeni bir ders notu eklemek için bu kartı kullan.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── İLETİŞİM ── -->
+  <section class="section" id="contact">
+    <div class="section-inner">
+      <div class="section-header" style="text-align:center">
+        <span class="section-tag">/ iletişim</span>
+        <h2 class="section-title">Bana Ulaş<span class="dot">.</span></h2>
+        <p class="section-sub">Bir proje fikrin mi var ya da soru mu sormak istiyorsun?</p>
+      </div>
+
+      <div class="contact-grid">
+        <a href="mailto:hanbaba.kadir7@gmail.com" class="contact-card">
+          <div class="contact-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="contact-info">
+            <span class="contact-label">E-posta</span>
+            <span class="contact-value">hanbaba.kadir7@gmail.com</span>
+          </div>
+          <span class="contact-arrow">↗</span>
+        </a>
+
+        <a href="https://github.com/KHSatellite" target="_blank" rel="noopener" class="contact-card">
+          <div class="contact-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </div>
+          <div class="contact-info">
+            <span class="contact-label">GitHub</span>
+            <span class="contact-value">KHSatellite</span>
+          </div>
+          <span class="contact-arrow">↗</span>
+        </a>
+
+        <a href="https://www.linkedin.com/in/kadir-hanbaba/" target="_blank" rel="noopener" class="contact-card">
+          <div class="contact-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </div>
+          <div class="contact-info">
+            <span class="contact-label">LinkedIn</span>
+            <span class="contact-value">Kadir Hanbaba</span>
+          </div>
+          <span class="contact-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <p>© 2026 Kadir Hanbaba</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
