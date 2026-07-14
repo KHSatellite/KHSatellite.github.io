@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INDR 202 – Hafta 2 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="notes.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index.html" class="nav-logo">
+      <img src="../img.png" alt="KH Logo" class="nav-logo-img" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html#projects">Projeler</a></li>
+      <li><a href="../index.html#notes">Notlar</a></li>
+      <li><a href="../index.html#contact">İletişim</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="note-layout">
+
+    <aside class="toc">
+      <p class="toc-title">İçindekiler</p>
+      <ul>
+        <li><a href="#shifted-gradient">1. Shifted Arithmetic Gradient</a></li>
+        <li><a href="#combining">2. Combining Factors</a></li>
+        <li><a href="#shifted-series">3. Shifted Uniform Series</a></li>
+        <li><a href="#random-amounts">4. Uniform Series + Tek Ödemeler</a></li>
+        <li><a href="#nominal-effective">5. Nominal vs Effective Interest</a></li>
+        <li><a href="#cp-pp">6. CP, PP ve m</a></li>
+        <li><a href="#eff-formula">7. Effective Rate Formülü</a></li>
+        <li><a href="#two-methods">8. PP ≥ CP: İki Yöntem</a></li>
+        <li><a href="#series-pp-cp">9. Seri ile PP > CP</a></li>
+        <li><a href="#geometric">10. Geometric Gradient</a></li>
+        <li><a href="#practice">11. Pratik Sorular</a></li>
+      </ul>
+    </aside>
+
+    <main class="note-content">
+      <div class="note-meta">
+        <span class="note-course-badge">INDR 202</span>
+        <span class="note-week-label">Hafta 2</span>
+      </div>
+      <h1 class="note-main-title">Shifted Gradients, Combining Factors & Effective Interest Rates</h1>
+      <p class="note-intro">
+        Bu hafta Hafta 1'deki gradient ve seri konuları derinleştirildi. Ayrıca nominal ve effective interest rate ayrımı, compounding period ile payment period ilişkisi, ve geometric gradient serisi işlendi.
+      </p>
+      <div class="note-divider"></div>
+
+      <!-- 1. SHIFTED ARITHMETIC GRADIENT -->
+      <section id="shifted-gradient">
+        <h2>1. Shifted Arithmetic Gradient</h2>
+        <p>
+          Hafta 1'deki arithmetic gradient'ta G serisi t=2'den başlıyordu ve P/A ile P/G
+          aynı referans noktasındaydı. <strong>Shifted gradient</strong>'ta ise seri daha
+          geç başlar — bu yüzden birden fazla faktörü <em>birleştirmek</em> gerekir.
+        </p>
+
+        <div class="callout">
+          <strong>Temel kural:</strong> $P_T = P_A + P_G$ (artan gradient) veya $P_T = P_A - P_G$ (azalan gradient)
+        </div>
+
+        <h3>Önemli türetmeler</h3>
+        <p>Gradient'i uniform seriye dönüştürmek için:</p>
+        $$A = G \cdot (A/G,\ i,\ n)$$
+        <p>Gradient'in future worth'u:</p>
+        $$F/G \Rightarrow (P/G) \times (F/P) = F/G$$
+
+        <div class="example">
+          <div class="example-label">Örnek 1 (Tahtadan) – Azalan Gradient</div>
+          <p>Nakit akışları: t=1'de $800, her yıl $100 azalıyor, 5 yıl, %i faiz. $P_T$ = ?</p>
+          <p>G negatif olduğundan gradient terimi çıkarılır:</p>
+          $$P_T = 800 \cdot (P/A,\ i,\ 5) - 100 \cdot (P/G,\ i,\ 5)$$
+          <p>Alternatif olarak: $-G(A/G, i, n)$ şeklinde de yazılabilir.</p>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek 2 (Tahtadan) – Shifted Gradient</div>
+          <p>A=3100, G=50, i=5%/year. Cash flow t=3'te başlıyor, 8 dönem devam ediyor. $P_T$ = ?</p>
+          <pre class="code-pre">0   1   2   3    4    5    6   ...  10
+                3100 3150 3200 3250 ... 3100+(n-2)×50</pre>
+          $$P_T = 3100 \cdot (P/A,\ 5\%,\ 8)\cdot(P/F,\ 5\%,\ 2) + 50\cdot(P/G,\ 5\%,\ 8)\cdot(P/F,\ 5\%,\ 2)$$
+          <p>ya da iki kısım ayrı ayrı t=2'ye taşınıp sonra t=0'a indirgenir.</p>
+        </div>
+      </section>
+
+      <!-- 2. COMBINING FACTORS -->
+      <section id="combining">
+        <h2>2. Combining Factors</h2>
+        <p>
+          Gerçek hayattaki cash flow diyagramları nadiren tek faktörle çözülür.
+          Çoğu zaman birden fazla faktörü <strong>zincirleme (combining)</strong> kullanmak gerekir.
+        </p>
+
+        <div class="callout">
+          <strong>Altın kural — P/A için:</strong> Present worth, A serisinin <em>ilk ödemesinden 1 dönem önce</em> konumlanır.<br/>
+          <strong>Altın kural — F/A için:</strong> Future worth, A serisinin <em>son ödemesiyle aynı dönemde</em> konumlanır.
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek 3 (Tahtadan) – Shifted Uniform Series, PW</div>
+          <p>B=? (t=4'te), A=$350, i=%, n=12 dönem (t=4'ten t=15'e)</p>
+          <p>Dört yöntem:</p>
+          <table>
+            <thead><tr><th>Yöntem</th><th>Yaklaşım</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Her CF'i P/F ile t=0'a taşı → topla</td></tr>
+              <tr><td>2</td><td>F/P ile herhangi bir yıla taşı, sonra P/F ile t=0'a</td></tr>
+              <tr><td>3</td><td>F/A ile son ödeme dönemine taşı: $F = A(F/A, i, n)$, sonra $P = F(P/F, i, n)$</td></tr>
+              <tr><td>4</td><td>P/A ile t=3'e taşı (seriden 1 period önce), sonra P/F ile t=0'a: $P_3(P/F, i, 3)$</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. SHIFTED UNIFORM SERIES -->
+      <section id="shifted-series">
+        <h2>3. Shifted Uniform Series – Pratik Örnekler</h2>
+
+        <div class="example">
+          <div class="example-label">Örnek 5 (Tahtadan) – PW Hesabı</div>
+          <p>Bugün $5000 ödeme yapıyorsun. Ayrıca 3 yıl sonra başlamak üzere 6 yıl boyunca yıllık $500 ödeyeceksin. i=%8. PW = ?</p>
+          <pre class="code-pre">0    1    2    3    4    5    6    7    8
+5000↓         500↓ 500↓ 500↓ 500↓ 500↓ 500↓
+P₀=?</pre>
+          <p>P/A faktörü t=2'ye (seriden 1 önce) taşır:</p>
+          $$P_A' = 500 \cdot (P/A,\ 8\%,\ 6)$$
+          <p>Sonra t=0'a:</p>
+          $$P_A = P_A' \cdot (P/F,\ 8\%,\ 2)$$
+          $$P_T = 5000 + 500 \cdot (P/A,\ 8\%,\ 6) \cdot (P/F,\ 8\%,\ 2)$$
+          $$= 5000 + 500 \times 4.6229 \times 0.8573 \approx \$6{,}981$$
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek 7 (Tahtadan) – Equivalent Uniform Series</div>
+          <p>
+            Rekalibrasyonun maliyeti yıllık $8000. Makine, 3 yıl sonra başlayarak 6 yıl süreyle rekalibre edilecek.
+            i=%16. 8 yıllık eşdeğer uniform seri A' = ?
+          </p>
+          <pre class="code-pre">0  1  2  3   4   5   6   7   8
+            8k↓ 8k↓ 8k↓ 8k↓ 8k↓ 8k↓
+A'=?↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓</pre>
+          <p><strong>Present Worth yöntemi:</strong></p>
+          $$P_A' = 8000 \cdot (P/A,\ 16\%,\ 6)$$
+          $$P_T = P_A' \cdot (P/F,\ 16\%,\ 2)$$
+          $$A' = P_T \cdot (A/P,\ 16\%,\ 8)$$
+          <p><strong>Future Worth yöntemi:</strong></p>
+          $$F = 8000 \cdot (F/A,\ 16\%,\ 6)$$
+          $$A' = F \cdot (A/F,\ 16\%,\ 8)$$
+        </div>
+      </section>
+
+      <!-- 4. UNIFORM SERIES + RANDOM SINGLE AMOUNTS -->
+      <section id="random-amounts">
+        <h2>4. Uniform Series ve Rastgele Tek Ödemeler</h2>
+        <p>
+          Bir cash flow diyagramında hem uniform seri hem de tek ödemeler (single amounts) bir arada olduğunda:
+        </p>
+        <div class="callout">
+          <strong>Yöntem:</strong> Tek ödemeleri önce P ya da F'ye dönüştür, sonra uniform seriyle topla.
+          Tek ödemeler için → P/F veya F/P. Seri için → P/A veya F/A.
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek 6 (Tahtadan)</div>
+          <p>A = $20,000/year, i = 16%, n=20 yıl. Ayrıca t=6'da $10,000 ve t=16'da $15,000 tek ödemeler. $P_T$ = ?</p>
+          <pre class="code-pre">0  1  2  3  4  5  6  7...15 16 17...20
+   A  A  A  A  A  A+10k   A  A+15k  A  A</pre>
+          $$P_T = 20{,}000 \cdot (P/A,\ 16\%,\ 20) + 10{,}000 \cdot (P/F,\ 16\%,\ 6) + 15{,}000 \cdot (P/F,\ 16\%,\ 16)$$
+          $$\approx \$124{,}035$$
+        </div>
+      </section>
+
+      <!-- 5. NOMINAL VS EFFECTIVE -->
+      <section id="nominal-effective">
+        <h2>5. Nominal vs Effective Interest Rate</h2>
+        <p>
+          "Yıllık %18, aylık bileşik" derken iki farklı faiz oranından bahsediyoruz.
+          Bunları karıştırmak yanlış sonuçlara yol açar.
+        </p>
+
+        <div class="callout callout--warn">
+          <strong>Kritik kural:</strong> Tüm interest formülleri ve faktörler MUTLAKA <em>effective</em>
+          interest rate ile çalışır. Nominal oranı doğrudan kullanma!
+        </div>
+
+        <table>
+          <thead><tr><th>Kavram</th><th>Tanım</th><th>Sembol</th><th>Diğer adı</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Nominal rate</strong></td><td>Compounding'i dikkate almaz; "n dönem × dönem faizi"</td><td>r</td><td>APR</td></tr>
+            <tr><td><strong>Effective rate</strong></td><td>Compounding'i hesaba katar; gerçek kazanç/maliyet</td><td>i</td><td>APY</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Nominal Rate Örnekleri</h3>
+        <p>Aylık %1.5 faiz oranı farklı periyotlar için:</p>
+        <table>
+          <thead><tr><th>Dönem</th><th>Hesap</th><th>Nominal rate</th></tr></thead>
+          <tbody>
+            <tr><td>2 yıl</td><td>1.5% × 24</td><td>r = 36%</td></tr>
+            <tr><td>1 yıl</td><td>1.5% × 12</td><td>r = 18%</td></tr>
+            <tr><td>6 ay</td><td>1.5% × 6</td><td>r = 9%</td></tr>
+            <tr><td>3 ay (çeyrek)</td><td>1.5% × 3</td><td>r = 4.5%</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 6. CP, PP VE m -->
+      <section id="cp-pp">
+        <h2>6. Compounding Period (CP), Payment Period (PP) ve m</h2>
+        <p>
+          Bir interest rate ifadesinde 3 bileşen vardır:
+        </p>
+
+        <div class="factor-grid">
+          <div class="factor-card">
+            <div class="factor-name">t</div>
+            <div class="factor-label">Time Period</div>
+            <p style="font-size:0.82rem; color:var(--text-muted)">Faizin uygulandığı süre (örn. "per year", "per month")</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-name">CP</div>
+            <div class="factor-label">Compounding Period</div>
+            <p style="font-size:0.82rem; color:var(--text-muted)">Faizin birleştiği en kısa zaman birimi. CP = t ise m = 1.</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-name">m</div>
+            <div class="factor-label">Compounding Frequency</div>
+            <p style="font-size:0.82rem; color:var(--text-muted)">t içindeki CP sayısı. "12% comp. monthly" → m=12/year</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-name">PP</div>
+            <div class="factor-label">Payment Period</div>
+            <p style="font-size:0.82rem; color:var(--text-muted)">Ödeme/tahsilat yapılan zaman birimi. CP ile aynı olmak zorunda değil.</p>
+          </div>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek – "4% per year, compounded monthly"</div>
+          <p>t = 1 year, CP = 1 month, m = 12, r = 4%/year = 0.333%/month</p>
+          <p>Bu ifade nominal'dir. Gerçek yıllık kazanç için effective rate hesaplanmalıdır.</p>
+        </div>
+      </section>
+
+      <!-- 7. EFFECTIVE RATE FORMÜLÜ -->
+      <section id="eff-formula">
+        <h2>7. Effective Interest Rate Formülü</h2>
+
+        <p>Bir dönem (t) içinde m kez compound olan r nominal oranı için effective rate:</p>
+
+        $$i_{eff} = \left(1 + \frac{r}{m}\right)^m - 1$$
+
+        <p>Sürekli bileşik (continuous compounding) için:</p>
+
+        $$i_{eff} = e^r - 1$$
+
+        <div class="example">
+          <div class="example-label">Örnek – Kredi Kartı</div>
+          <p>Nominal yıllık oran: %18, aylık bileşik. Yıllık effective rate ve $1000 bakiyenin 1 yıl sonraki değeri?</p>
+          $$i_{eff} = \left(1 + \frac{0.18}{12}\right)^{12} - 1 = (1.015)^{12} - 1 \approx 19.56\%$$
+          $$F = 1000 \times 1.1956 \approx \$1{,}195.60$$
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek – Compound Daily (Tahtadan)</div>
+          <p>%15 nominal, günlük bileşik (365 gün). Yıllık effective rate?</p>
+          $$i_{eff} = \left(1 + \frac{0.15}{365}\right)^{365} - 1 \approx 16.18\%$$
+          <p>Yarı yıllık bileşik için (m=2):</p>
+          $$i_{eff} = \left(1 + \frac{0.15}{2}\right)^{2} - 1 = (1.075)^2 - 1 = 15.56\%$$
+        </div>
+
+        <h3>PP'ye Göre Effective Rate</h3>
+        <p>Yıllık değil, belirli bir PP için effective rate bulmak gerektiğinde:</p>
+        $$i_{eff,PP} = \left(1 + \frac{r_{PP}}{m}\right)^m - 1$$
+        <p>Burada $r_{PP}$ = nominal rate for one PP, $m$ = CP sayısı per PP.</p>
+
+        <div class="example">
+          <div class="example-label">Örnek – 3 Teklif Karşılaştırması (Tahtadan)</div>
+          <p>6 ayda bir ödeme yapılacak. En düşük effective rate hangisi?</p>
+          <table>
+            <thead><tr><th>Teklif</th><th>Nominal rate</th><th>Compounding</th><th>PP başına eff. rate</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>B1</td><td>9%/year</td><td>Quarterly</td>
+                <td>r=4.5%/6mo, m=2 → $(1+0.045/2)^2-1 = 4.55\%$</td>
+              </tr>
+              <tr>
+                <td>B2</td><td>3%/quarter</td><td>Quarterly</td>
+                <td>r=6%/6mo, m=2 → $(1+0.03)^2-1 = 6.09\%$</td>
+              </tr>
+              <tr>
+                <td>B3</td><td>8.8%/year</td><td>Monthly</td>
+                <td>r=4.4%/6mo, m=6 → $(1+0.088/12)^6-1 \approx 4.49\%$</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>→ <strong>B1 en düşük effective rate</strong> ile en avantajlı teklif.</p>
+        </div>
+      </section>
+
+      <!-- 8. İKİ YÖNTEM -->
+      <section id="two-methods">
+        <h2>8. PP ≥ CP Durumunda İki Yöntem</h2>
+        <p>
+          Payment period (PP) compounding period'dan (CP) büyük ya da eşit olduğunda
+          iki farklı yaklaşım kullanabilirsin — ikisi de aynı sonucu verir.
+        </p>
+
+        <div class="factor-grid">
+          <div class="factor-card">
+            <div class="factor-name">M1</div>
+            <div class="factor-label">Method 1 – CP Bazlı</div>
+            <p style="font-size:0.82rem;color:var(--text-muted)">Effective rate'i <em>CP başına</em> bul. n'i CP cinsinden say.</p>
+          </div>
+          <div class="factor-card">
+            <div class="factor-name">M2</div>
+            <div class="factor-label">Method 2 – PP Bazlı</div>
+            <p style="font-size:0.82rem;color:var(--text-muted)">Effective rate'i <em>PP başına</em> bul. n'i PP cinsinden say.</p>
+          </div>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek (Tahtadan) – M1 ve M2 Karşılaştırması</div>
+          <p>10 yıl, %12/year comp. semiannually. Yatırımlar: t=0'da $1000, t=4'te $3000, t=8'de $1500. F at t=10 = ?</p>
+          <pre class="code-pre">0    1    2    3    4    5    6    7    8    9    10
+1000↓               3000↓               1500↓          F=?</pre>
+          <p><strong>M1 (CP = 6 ay, i per CP = 6%, n CP cinsinden):</strong></p>
+          $$F = 1000(F/P,\ 6\%,\ 20) + 3000(F/P,\ 6\%,\ 12) + 1500(F/P,\ 6\%,\ 4) = \$11{,}634$$
+          <p><strong>M2 (PP = 1 yıl, eff. annual = $(1.06)^2-1 = 12.36\%$):</strong></p>
+          $$F = 1000(F/P,\ 12.36\%,\ 10) + 3000(F/P,\ 12.36\%,\ 6) + 1500(F/P,\ 12.36\%,\ 2) = \$11{,}635$$
+          <p>→ Sonuçlar yuvarlama farkı dışında eşit.</p>
+        </div>
+      </section>
+
+      <!-- 9. SERİ İLE PP > CP -->
+      <section id="series-pp-cp">
+        <h2>9. Uniform/Gradient Seri ile PP > CP</h2>
+        <p>
+          Cash flow'da uniform ya da gradient seri varsa ve PP > CP ise,
+          prosedür M2 gibidir — PP artık <strong>serinin frekansı</strong> tarafından belirlenir.
+        </p>
+
+        <div class="example">
+          <div class="example-label">Örnek (Tahtadan) – Semiannual Series</div>
+          <p>
+            Son 7 yıldır her 6 ayda bir $500 ödedin. Bu ödemeler %20/year comp. quarterly getiren
+            bir havuzdan yapılıyor. Son ödeme sonrasındaki eşdeğer tutar (F) = ?
+          </p>
+          <p>PP = 6 ay (semiannual), CP = çeyrek, m = 2 per PP</p>
+          $$r_{PP} = \frac{20\%}{2} = 10\% \text{ per 6 months}$$
+          $$i_{eff,PP} = \left(1 + \frac{0.10}{2}\right)^2 - 1 = (1.05)^2 - 1 = 10.25\%$$
+          $$n = 7 \text{ years} \times 2 = 14 \text{ periods}$$
+          $$F = 500 \cdot (F/A,\ 10.25\%,\ 14) = \$14{,}244$$
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek (Tahtadan) – Monthly Loan Payment</div>
+          <p>$12,500 loan, %9/year comp. monthly, 4 yılda aylık ödemeler. Aylık A = ?</p>
+          $$i = \frac{9\%}{12} = 0.75\% \text{ per month}, \quad n = 4 \times 12 = 48$$
+          $$A = 12{,}500 \cdot (A/P,\ 0.75\%,\ 48) = \$311$$
+        </div>
+      </section>
+
+      <!-- 10. GEOMETRIC GRADIENT -->
+      <section id="geometric">
+        <h2>10. Geometric Gradient Series</h2>
+        <p>
+          Arithmetic gradient'ta her dönem <strong>sabit tutar G</strong> kadar değişim vardı.
+          <strong>Geometric gradient</strong>'ta ise her dönem <strong>sabit yüzde g</strong> kadar değişim olur.
+          Bu tip CF'ler gerçek hayatta çok yaygındır: enflasyonla artan maliyetler, büyüyen gelirler vb.
+        </p>
+
+        <div class="callout">
+          <strong>Fark:</strong> Arithmetic gradient t=2'de başlar (t=1'de 0). Geometric gradient ise
+          <em>t=1'de A₁ ile başlar</em> — sıfır yok.
+        </div>
+
+        <h3>Cash Flow Yapısı</h3>
+        <table>
+          <thead><tr><th>Period</th><th>Cash Flow</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>$A_1$</td></tr>
+            <tr><td>2</td><td>$A_1(1+g)$</td></tr>
+            <tr><td>3</td><td>$A_1(1+g)^2$</td></tr>
+            <tr><td>n</td><td>$A_1(1+g)^{n-1}$</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Present Worth Formülü (Türetme)</h3>
+        $$P_g = \frac{A_1}{(1+i)^1} + \frac{A_1(1+g)}{(1+i)^2} + \frac{A_1(1+g)^2}{(1+i)^3} + \cdots$$
+
+        <h3>(P/A, g, i, n) Faktörü</h3>
+        $$\boxed{P_g = A_1 \cdot (P/A,\ g,\ i,\ n)}$$
+
+        $$
+        (P/A,\ g,\ i,\ n) =
+        \begin{cases}
+          \dfrac{1 - \left(\dfrac{1+g}{1+i}\right)^n}{i - g} & g \neq i \\[14pt]
+          \dfrac{n}{1+i} & g = i
+        \end{cases}
+        $$
+
+        <div class="callout">
+          <strong>g > 0:</strong> Artan seri (maliyetler büyüyor, gelirler artıyor)<br/>
+          <strong>g < 0:</strong> Azalan seri (bakım azalıyor, talep düşüyor)<br/>
+          <strong>g = i:</strong> Özel durum — yukarıdaki basit formülü kullan
+        </div>
+
+        <div class="example">
+          <div class="example-label">Örnek 4 (Tahtadan) – Geometric Gradient ile PW</div>
+          <p>
+            Bir ürün $8000 maliyetli, 6 yıl ömürlü, $1300 hurda değerli.
+            Bakım maliyeti 1. yıl $1700, yılda %11 artıyor. i=%8. $P_T$ = ?
+          </p>
+          <pre class="code-pre">0    1      2       3       4       5       6
+8000↑ 1700↓ 1887↓  2095↓  2325↓  2581↓  2865↓              1300↑
+                                                               (salvage)</pre>
+          <p>g = 11% = 0.11, i = 8% = 0.08, A₁ = $1700, n = 6</p>
+          $$P_g = 1700 \times \frac{1 - \left(\dfrac{1.11}{1.08}\right)^6}{0.08 - 0.11}$$
+          $$= 1700 \times \frac{1 - (1.0278)^6}{-0.03} \approx \$11{,}857$$
+          $$P_T = -8000 - 11{,}857 + 1300 \cdot (P/F,\ 8\%,\ 6)$$
+          $$= -8000 - 11{,}857 + 1300 \times 0.6302 \approx -\$19{,}038$$
+          <p>Sonuç negatif → bu maliyet odaklı bir analizde normal.</p>
+        </div>
+      </section>
+
+      <!-- 11. PRATİK SORULAR -->
+      <section id="practice">
+        <h2>11. Pratik Sorular</h2>
+
+        <div class="practice-q">
+          <div class="practice-label">Soru 1 – Shifted Uniform Series</div>
+          <p>Bugün $3000 yatırıyorsun. 3 yıl sonra başlamak üzere 6 yıl boyunca yıllık $500 ödemeler alacaksın. i=%8. Total PW = ?</p>
+          <details>
+            <summary>Çözümü Gör</summary>
+            <div class="solution">
+              P/A faktörü t=2'ye taşır (seriden 1 önce):
+              $$P_A' = 500 \cdot (P/A,\ 8\%,\ 6) = 500 \times 4.6229 = \$2{,}311.45$$
+              $$P_A = P_A' \cdot (P/F,\ 8\%,\ 2) = 2311.45 \times 0.8573 = \$1{,}981.5$$
+              $$P_T = 3000 + 1981.5 = \mathbf{\$4{,}981.5}$$
+            </div>
+          </details>
+        </div>
+
+        <div class="practice-q">
+          <div class="practice-label">Soru 2 – Nominal vs Effective</div>
+          <p>"%12/year compounded quarterly" ifadesi için: (a) quarterly effective rate, (b) annual effective rate</p>
+          <details>
+            <summary>Çözümü Gör</summary>
+            <div class="solution">
+              a) r per quarter = 12%/4 = 3% → CP = quarter = PP → $i_{eff,quarter} = 3\%$<br/><br/>
+              b) $i_{eff,annual} = (1 + 0.03)^4 - 1 = (1.03)^4 - 1 = 12.55\%$
+            </div>
+          </details>
+        </div>
+
+        <div class="practice-q">
+          <div class="practice-label">Soru 3 – Effective Rate PP başına</div>
+          <p>%18/year, comp monthly. 6 ayda bir ödeme yapıyorsun (PP = 6 ay). PP başına effective rate?</p>
+          <details>
+            <summary>Çözümü Gör</summary>
+            <div class="solution">
+              r per PP = 18%/2 = 9% per 6 months, m = 6 months per PP
+              $$i_{eff,PP} = \left(1 + \frac{0.09}{6}\right)^6 - 1 = (1.015)^6 - 1 = 9.34\%$$
+            </div>
+          </details>
+        </div>
+
+        <div class="practice-q">
+          <div class="practice-label">Soru 4 – İki Yöntem (M1 ve M2)</div>
+          <p>5 yıl, %10/year comp semiannually. t=0'da $5000, t=3'te $2000 yatırım. F at t=5 = ? (Her iki yöntemle de çöz)</p>
+          <details>
+            <summary>Çözümü Gör</summary>
+            <div class="solution">
+              <strong>M1:</strong> CP = 6 ay, i per CP = 5%, n CP cinsinden<br/>
+              $F = 5000(F/P, 5\%, 10) + 2000(F/P, 5\%, 4)$<br/>
+              $= 5000 \times 1.6289 + 2000 \times 1.2155 = 8144.5 + 2431 = \mathbf{\$10{,}575.5}$<br/><br/>
+              <strong>M2:</strong> eff. annual = $(1.05)^2 - 1 = 10.25\%$, n yıl cinsinden<br/>
+              $F = 5000(F/P, 10.25\%, 5) + 2000(F/P, 10.25\%, 2)$<br/>
+              $= 5000 \times 1.6289 + 2000 \times 1.2155 \approx \mathbf{\$10{,}575.5}$ (aynı!)
+            </div>
+          </details>
+        </div>
+
+        <div class="practice-q">
+          <div class="practice-label">Soru 5 – Geometric Gradient</div>
+          <p>Bir gelir akışı 1. yıl $2000'dan başlıyor, her yıl %5 artıyor, 8 yıl devam ediyor. i=%10. PW = ?</p>
+          <details>
+            <summary>Çözümü Gör</summary>
+            <div class="solution">
+              g = 0.05, i = 0.10, A₁ = $2000, n = 8, g ≠ i
+              $$P = 2000 \times \frac{1 - \left(\dfrac{1.05}{1.10}\right)^8}{0.10 - 0.05}$$
+              $$= 2000 \times \frac{1 - (0.9545)^8}{0.05} = 2000 \times \frac{1 - 0.6855}{0.05}$$
+              $$= 2000 \times 6.29 = \mathbf{\$12{,}580}$$
+            </div>
+          </details>
+        </div>
+
+        <div class="practice-q">
+          <div class="practice-label">Soru 6 – Seri ile PP > CP</div>
+          <p>Her ay $300 yatırıyorsun. Nominal yıllık faiz %12, günlük bileşik. 3 yıl sonra F = ?</p>
+          <details>
+            <summary>Çözümü Gör</summary>
+            <div class="solution">
+              PP = 1 ay, CP = 1 gün, m ≈ 30.4 gün/ay<br/>
+              r per month = 12%/12 = 1%, m ≈ 30.4<br/>
+              $i_{eff,month} = (1 + 0.01/30.4)^{30.4} - 1 \approx 1.005\%$<br/>
+              Pratik yaklaşım: m yeterince büyük olduğunda $\approx$ 1%/month kullanılır.<br/>
+              $n = 36$ ay<br/>
+              $$F = 300 \cdot (F/A,\ 1\%,\ 36) = 300 \times 43.077 = \mathbf{\$12{,}923}$$
+            </div>
+          </details>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  </script>
+</body>
+</html>
