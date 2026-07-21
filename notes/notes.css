@@ -323,6 +323,41 @@
 
 .katex { font-size: 1em !important; }
 
+/* Factor card içinde formüller küçük ve taşmasın */
+.factor-card {
+  overflow: visible;
+}
+
+.factor-card .katex-display {
+  overflow-x: visible;
+  margin: 0.5rem 0 !important;
+}
+
+.factor-card .katex {
+  font-size: 0.78em !important;
+}
+
+/* Callout, example ve warn kutuları içinde de taşma olmasın */
+.callout .katex-display,
+.example .katex-display,
+.warn .katex-display,
+.tip .katex-display,
+.box .katex-display,
+.topic-block .katex-display {
+  overflow-x: auto;
+}
+
+/* Sadece factor-card içinde değil, genel küçük kutular için de */
+.factor-box .katex,
+.formula-box .katex {
+  font-size: 0.80em !important;
+}
+
+.formula-box .katex-display {
+  overflow-x: visible;
+  margin: 0.3rem 0 !important;
+}
+
 /* ══════════ RESPONSİF ══════════ */
 @media (max-width: 768px) {
   .note-layout {
