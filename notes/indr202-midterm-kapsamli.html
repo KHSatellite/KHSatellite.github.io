@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 202 – Midterm Hazırlık | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+  <style>
+    .midterm-banner{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;border-radius:12px;padding:1.2rem 1.8rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.2rem;}
+    .midterm-banner .banner-icon{font-size:2rem;flex-shrink:0;}
+    .midterm-banner h3{margin:0;font-size:1.1rem;font-weight:700;}
+    .midterm-banner p{margin:0.2rem 0 0;font-size:0.9rem;opacity:0.9;}
+    .topic-block{background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;}
+    .topic-block h3{margin-top:0;color:var(--accent);font-size:1.05rem;}
+    .formula-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.8rem;margin:1rem 0;}
+    .formula-box{background:var(--bg-primary);border:1px solid var(--accent);border-radius:8px;padding:0.9rem 1rem;}
+    .formula-box .f-name{font-size:0.78rem;font-weight:700;color:var(--accent);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.04em;}
+    .formula-box .f-math{font-size:0.95rem;}
+    .section-nav{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;}
+    .section-nav a{background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.8rem;font-size:0.8rem;text-decoration:none;color:var(--text-secondary);transition:all 0.2s;}
+    .section-nav a:hover{border-color:var(--accent);color:var(--accent);}
+    .warn{background:rgba(231,76,60,0.1);border-left:4px solid #e74c3c;border-radius:0 8px 8px 0;padding:0.8rem 1.2rem;margin:0.8rem 0;}
+    .tip{background:rgba(39,174,96,0.1);border-left:4px solid #27ae60;border-radius:0 8px 8px 0;padding:0.8rem 1.2rem;margin:0.8rem 0;}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="indr202-midterm.html">Midterm (Sorular)</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#formulas">Formül Özeti</a></li>
+    <li><a href="#t1-interest">H1: Faiz & Eşdeğerlik</a></li>
+    <li><a href="#t1-factors">H1: Faktörler</a></li>
+    <li><a href="#t1-gradient">H1: Gradient</a></li>
+    <li><a href="#t2-geom">H2: Geometrik Gradient</a></li>
+    <li><a href="#t2-nominal">H2: Nominal/Effective</a></li>
+    <li><a href="#t2-ppcp">H2: PP vs CP</a></li>
+    <li><a href="#t3-pw">H3: PW Analizi</a></li>
+    <li><a href="#t3-cc">H3: Capitalized Cost</a></li>
+    <li><a href="#t3-aw">H3: AW & CR</a></li>
+    <li><a href="#t3-payback">H3: Geri Ödeme Süresi</a></li>
+    <li><a href="#problems">Alıştırma Problemleri</a></li>
+  </ul>
+</aside>
+
+<main class="note-content">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 202</span>
+    <span class="note-week-label">Midterm Hazırlık</span>
+  </div>
+  <h1 class="note-main-title">Kapsamlı Midterm Çalışma Rehberi</h1>
+
+  <div class="midterm-banner">
+    <div class="banner-icon">📅</div>
+    <div>
+      <h3>Midterm: 30 Temmuz 2026, 12:00–14:00</h3>
+      <p>Kapsam: Hafta 1–3 (Capital Recovery dahil) · A4 çift taraflı el notu serbest · Hesap makinesi serbest</p>
+    </div>
+  </div>
+
+  <!-- FORMULA SUMMARY -->
+  <section id="formulas">
+    <h2>Tüm Formüller — Hızlı Referans</h2>
+    <div class="formula-grid">
+      <div class="formula-box"><div class="f-name">F/P — Compound Amount</div><div class="f-math">$F = P(1+i)^n$</div></div>
+      <div class="formula-box"><div class="f-name">P/F — Present Worth</div><div class="f-math">$P = F(1+i)^{-n}$</div></div>
+      <div class="formula-box"><div class="f-name">P/A — Uniform Series PW</div><div class="f-math">$P = A\dfrac{(1+i)^n-1}{i(1+i)^n}$</div></div>
+      <div class="formula-box"><div class="f-name">A/P — Capital Recovery</div><div class="f-math">$A = P\dfrac{i(1+i)^n}{(1+i)^n-1}$</div></div>
+      <div class="formula-box"><div class="f-name">F/A — Uniform Series FW</div><div class="f-math">$F = A\dfrac{(1+i)^n-1}{i}$</div></div>
+      <div class="formula-box"><div class="f-name">A/F — Sinking Fund</div><div class="f-math">$A = F\dfrac{i}{(1+i)^n-1}$</div></div>
+      <div class="formula-box"><div class="f-name">P/G — Arith. Gradient PW</div><div class="f-math">$P_G = G\dfrac{(1+i)^n-in-1}{i^2(1+i)^n}$</div></div>
+      <div class="formula-box"><div class="f-name">A/G — Gradient Uniform</div><div class="f-math">$A_G = G\left[\dfrac{1}{i}-\dfrac{n}{(1+i)^n-1}\right]$</div></div>
+      <div class="formula-box"><div class="f-name">Geometric Gradient (g≠i)</div><div class="f-math">$P = A_1\dfrac{1-(1+g)^n(1+i)^{-n}}{i-g}$</div></div>
+      <div class="formula-box"><div class="f-name">Geometric Gradient (g=i)</div><div class="f-math">$P = \dfrac{A_1 n}{1+i}$</div></div>
+      <div class="formula-box"><div class="f-name">Effective Rate</div><div class="f-math">$i_{eff}=\left(1+\dfrac{r}{m}\right)^m-1$</div></div>
+      <div class="formula-box"><div class="f-name">Continuous Compounding</div><div class="f-math">$i_{eff}=e^r-1,\quad F=Pe^{rn}$</div></div>
+      <div class="formula-box"><div class="f-name">Effective Rate for PP</div><div class="f-math">$i_{PP}=\left(1+\dfrac{r}{m}\right)^{m/k}-1$</div></div>
+      <div class="formula-box"><div class="f-name">Simple Interest</div><div class="f-math">$F=P(1+in)$</div></div>
+      <div class="formula-box"><div class="f-name">WACC</div><div class="f-math">$WACC=w_d r_d + w_e r_e$</div></div>
+      <div class="formula-box"><div class="f-name">Rule of 72</div><div class="f-math">$n\approx 72/i\%$ (bileşik)</div></div>
+      <div class="formula-box"><div class="f-name">Capitalized Cost</div><div class="f-math">$CC = P + \dfrac{A}{i}$</div></div>
+      <div class="formula-box"><div class="f-name">AW from PW</div><div class="f-math">$AW = PW\cdot(A/P,i,n)$</div></div>
+      <div class="formula-box"><div class="f-name">Capital Recovery</div><div class="f-math">$CR = P(A/P,i,n) - S(A/F,i,n)$</div></div>
+      <div class="formula-box"><div class="f-name">AW = CR + AOC</div><div class="f-math">$AW = -CR + \text{rev} - AOC$</div></div>
+      <div class="formula-box"><div class="f-name">Simple Payback</div><div class="f-math">$n_p = P/NCF$</div></div>
+      <div class="formula-box"><div class="f-name">Fisher Equation</div><div class="f-math">$(1+i)=(1+i')(1+f)$</div></div>
+    </div>
+  </section>
+
+  <!-- HAFTA 1 -->
+  <section id="t1-interest">
+    <h2>Hafta 1 — Faiz ve Ekonomik Eşdeğerlik</h2>
+    <div class="topic-block">
+      <h3>Simple vs Compound Interest</h3>
+      <p><strong>Simple:</strong> $F=P(1+in)$ — lineer büyüme, yalnızca anaparadan faiz.</p>
+      <p><strong>Compound:</strong> $F=P(1+i)^n$ — exponential büyüme, faiz üstüne faiz.</p>
+      <div class="tip">İkisi arasındaki fark = $P(1+i)^n - P(1+in)$. Küçük n ve i için fark azdır; n ve i büyüdükçe çok ciddi farklar ortaya çıkar.</div>
+    </div>
+    <div class="topic-block">
+      <h3>Economic Equivalence (Eşdeğerlik)</h3>
+      <p>Belirli bir i oranında, farklı miktarlardaki farklı zamanlardaki ödemeler <em>ekonomik olarak aynı değerde</em> olabilir. Her analiz bir referans noktası (genellikle t=0) seçer ve tüm CF'leri oraya taşır.</p>
+      <div class="warn">Faiz oranı değişirse eşdeğerlik bozulur — aynı CF'ler farklı oranlarda farklı değerlere sahiptir.</div>
+    </div>
+    <div class="topic-block">
+      <h3>ROR, MARR ve WACC</h3>
+      <p><strong>ROR:</strong> Gerçekleşen ya da beklenen getiri. <strong>MARR:</strong> Kabul eşiği (yönetim kararı). <strong>WACC:</strong> Sermaye maliyeti; MARR ≥ WACC olmalı.</p>
+      $$WACC = w_{borç}\cdot r_{borç} + w_{öz}\cdot r_{öz}$$
+      <div class="example">
+        <div class="example-label">Örnek</div>
+        <p>%40 kredi (%15), %60 öz sermaye (%8): $WACC = 0.4(15)+0.6(8) = 6.0+4.8 = 10.8\%$</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="t1-factors">
+    <h2>Hafta 1 — Temel Faktörler (F/P, P/F, P/A, A/P, F/A, A/F)</h2>
+    <div class="topic-block">
+      <h3>Notasyon ve Kullanım</h3>
+      <p>$(X/Y, i, n)$: Y biliniyorken X'i bul. İlişkiler: $(F/P)\cdot(P/F)=1$, $(A/F,i,n)=(A/P,i,n)-i$</p>
+      <div class="tip">
+        <strong>Konum kuralları:</strong><br/>
+        • P/A → P, serinin <em>ilk ödemesinden 1 dönem önce</em><br/>
+        • F/A → F, serinin <em>son ödemesiyle aynı dönemde</em>
+      </div>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — Shifted Series (çok sık çıkar!)</div>
+      <p>$2,000/yıl, t=4'ten t=9'a kadar (6 yıl), i=%10. t=0'daki PW=?</p>
+      <pre class="code-pre">t: 0  1  2  3   4     5     6     7     8     9
+            P'=↑  ↓2000 ↓2000 ↓2000 ↓2000 ↓2000 ↓2000</pre>
+      $$P' = 2000(P/A,10\%,6) \quad\text{(t=3'e gider)}$$
+      $$P_0 = P'(P/F,10\%,3) = 2000 \times 4.3553 \times 0.7513 = \$6{,}544$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — F/A ile Birikim Hedefi</div>
+      <p>10 yıl sonra $50,000 biriktirmek için yıllık A=? (i=%6)</p>
+      $$A = 50{,}000(A/F,6\%,10) = 50{,}000\times\frac{0.06}{(1.06)^{10}-1} = 50{,}000\times0.07587 = \$3{,}794/\text{yıl}$$
+    </div>
+  </section>
+
+  <section id="t1-gradient">
+    <h2>Hafta 1 — Arithmetic Gradient</h2>
+    <div class="topic-block">
+      <h3>Yapı ve Formüller</h3>
+      <p>t=1: A, t=2: A+G, t=3: A+2G, ..., t=n: A+(n-1)G</p>
+      $$P_T = A(P/A,i,n) + G(P/G,i,n) \quad\text{(artan)}$$
+      $$P_T = A(P/A,i,n) - G(P/G,i,n) \quad\text{(azalan)}$$
+      $$\text{P/G faktörü konum: t=1'deki ödemeyle AYNI YERDE}$$
+      <div class="warn">P/G serinin başladığı yerde konumlanır (t=0 gibi değil!). Shifted gradient için ayrıca P/F uygula.</div>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — Artan Bakım Maliyeti</div>
+      <p>Yıl 1: $1,000, her yıl $200 artıyor, 5 yıl, i=%8. PW=?</p>
+      $$PW = 1000(P/A,8\%,5) + 200(P/G,8\%,5)$$
+      $$= 1000\times3.9927 + 200\times7.3724 = 3992.7 + 1474.5 = \$5{,}467.2$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — Azalan Seri</div>
+      <p>Yıl 1: $5,000, her yıl $500 azalıyor, 4 yıl, i=%12. PW=?</p>
+      $$PW = 5000(P/A,12\%,4) - 500(P/G,12\%,4)$$
+      $$= 5000\times3.0373 - 500\times4.1273 = 15186.5 - 2063.7 = \$13{,}122.8$$
+    </div>
+  </section>
+
+  <!-- HAFTA 2 -->
+  <section id="t2-geom">
+    <h2>Hafta 2 — Geometric Gradient</h2>
+    <div class="topic-block">
+      <h3>Sabit Yüzdelik Artış/Azalış</h3>
+      <p>Her dönem önceki ödemeden $g\%$ farklı: $A_t = A_1(1+g)^{t-1}$</p>
+      $$P = A_1\cdot\frac{1-(1+g)^n(1+i)^{-n}}{i-g} \quad (g\neq i)$$
+      $$P = \frac{A_1 n}{1+i} \quad (g=i)$$
+      <div class="warn">Geometrik gradient için faiz tablosu YOK — her zaman formülle hesapla.</div>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek</div>
+      <p>İlk yıl $2,000, her yıl %5 artış, 10 yıl, i=%8. P=?</p>
+      $$P = 2000\times\frac{1-(1.05)^{10}(1.08)^{-10}}{0.08-0.05} = 2000\times\frac{1-1.6289\times0.4632}{0.03} = 2000\times\frac{1-0.7545}{0.03} = 2000\times8.183 = \$16{,}366$$
+    </div>
+  </section>
+
+  <section id="t2-nominal">
+    <h2>Hafta 2 — Nominal vs Effective Interest</h2>
+    <div class="topic-block">
+      <h3>Temel Kavramlar</h3>
+      <table>
+        <thead><tr><th>Terim</th><th>Sembol</th><th>Tanım</th></tr></thead>
+        <tbody>
+          <tr><td>Nominal rate</td><td>r (APR)</td><td>İlan edilen yıllık oran, bileşimi yansıtmaz</td></tr>
+          <tr><td>Effective rate</td><td>$i_{eff}$ (APY)</td><td>Gerçek kazanç; bileşim etkisi dahil</td></tr>
+          <tr><td>CP başı oran</td><td>$r/m$</td><td>Nominal oranı CP sayısına böl</td></tr>
+        </tbody>
+      </table>
+      $$i_{eff} = \left(1+\frac{r}{m}\right)^m - 1 \qquad i_{cont} = e^r - 1$$
+    </div>
+    <div class="example">
+      <div class="example-label">Farklı Bileşim Sıklıkları Karşılaştırması (r=%12)</div>
+      <table>
+        <thead><tr><th>Bileşim</th><th>m</th><th>i_eff</th></tr></thead>
+        <tbody>
+          <tr><td>Yıllık</td><td>1</td><td>12.000%</td></tr>
+          <tr><td>Yarıyıllık</td><td>2</td><td>12.360%</td></tr>
+          <tr><td>Aylık</td><td>12</td><td>12.683%</td></tr>
+          <tr><td>Günlük</td><td>365</td><td>12.747%</td></tr>
+          <tr><td>Sürekli</td><td>∞</td><td>12.750%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="t2-ppcp">
+    <h2>Hafta 2 — PP vs CP</h2>
+    <div class="topic-block">
+      <h3>Durum Analizi</h3>
+      <table>
+        <thead><tr><th>Durum</th><th>Örnek</th><th>Çözüm</th></tr></thead>
+        <tbody>
+          <tr><td>PP = CP</td><td>Aylık ödeme, aylık bileşim</td><td>Normal: i=r/m, n=toplam CP</td></tr>
+          <tr><td>PP > CP</td><td>Yıllık ödeme, aylık bileşim</td><td>Yöntem 2: $i_{PP}=(1+r/m)^{m/k}-1$</td></tr>
+          <tr><td>PP &lt; CP</td><td>Haftalık ödeme, aylık bileşim</td><td>No interperiod interest politikası</td></tr>
+        </tbody>
+      </table>
+      <p>$k$ = yıllık PP sayısı (yıllık→1, yarıyıllık→2, aylık→12, çeyreklik→4)</p>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — PP > CP (en sık sınav konusu)</div>
+      <p>$20,000 kredi, r=%9 aylık bileşim, yarıyıllık ödemeler, 3 yıl. A=?</p>
+      $$i_{yarı} = (1+0.09/12)^{12/2}-1 = (1.0075)^6-1 = 4.585\%$$
+      $$n = 3\times2 = 6 \text{ yarıyıl}$$
+      $$A = 20{,}000(A/P,4.585\%,6) = 20{,}000\times0.1878 \approx \$3{,}756/\text{yarıyıl}$$
+    </div>
+  </section>
+
+  <!-- HAFTA 3 -->
+  <section id="t3-pw">
+    <h2>Hafta 3 — Present Worth Analizi</h2>
+    <div class="topic-block">
+      <h3>Karar Kuralları</h3>
+      <p>PW, MARR oranıyla hesaplanır:</p>
+      <ul>
+        <li><strong>Tek alternatif:</strong> PW ≥ 0 → kabul et</li>
+        <li><strong>Mutually Exclusive (ME):</strong> En yüksek PW'li alternatifi seç (PW≥0 şartıyla)</li>
+        <li><strong>Independent:</strong> PW ≥ 0 olan her alternatifi seç</li>
+        <li><strong>Do-Nothing (DN):</strong> PW = 0 (referans nokta)</li>
+      </ul>
+    </div>
+    <div class="topic-block">
+      <h3>Farklı Ömürlü Alternatiflerde LCM</h3>
+      <p>ME alternatiflerin ömrü farklıysa → <strong>En Küçük Ortak Kat (LCM)</strong> süresinde karşılaştır.</p>
+      <div class="tip">AW analizinde bu sorun yoktur — her ömür için AW doğrudan karşılaştırılabilir.</div>
+      <div class="example">
+        <div class="example-label">Örnek — LCM (3 yıl vs 4 yıl → LCM=12)</div>
+        <p>Makine A (3 yıl) ve B (4 yıl) → 12 yıl boyunca karşılaştır. A 4 kez, B 3 kez tekrarlanır.</p>
+      </div>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — ME Alternatif Seçimi</div>
+      <p>MARR=%10, 5 yıl:</p>
+      <table>
+        <thead><tr><th>Alternatif</th><th>İlk Maliyet</th><th>Yıllık Gelir</th><th>Salvage</th><th>PW@10%</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>$30,000</td><td>$9,000</td><td>$2,000</td><td>$-30k+9k(P/A)+2k(P/F) = $6,140</td></tr>
+          <tr><td>B</td><td>$45,000</td><td>$13,000</td><td>$3,000</td><td>$-45k+13k(P/A)+3k(P/F) = $3,429</td></tr>
+        </tbody>
+      </table>
+      <p>$PW_A > PW_B > 0$ → <strong>Alternatif A seçilir.</strong></p>
+    </div>
+  </section>
+
+  <section id="t3-cc">
+    <h2>Hafta 3 — Capitalized Cost (Sonsuz Ömür)</h2>
+    <div class="topic-block">
+      <h3>CC Formülü</h3>
+      <p>$n \to \infty$ olduğunda $P/A \to 1/i$. Köprüler, yollar, su yapıları için kullanılır.</p>
+      $$CC = P + \frac{A_{yıllık}}{i} + \text{Nonrecurring PV'ler}$$
+      <p>Periyodik tekrarlayan maliyetler için önce A/F ile uniform seriye çevir.</p>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — Köprü CC Hesabı</div>
+      <p>İlk maliyet: $800,000. Yıllık bakım: $35,000. Her 15 yılda büyük onarım: $150,000. i=%6.</p>
+      $$A_{onarım} = 150{,}000(A/F,6\%,15) = 150{,}000\times0.04296 = \$6{,}444/\text{yıl}$$
+      $$CC = 800{,}000 + \frac{35{,}000+6{,}444}{0.06} = 800{,}000 + 690{,}733 = \$1{,}490{,}733$$
+    </div>
+  </section>
+
+  <section id="t3-aw">
+    <h2>Hafta 3 — Annual Worth (AW) ve Capital Recovery (CR)</h2>
+    <div class="topic-block">
+      <h3>AW Analizi</h3>
+      <p>$AW = PW(A/P,i,n)$. PW ile aynı kararı verir. Avantajı: farklı ömürlü alternatifleri <strong>tek bir ömür döngüsüyle</strong> karşılaştırabilirsin.</p>
+      <p>Karar kuralı: AW ≥ 0 → kabul. ME seçimde en yüksek (en az negatif) AW'yi seç.</p>
+    </div>
+    <div class="topic-block">
+      <h3>Capital Recovery (CR)</h3>
+      $$CR = P(A/P,i,n) - S(A/F,i,n)$$
+      <p>alternatif formül: $CR = (P-S)(A/P,i,n) + Si$</p>
+      $$AW_{toplam} = -CR - AOC + \text{Gelirler}$$
+      <div class="tip">CR = her yıl geri kazanman gereken yatırım maliyeti. Amortisman + fırsat maliyeti demektir.</div>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — AW ve CR</div>
+      <p>Ekipman: P=$120,000, S=$15,000, n=8 yıl, AOC=$25,000/yıl, gelir=$60,000/yıl, i=%12. AW=?</p>
+      $$CR = 120{,}000(A/P,12\%,8) - 15{,}000(A/F,12\%,8)$$
+      $$= 120{,}000\times0.2013 - 15{,}000\times0.0813 = 24{,}156 - 1{,}220 = \$22{,}936/\text{yıl}$$
+      $$AW = -22{,}936 - 25{,}000 + 60{,}000 = \$12{,}064/\text{yıl} > 0 \to \text{Kabul et!}$$
+    </div>
+  </section>
+
+  <section id="t3-payback">
+    <h2>Hafta 3 — Geri Ödeme Süresi (Payback Period)</h2>
+    <div class="topic-block">
+      <h3>İki Versiyon</h3>
+      <table>
+        <thead><tr><th>Yöntem</th><th>Formül</th><th>Ne gösterir?</th></tr></thead>
+        <tbody>
+          <tr><td>Simple (i=0)</td><td>$n_p = P / NCF$</td><td>Kaç yılda para geri döner (faiz yok)</td></tr>
+          <tr><td>Discounted</td><td>$0 = -P + NCF(P/A,i,n_p)$</td><td>MARR dahil ne kadar sürer</td></tr>
+        </tbody>
+      </table>
+      <div class="warn">Payback period tek başına yeterli bir karar kriteri değildir! Geri ödeme süresinden sonraki CF'leri yok sayar. PW veya AW analizi ile birlikte kullan.</div>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — Simple vs Discounted Payback</div>
+      <p>P=$25,000, NCF=$6,000/yıl, i=%8. Her iki yöntemi karşılaştır.</p>
+      $$n_p^{simple} = 25{,}000/6{,}000 = 4.17 \text{ yıl}$$
+      <p>Discounted: $0 = -25000 + 6000(P/A,8\%,n_p)$ → $(P/A,8\%,n_p) = 4.167$</p>
+      <p>Tablodan: $(P/A,8\%,6)=4.623$ ve $(P/A,8\%,5)=3.993$ → $n_p^{disc} \approx 5.4$ yıl</p>
+    </div>
+    <div class="topic-block">
+      <h3>Fisher Equation — Gerçek vs Nominal Faiz</h3>
+      $$(1+i) = (1+i')(1+f)$$
+      <p>$i$ = nominal oran, $i'$ = gerçek (real) oran, $f$ = enflasyon oranı</p>
+      <div class="example">
+        <div class="example-label">Örnek</div>
+        <p>Nominal i=%10, enflasyon f=%3. Gerçek oran: $i' = \frac{1.10}{1.03}-1 = 6.80\%$</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRACTICE PROBLEMS -->
+  <section id="problems">
+    <h2>Karma Alıştırma Problemleri</h2>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 1 — Çok Adımlı (Hafta 1)</div>
+      <p>Bugün $5,000 yatırıyorsun. 3 yıl sonra ek $3,000 daha yatırıyorsun. Her ikisi de %8/yıl bileşik faizle 10 yıl boyunca büyüyor. 10. yıl sonunda toplam F=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $F_1 = 5000(F/P,8\%,10) = 5000\times2.1589 = \$10{,}795$<br/>
+          $F_2 = 3000(F/P,8\%,7) = 3000\times1.7138 = \$5{,}141$<br/>
+          $F_{toplam} = 10795 + 5141 = \$15{,}936$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 2 — Shifted P/A (Hafta 1)</div>
+      <p>Bir proje t=5'ten t=12'ye kadar (8 yıl) $4,500/yıl gelir sağlıyor. İlk yatırım $18,000 bugün yapılıyor. i=MARR=%11. PW=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          P/A t=4'e konumlanır:<br/>
+          $P_4 = 4500(P/A,11\%,8) = 4500\times5.1461 = \$23{,}157$<br/>
+          $P_0 = 23157(P/F,11\%,4) = 23157\times0.6587 = \$15{,}255$<br/>
+          $PW = -18{,}000 + 15{,}255 = -\$2{,}745 < 0$ → Reddet
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 3 — Arithmetic Gradient (Hafta 1)</div>
+      <p>Araç bakım maliyetleri: Yıl 1: $800, sonraki her yıl $150 artıyor, 6 yıl, i=%10. Bu maliyetlerin eşdeğer uniform A=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $A_{toplam} = 800 + 150(A/G,10\%,6)$<br/>
+          $(A/G,10\%,6) = \frac{1}{0.10}-\frac{6}{(1.10)^6-1} = 10 - \frac{6}{0.7716} = 10 - 7.774 = 2.226$<br/>
+          $A = 800 + 150\times2.226 = 800 + 333.9 = \$1{,}133.9/\text{yıl}$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 4 — Nominal/Effective + Seri (Hafta 2)</div>
+      <p>Banka r=%7.2/yıl aylık bileşim ile kredi veriyor. $8,000 borç alındı, aylık eşit taksitlerle 2 yılda geri ödenecek. Aylık taksit A=? ve toplam ödenen faiz=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $i_{ay} = 7.2\%/12 = 0.6\%$/ay, $n=24$ ay<br/>
+          $A = 8000(A/P,0.6\%,24) = 8000\times\frac{0.006(1.006)^{24}}{(1.006)^{24}-1}$<br/>
+          $(1.006)^{24} = 1.1536$<br/>
+          $A = 8000\times\frac{0.006\times1.1536}{0.1536} = 8000\times0.04508 = \$360.6/\text{ay}$<br/>
+          Toplam ödeme $= 360.6\times24 = \$8{,}654.4$<br/>
+          Toplam faiz $= 8654.4 - 8000 = \$654.4$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 5 — PP > CP Çeyreklik (Hafta 2)</div>
+      <p>Yatırım: Çeyreklik $2,000 yatırım, r=%8/yıl aylık bileşim, 3 yıl. F=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $i_{çeyrek} = (1+0.08/12)^3-1 = (1.00667)^3-1 = 2.013\%$/çeyrek<br/>
+          $n = 12$ çeyrek<br/>
+          $F = 2000(F/A,2.013\%,12) = 2000\times\frac{(1.02013)^{12}-1}{0.02013}$<br/>
+          $(1.02013)^{12} = 1.2682$<br/>
+          $F = 2000\times\frac{0.2682}{0.02013} = 2000\times13.323 = \$26{,}646$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 6 — PW Analizi ME (Hafta 3)</div>
+      <p>MARR=%12, 4 yıl. İki makine:</p>
+      <table>
+        <thead><tr><th>Özellik</th><th>Makine X</th><th>Makine Y</th></tr></thead>
+        <tbody>
+          <tr><td>İlk maliyet</td><td>$40,000</td><td>$65,000</td></tr>
+          <tr><td>Yıllık tasarruf</td><td>$14,000</td><td>$21,000</td></tr>
+          <tr><td>Hurda değeri</td><td>$5,000</td><td>$10,000</td></tr>
+        </tbody>
+      </table>
+      <p>Hangi makineyi seçersiniz?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $(P/A,12\%,4)=3.0373$, $(P/F,12\%,4)=0.6355$<br/>
+          $PW_X = -40000+14000(3.0373)+5000(0.6355) = -40000+42522+3178 = \$5{,}700$<br/>
+          $PW_Y = -65000+21000(3.0373)+10000(0.6355) = -65000+63783+6355 = \$5{,}138$<br/>
+          Her ikisi de PW > 0. $PW_X > PW_Y$ → <strong>Makine X seçilir.</strong>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 7 — Capital Recovery + AW (Hafta 3)</div>
+      <p>Tesis: P=$200,000, S=$20,000, n=10 yıl, AOC=$45,000/yıl, yıllık gelir=$90,000, i=%10. AW=? Bu tesis ekonomik mi?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $(A/P,10\%,10)=0.16275$, $(A/F,10\%,10)=0.06275$<br/>
+          $CR = 200000(0.16275)-20000(0.06275) = 32550 - 1255 = \$31{,}295/\text{yıl}$<br/>
+          $AW = -31295 - 45000 + 90000 = \$13{,}705/\text{yıl} > 0$ → Ekonomiktir.
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 8 — Capitalized Cost (Hafta 3)</div>
+      <p>Baraj: İlk maliyet $5,000,000. Yıllık bakım $120,000. Her 20 yılda $800,000 onarım. i=%6. CC=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $A_{onarım} = 800000(A/F,6\%,20) = 800000\times0.02718 = \$21{,}744/\text{yıl}$<br/>
+          $CC = 5{,}000{,}000 + \frac{120{,}000+21{,}744}{0.06} = 5{,}000{,}000 + 2{,}362{,}400 = \$7{,}362{,}400$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 9 — Discounted Payback (Hafta 3)</div>
+      <p>Yatırım: $30,000. Yıllık net kazanç: $7,500. i=MARR=%10. Simple ve discounted payback period=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          Simple: $n_p = 30000/7500 = 4.0$ yıl<br/>
+          Discounted: $0 = -30000+7500(P/A,10\%,n)$ → $(P/A,10\%,n)=4.0$<br/>
+          Tablo: $(P/A,10\%,5)=3.791$, $(P/A,10\%,6)=4.355$<br/>
+          İnterpolasyon: $n \approx 5 + \frac{4.0-3.791}{4.355-3.791} = 5 + 0.371 = 5.37$ yıl
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Problem 10 — Geometric + PP/CP Kombinasyonu</div>
+      <p>Ayda bir gelir: İlk ay $500, her ay %1 artış, 36 ay, r=%12/yıl aylık bileşim. P=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $i_{ay}=12\%/12=1\%$, $g=1\%=i_{ay}$<br/>
+          Özel durum $g=i$: $P = \frac{A_1 n}{1+i} = \frac{500\times36}{1.01} = \frac{18{,}000}{1.01} = \$17{,}822$
+        </div>
+      </details>
+    </div>
+
+  </section>
+
+</main>
+</div>
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> | <a href="indr202-midterm.html">Geçmiş Sorular →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

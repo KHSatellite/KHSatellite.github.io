@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 202 Midterm Cheatsheet</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',Arial,sans-serif;font-size:8.2pt;color:#111;background:#fff;line-height:1.32;}
+    .page{width:210mm;min-height:297mm;padding:7mm 8mm;margin:0 auto;}
+    .page+.page{page-break-before:always;border-top:2px dashed #bbb;margin-top:4mm;}
+    h1{font-size:10.5pt;font-weight:900;text-align:center;background:#1a1a2e;color:#fff;padding:3px 6px;border-radius:3px;margin-bottom:4px;letter-spacing:0.02em;}
+    h2{font-size:8.8pt;font-weight:800;background:#2c3e50;color:#fff;padding:2px 5px;border-radius:2px;margin:5px 0 3px;text-transform:uppercase;letter-spacing:0.05em;}
+    h3{font-size:8pt;font-weight:700;color:#1a1a2e;border-bottom:1px solid #1a1a2e;margin:4px 0 2px;}
+    .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+    .cols-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
+    .box{background:#f4f6f9;border:0.7px solid #bdc3c7;border-radius:3px;padding:3px 5px;margin-bottom:3px;}
+    .box-red{background:#fff5f5;border-color:#e74c3c;}
+    .box-green{background:#f0fff4;border-color:#27ae60;}
+    .box-blue{background:#eef4ff;border-color:#3498db;}
+    .box-yellow{background:#fffbee;border-color:#f39c12;}
+    .f{font-family:'Courier New',monospace;font-size:7.8pt;}
+    table{width:100%;border-collapse:collapse;font-size:7.5pt;margin:2px 0;}
+    th{background:#2c3e50;color:#fff;padding:1.5px 4px;text-align:left;}
+    td{padding:1.5px 4px;border-bottom:0.5px solid #ddd;vertical-align:top;}
+    tr:nth-child(even) td{background:#f9f9f9;}
+    .badge{display:inline-block;background:#e74c3c;color:#fff;border-radius:2px;padding:0px 4px;font-size:6.8pt;font-weight:700;margin-right:3px;}
+    .badge-blue{background:#3498db;}
+    .badge-green{background:#27ae60;}
+    .badge-purple{background:#8e44ad;}
+    .badge-orange{background:#e67e22;}
+    .rule{background:#fff3cd;border:0.7px solid #f39c12;border-radius:3px;padding:2px 5px;margin:2px 0;font-size:7.5pt;}
+    .warn{background:#fff5f5;border:0.7px solid #e74c3c;border-radius:3px;padding:2px 5px;margin:2px 0;font-size:7.5pt;}
+    .katex{font-size:0.88em !important;}
+    .katex-display{margin:1px 0 !important;overflow:visible;}
+    .tiny{font-size:7pt;}
+    .sep{border-top:1px dashed #ccc;margin:4px 0;}
+    @media print{
+      body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+      .page{margin:0;padding:7mm 8mm;}
+      .page+.page{border-top:none;margin-top:0;}
+    }
+    @page{size:A4;margin:0;}
+  </style>
+</head>
+<body>
+
+<!-- ===== PAGE 1 ===== -->
+<div class="page">
+  <h1>INDR 202 MİDTERM CHEATSHEET — Hafta 1 & 2 | 30 Temmuz 2026</h1>
+
+  <div class="cols-2">
+    <!-- LEFT COL -->
+    <div>
+      <h2>Temel Kavramlar</h2>
+      <div class="box box-blue">
+        <strong>Simple Interest:</strong> $F = P(1+in)$ — lineer<br/>
+        <strong>Compound Interest:</strong> $F = P(1+i)^n$ — exponential<br/>
+        <strong>WACC</strong> $= w_d r_d + w_e r_e$ (MARR alt sınırı)<br/>
+        <strong>Rule of 72:</strong> $\hat{n}_{compound}\approx72/i\%$, $\hat{n}_{simple}\approx100/i\%$
+      </div>
+
+      <h2>Tek Ödeme Faktörleri</h2>
+      <table>
+        <thead><tr><th>Faktör</th><th>Formül</th><th>Ne hesaplar?</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge">F/P</span></td><td>$(1+i)^n$</td><td>Bugünü geleceğe götür</td></tr>
+          <tr><td><span class="badge">P/F</span></td><td>$(1+i)^{-n}$</td><td>Geleceği bugüne indir. Daima &lt;1</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Uniform Seri Faktörleri</h2>
+      <div class="box">
+        $$P = A\frac{(1+i)^n-1}{i(1+i)^n} \quad\Rightarrow\quad A = P\frac{i(1+i)^n}{(1+i)^n-1}$$
+        $$F = A\frac{(1+i)^n-1}{i} \quad\Rightarrow\quad A = F\frac{i}{(1+i)^n-1}$$
+        <p class="tiny">İlişki: $(A/F,i,n)=(A/P,i,n)-i$</p>
+      </div>
+      <div class="rule">
+        📌 <strong>P/A konum kuralı:</strong> P seriyle AYNI ZAMANDA DEĞİL — ilk ödemeden 1 dönem ÖNCE konumlanır!<br/>
+        📌 <strong>F/A konum kuralı:</strong> F, son ödemeyle AYNI dönemdedir.
+      </div>
+
+      <h3>Shifted Seri (en sık çıkan)</h3>
+      <div class="box">
+        Seri t=k'da başlıyorsa:<br/>
+        1) $P_{k-1} = A(P/A,i,n)$ — t=k-1'e konumlanır<br/>
+        2) $P_0 = P_{k-1}\cdot(P/F,i,k{-}1)$ — t=0'a çek
+      </div>
+
+      <h2>Arithmetic Gradient</h2>
+      <div class="box">
+        Yapı: $A,\ A{+}G,\ A{+}2G,\ \ldots,\ A{+}(n{-}1)G$
+        $$P/G = \frac{(1+i)^n-in-1}{i^2(1+i)^n}$$
+        $$A/G = \frac{1}{i}-\frac{n}{(1+i)^n-1}$$
+        $P_T = A(P/A) \pm G(P/G)$ (+artan, -azalan)<br/>
+        <span class="tiny">P/G, t=1'e (serinin başına) konumlanır. Shifted ise ek P/F uygula.</span>
+      </div>
+      <div class="box box-green" style="margin-top:3px">
+        <strong>Örnek:</strong> A=$1000, G=$200, n=5, i=%8<br/>
+        $PW = 1000(3.993)+200(7.372) = 3993+1474 = \$5467$
+      </div>
+
+      <h2>Geometric Gradient</h2>
+      <div class="box">
+        Her dönem $g\%$ artıyor: $A_t = A_1(1+g)^{t-1}$
+        $$\boxed{P = A_1\cdot\frac{1-(1+g)^n(1+i)^{-n}}{i-g}} \quad (g\neq i)$$
+        $$\boxed{P = \frac{A_1 n}{1+i}} \quad (g=i)$$
+      </div>
+      <div class="warn">⚠ Geometrik gradiente tablo yok — formülle hesapla!</div>
+
+    </div>
+
+    <!-- RIGHT COL -->
+    <div>
+      <h2>Nominal vs Effective Faiz</h2>
+      <table>
+        <thead><tr><th>Terim</th><th>Formül</th></tr></thead>
+        <tbody>
+          <tr><td>Effective (ayrık)</td><td>$i_{eff}=\left(1+\frac{r}{m}\right)^m-1$</td></tr>
+          <tr><td>Continuous</td><td>$i_{eff}=e^r-1$, $F=Pe^{rn}$</td></tr>
+          <tr><td>CP başı oran</td><td>$i_{CP}=r/m$</td></tr>
+        </tbody>
+      </table>
+      <div class="box box-yellow">
+        r=%12 ile karşılaştırma:<br/>
+        Yıllık m=1 → %12.000 | Aylık m=12 → %12.683 | Sürekli → %12.750
+      </div>
+
+      <h2>PP vs CP</h2>
+      <table>
+        <thead><tr><th>Durum</th><th>Yöntem</th></tr></thead>
+        <tbody>
+          <tr><td>PP = CP</td><td>i=r/m, n=toplam CP sayısı</td></tr>
+          <tr><td>PP &gt; CP</td><td>$i_{PP}=(1+r/m)^{m/k}-1$ (k=yıllık PP)</td></tr>
+          <tr><td>PP &lt; CP</td><td>No interperiod interest: ödemeleri CP sınırına taşı</td></tr>
+        </tbody>
+      </table>
+      <div class="box box-green">
+        <strong>Örnek PP&gt;CP:</strong> r=%12 aylık bileşim, yıllık ödeme<br/>
+        $i_{yıl}=(1.01)^{12}-1=12.683\%$<br/>
+        <strong>Örnek çeyreklik:</strong> $i_{çeyrek}=(1.01)^3-1=3.030\%$
+      </div>
+
+      <div class="sep"></div>
+      <h2>Cash Flow Diyagramı Kuralları</h2>
+      <div class="box">
+        • ↑ = giriş (inflow), ↓ = çıkış (outflow)<br/>
+        • End-of-period convention: CF'ler dönem SONUNDA<br/>
+        • NCF = aynı dönem girişler − çıkışlar<br/>
+        • P, F, A, n, i'den 4'ü bilinir, 5.'si bulunur
+      </div>
+
+      <div class="sep"></div>
+      <h2>Faktör Kombinasyon Yöntemleri</h2>
+      <table>
+        <thead><tr><th>#</th><th>Yöntem</th><th>Kullanım</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Her CF ayrı P/F</td><td>Az sayıda farklı tutar</td></tr>
+          <tr><td>2</td><td>P/A + ayrık ödeme</td><td>Neredeyse uniform, istisnalar var</td></tr>
+          <tr><td>3</td><td>Shifted P/A + P/F</td><td>Seri t=1'de başlamıyor</td></tr>
+          <tr><td>4</td><td>P/A(n₂) − P/A(n₁)</td><td>Serinin bir parçası kullanılıyor</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sep"></div>
+      <h2>Kredi Ödeme Planları ($5000, %8, 5yr)</h2>
+      <table>
+        <thead><tr><th>Plan</th><th>Toplam</th></tr></thead>
+        <tbody>
+          <tr><td>1 — Simple, hepsi sonda</td><td>$7,000</td></tr>
+          <tr><td>2 — Compound, hepsi sonda</td><td>$7,347</td></tr>
+          <tr><td>3 — Yıllık basit faiz + anapara sonda</td><td>$7,000</td></tr>
+          <tr><td>4 — Yıllık bileşik faiz + 1/5 anapara</td><td>$6,200</td></tr>
+          <tr><td>5 — Eşit A/P taksit (en yaygın)</td><td>$6,261</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sep"></div>
+      <h2>Sık Hata Listesi</h2>
+      <div class="warn">
+        ❌ P/A faktörü seri başından değil, 1 dönem ÖNCEsinden başlar<br/>
+        ❌ Geometric gradient için tablo kullanamazsın<br/>
+        ❌ PP&gt;CP durumunda i=r/m kullanma — önce effective hesapla<br/>
+        ❌ Tabloda yok olan i oranını interpolasyon yaparak bul<br/>
+        ❌ Eşdeğer alternatifler farklı ömürlüyse direkt PW karşılaştırma
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 2 ===== -->
+<div class="page">
+  <h1>INDR 202 MİDTERM CHEATSHEET — Hafta 3 | 30 Temmuz 2026</h1>
+
+  <div class="cols-2">
+    <!-- LEFT COL -->
+    <div>
+      <h2>Present Worth (PW) Analizi</h2>
+      <div class="box">
+        MARR ile hesapla. Karar kuralları:<br/>
+        • Tek alt.: PW≥0 → kabul | PW&lt;0 → reddet<br/>
+        • ME alt.: en yüksek PW seçilir (PW≥0 olmak şartıyla)<br/>
+        • Independent: PW≥0 olan HEPSİNİ seç<br/>
+        • Do-Nothing (DN): PW=0 (referans)
+      </div>
+      <div class="rule">
+        📌 <strong>ME vs Independent:</strong><br/>
+        ME = birbirini dışlar (biri seçilirse diğerleri otomatik reddedilir)<br/>
+        Independent = bağımsız; bütçe kısıtı varsa ayrıca optimize et
+      </div>
+
+      <h3>Farklı Ömürlü Alternatiflerde LCM</h3>
+      <div class="box box-yellow">
+        ME alt. ömürleri farklıysa → <strong>LCM</strong> süresinde karşılaştır<br/>
+        3 ve 4 yıllık → 12 yıl (A 4 kez, B 3 kez tekrar)<br/>
+        <span class="tiny">AW'de bu sorun olmaz — 1 döngü yeterli!</span>
+      </div>
+
+      <div class="box box-blue" style="margin-top:3px">
+        <strong>Örnek ME Seçimi (MARR=%10, n=5):</strong><br/>
+        A: $-30k+8k(P/A)+2k(P/F,5)=+\$2{,}457$ ✓<br/>
+        B: $-45k+12k(P/A)+3k(P/F,5)=+\$1{,}247$ ✓<br/>
+        → Seç: A (daha yüksek PW)
+      </div>
+
+      <h2>Capitalized Cost (CC)</h2>
+      <div class="box">
+        Sonsuz ömür: $P/A \to 1/i$ olarak $n\to\infty$
+        $$\boxed{CC = P + \frac{A_{yıllık}}{i}}$$
+        Periyodik maliyet (her k yılda $X$): önce A'ya çevir:
+        $$A = X \cdot (A/F,i,k) \quad\text{sonra}\quad CC = P + A/i$$
+      </div>
+      <div class="box box-green">
+        <strong>Örnek:</strong> P=$2M, yıllık bakım=$80k, her 10yr $300k onarım, i=%5<br/>
+        $A_{onarım}=300k(A/F,5\%,10)=300k\times0.07951=\$23{,}853$<br/>
+        $CC=2M+(80k+23{,}853)/0.05=2M+2{,}077k=\$4{,}077k$
+      </div>
+
+      <h2>Annual Worth (AW) ve CR</h2>
+      <div class="box">
+        $AW = PW\cdot(A/P,i,n)$ — PW ile aynı karar
+        $$\boxed{CR = P(A/P,i,n) - S(A/F,i,n)}$$
+        Alternatif: $CR = (P-S)(A/P,i,n) + S\cdot i$
+        $$AW = -CR - AOC + \text{Gelirler}$$
+        <span class="tiny">CR = yıllık yatırım geri kazanım maliyeti (amortisman + fırsat mal.)</span>
+      </div>
+      <div class="box box-blue">
+        <strong>Örnek:</strong> P=$100k, S=$10k, n=6, AOC=$20k, Gelir=$45k, i=%12<br/>
+        $(A/P,12\%,6)=0.2432$, $(A/F,12\%,6)=0.1232$<br/>
+        $CR=100k(0.2432)-10k(0.1232)=24320-1232=\$23{,}088$<br/>
+        $AW=-23088-20000+45000=\$1{,}912>0$ ✓ Kabul
+      </div>
+    </div>
+
+    <!-- RIGHT COL -->
+    <div>
+      <h2>Geri Ödeme Süresi (Payback Period)</h2>
+      <table>
+        <thead><tr><th>Tür</th><th>Formül</th></tr></thead>
+        <tbody>
+          <tr><td>Simple (i=0)</td><td>$n_p = P / NCF$</td></tr>
+          <tr><td>Discounted</td><td>$0=-P+NCF(P/A,i,n_p)$ → $n_p$=?</td></tr>
+        </tbody>
+      </table>
+      <div class="warn">⚠ Payback tek başına YETERSİZ — geri ödeme sonrası CF'leri görmez. Destekleyici metrik olarak kullan.</div>
+
+      <h3>Fisher Equation (Gerçek vs Nominal)</h3>
+      <div class="box">
+        $(1+i)=(1+i')(1+f)$<br/>
+        $i$ = nominal, $i'$ = gerçek (real), $f$ = enflasyon<br/>
+        $i' = \frac{1+i}{1+f}-1$<br/>
+        <span class="tiny">Örn: i=%10, f=%3 → i'=(1.10/1.03)-1=6.80%</span>
+      </div>
+
+      <div class="sep"></div>
+      <h2>PW vs AW vs CC Karşılaştırması</h2>
+      <table>
+        <thead><tr><th>Metrik</th><th>Ne zaman?</th><th>Kural</th></tr></thead>
+        <tbody>
+          <tr><td>PW</td><td>Eşit veya LCM ömür</td><td>PW≥0 kabul; max PW seç</td></tr>
+          <tr><td>AW</td><td>Farklı ömür, tekrarlayan</td><td>AW≥0 kabul; max AW seç</td></tr>
+          <tr><td>CC</td><td>Sonsuz ömür projeleri</td><td>Min CC seç</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sep"></div>
+      <h2>PP/CP Hızlı Özet</h2>
+      <table>
+        <thead><tr><th>Senaryo</th><th>i değeri</th><th>n değeri</th></tr></thead>
+        <tbody>
+          <tr><td>Aylık ödeme + aylık bileşim</td><td>r/12</td><td>ay sayısı</td></tr>
+          <tr><td>Yıllık ödeme + aylık bileşim</td><td>$(1+r/12)^{12}-1$</td><td>yıl sayısı</td></tr>
+          <tr><td>Çeyreklik ödeme + aylık bileşim</td><td>$(1+r/12)^3-1$</td><td>çeyrek sayısı</td></tr>
+          <tr><td>Yarıyıllık ödeme + aylık bileşim</td><td>$(1+r/12)^6-1$</td><td>yarıyıl sayısı</td></tr>
+          <tr><td>Sürekli bileşim</td><td>$e^r-1$</td><td>dönem sayısı</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sep"></div>
+      <h2>Sınav Stratejisi</h2>
+      <div class="box box-red">
+        <strong>1.</strong> CF diyagramını çiz — her zaman!<br/>
+        <strong>2.</strong> PP ve CP'yi belirle → doğru i seç<br/>
+        <strong>3.</strong> PW için referans noktası belirle (t=0)<br/>
+        <strong>4.</strong> Shifted seri için 2 adımlı işlem: kendi P'si → t=0<br/>
+        <strong>5.</strong> ME problemlerde DN seçeneğini unutma (PW&lt;0 ise DN daha iyi)<br/>
+        <strong>6.</strong> AW probleminde n, 1 döngü — LCM gerekmez<br/>
+        <strong>7.</strong> CR formülünü ezberle — çok çıkıyor!
+      </div>
+
+      <div class="sep"></div>
+      <h2>Hızlı Örnek Problemler</h2>
+      <div class="box box-blue">
+        <strong>Q1 Shifted P/A:</strong> $3000/yıl t=3'ten t=8'e, i=%10.<br/>
+        $P_2=3000(P/A,10\%,6)=3000(4.3553)=13065.9$<br/>
+        $P_0=13065.9(P/F,10\%,2)=13065.9(0.8264)=10796$
+      </div>
+      <div class="box box-green">
+        <strong>Q2 CR:</strong> P=$50k, S=$5k, n=8, i=%15<br/>
+        $CR=50k(0.2229)-5k(0.0729)=11145-365=\$10{,}780/yıl$
+      </div>
+      <div class="box box-yellow">
+        <strong>Q3 CC:</strong> P=$1M, A=$40k/yıl, her 5yr $200k, i=%8<br/>
+        $A_{5yr}=200k(A/F,8\%,5)=200k(0.1705)=34100$<br/>
+        $CC=1M+(40k+34.1k)/0.08=1M+926k=\$1{,}926k$
+      </div>
+    </div>
+  </div>
+
+  <!-- Full width bottom row -->
+  <div class="sep"></div>
+  <div class="cols-3">
+    <div>
+      <h3>Önemli Faktör İlişkileri</h3>
+      <div class="box">
+        $(F/P)\cdot(P/F)=1$<br/>
+        $(A/F,i,n)=(A/P,i,n)-i$<br/>
+        $(P/A,i,\infty)=1/i$ (CC için)<br/>
+        $(F/A)=(F/P)\cdot(P/A)$<br/>
+        AW = PW · (A/P,i,n)
+      </div>
+    </div>
+    <div>
+      <h3>ME vs Independent Karar</h3>
+      <div class="box">
+        ME: <em>En yüksek</em> PW/AW olan seçilir<br/>
+        Ind: PW≥0 olan <em>hepsi</em> seçilir<br/>
+        Bütçe + Ind: Integer programming<br/>
+        DN her zaman seçenek (PW=0)
+      </div>
+    </div>
+    <div>
+      <h3>Midterm Bilgisi</h3>
+      <div class="box box-red">
+        📅 30 Temmuz 2026, 12:00–14:00<br/>
+        📄 A4 çift taraflı el notu serbest<br/>
+        🔢 Hesap makinesi serbest<br/>
+        📚 Kapsam: H1–H3, CR dahil<br/>
+        ⏱ Süre: 2 saat
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

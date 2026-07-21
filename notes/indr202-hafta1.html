@@ -1,389 +1,512 @@
 <!DOCTYPE html>
 <html lang="tr" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>INDR 202 – Hafta 1 | Kadir Hanbaba</title>
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="notes.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
-  <script>
-    (function() {
-      const saved = localStorage.getItem('theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', saved);
-    })();
-  </script>
-  <!-- KaTeX – matematik formülleri için -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
-    onload="renderMathInElement(document.body, {
-      delimiters: [
-        {left: '$$', right: '$$', display: true},
-        {left: '$', right: '$', display: false}
-      ]
-    });"></script>
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
 </head>
 <body>
-
-  <!-- NAVİGASYON -->
-  <nav class="navbar">
-    <a href="../index.html" class="nav-logo">
-      <img src="../img.png" alt="KH Logo" class="nav-logo-img" />
-    </a>
-    <ul class="nav-links">
-      <li><a href="../index.html#projects">Projeler</a></li>
-      <li><a href="../index.html#notes">Notlar</a></li>
-      <li><a href="../index.html#contact">İletişim</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
-        <span class="icon-sun">☀️</span>
-        <span class="icon-moon">🌙</span>
-      </button>
-    </div>
-  </nav>
-
-  <div class="note-layout">
-
-    <!-- İÇİNDEKİLER (sol sidebar) -->
-    <aside class="toc">
-      <p class="toc-title">İçindekiler</p>
-      <ul>
-        <li><a href="#intro">1. Engineering Economics Nedir?</a></li>
-        <li><a href="#interest">2. Interest</a></li>
-        <li><a href="#simple">3. Simple Interest</a></li>
-        <li><a href="#compound">4. Compound Interest</a></li>
-        <li><a href="#equivalence">5. Economic Equivalence</a></li>
-        <li><a href="#cashflow">6. Cash Flow Diagrams</a></li>
-        <li><a href="#marr">7. ROR ve MARR</a></li>
-        <li><a href="#factors">8. F/P ve P/F</a></li>
-        <li><a href="#series">9. Uniform Series</a></li>
-        <li><a href="#rule72">10. Rule of 72</a></li>
-        <li><a href="#gradient">11. Arithmetic Gradient</a></li>
-        <li><a href="#practice">12. Pratik Sorular</a></li>
-      </ul>
-    </aside>
-
-    <!-- ANA İÇERİK -->
-    <main class="note-content">
-      <div class="note-meta">
-        <span class="note-course-badge">INDR 202</span>
-        <span class="note-week-label">Hafta 1</span>
-      </div>
-      <h1 class="note-main-title">Engineering Economics – Temel Kavramlar</h1>
-      <p class="note-intro">
-        Bu notlar, derste işlenen tüm konuları sıfırdan anlatır.
-        Formüller KaTeX ile render edilmektedir.
-      </p>
-      <div class="note-divider"></div>
-
-      <!-- 1 -->
-      <section id="intro">
-        <h2>1. Engineering Economics Nedir?</h2>
-        <p>
-          Bir mühendis olarak karar verirken yalnızca teknik kriterler yetmez. İki farklı makine arasında seçim yaparken
-          <strong>ekonomik boyutu</strong> da hesaba katman gerekir.
-        </p>
-        <div class="callout">
-          <strong>Temel fikir:</strong> Para'nın <em>time value</em>'u vardır.
-          Bugünkü $1000, beş yıl sonraki $1000 ile aynı değildir.
-        </div>
-        <table>
-          <thead><tr><th>Rol</th><th>Odak</th><th>Metafor</th></tr></thead>
-          <tbody>
-            <tr><td>Economist</td><td>Büyük resim (enflasyon, ticaret)</td><td>Kahin</td></tr>
-            <tr><td><strong>Engineering Economist</strong></td><td>Gelecekteki alternatif maliyetler</td><td><strong>Falcı</strong></td></tr>
-            <tr><td>Accountant</td><td>Geçmişteki maliyetler</td><td>Tarihçi</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- 2 -->
-      <section id="interest">
-        <h2>2. Interest – Paranın Bedeli</h2>
-        <p>
-          Birine para ödünç verdiğinde bu parayı başka bir şeye yatırma fırsatını kaybediyorsun.
-          Bu <strong>opportunity cost</strong>, interest kavramının temelidir.
-        </p>
-        $$i = \frac{\text{interest accrued per time unit}}{\text{principal}} \times 100\%$$
-        <div class="example">
-          <div class="example-label">Örnek</div>
-          $1000 borç aldın, yıl sonunda $1070 geri ödüyorsun.
-          $$i = \frac{1070 - 1000}{1000} \times 100\% = 7\% \text{ per year}$$
-        </div>
-        <div class="callout callout--warn">
-          <strong>Dikkat:</strong> Interest rate'in time unit'ini her zaman belirt.
-          Aylık %7 ≠ Yıllık %7.
-        </div>
-      </section>
-
-      <!-- 3 -->
-      <section id="simple">
-        <h2>3. Simple Interest</h2>
-        <p>Her dönem faizi yalnızca <strong>principal (anapara)</strong> üzerinden hesaplanır.</p>
-        $$F = P \times (1 + n \times i)$$
-        <table>
-          <thead><tr><th>Sembol</th><th>İngilizce</th><th>Açıklama</th></tr></thead>
-          <tbody>
-            <tr><td>P</td><td>Present Worth</td><td>Bugünkü değer</td></tr>
-            <tr><td>F</td><td>Future Worth</td><td>Gelecekteki değer</td></tr>
-            <tr><td>n</td><td>Number of periods</td><td>Dönem sayısı</td></tr>
-            <tr><td>i</td><td>Interest rate</td><td>Dönemlik faiz oranı</td></tr>
-          </tbody>
-        </table>
-        <div class="example">
-          <div class="example-label">Örnek</div>
-          $1000, %5 simple interest, 3 yıl → F = ?
-          $$F = 1000 \times (1 + 3 \times 0.05) = \$1150$$
-          <table>
-            <thead><tr><th>Year</th><th>Beginning Principal</th><th>Annual Interest</th><th>End of Year Total</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td>$1000</td><td>$50</td><td>$1050</td></tr>
-              <tr><td>2</td><td>$1000</td><td>$50</td><td>$1100</td></tr>
-              <tr><td>3</td><td>$1000</td><td>$50</td><td>$1150</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- 4 -->
-      <section id="compound">
-        <h2>4. Compound Interest</h2>
-        <p>Her dönem sonunda biriken faiz <strong>principal'a eklenir</strong> ve bir sonraki dönem bu yeni toplam üzerinden faiz işler.</p>
-        $$F = P(1+i)^n$$
-        <div class="example">
-          <div class="example-label">Örnek (Tahtadan)</div>
-          $1000, %5 compound interest, 3 yıl → F = ?
-          $$F = 1000 \times (1.05)^3 = \$1157.63$$
-          <p>Yıl 1: $50 faiz → $1050 &nbsp;|&nbsp; Yıl 2: $52.50 faiz → $1102.50 &nbsp;|&nbsp; Yıl 3: $55.13 faiz → $1157.63</p>
-        </div>
-      </section>
-
-      <!-- 5 -->
-      <section id="equivalence">
-        <h2>5. Economic Equivalence</h2>
-        <p>
-          Farklı zamanlardaki farklı tutarların, <strong>time value of money ve interest rate</strong> göz önünde bulundurulduğunda
-          aynı ekonomik değere sahip olması durumudur.
-        </p>
-        <div class="example">
-          <div class="example-label">Örnek – %6 interest</div>
-          <table>
-            <thead><tr><th>Time Point</th><th>Değer</th></tr></thead>
-            <tbody>
-              <tr><td>t = 0</td><td>$100.00</td></tr>
-              <tr><td>t = 1</td><td>$106.00</td></tr>
-              <tr><td>t = 2</td><td>$112.36</td></tr>
-              <tr><td>t = 4</td><td>$126.25</td></tr>
-              <tr><td>t = 5</td><td>$133.82</td></tr>
-            </tbody>
-          </table>
-          <p>Bu noktaların hepsi birbirine <strong>economically equivalent</strong>tir.</p>
-        </div>
-      </section>
-
-      <!-- 6 -->
-      <section id="cashflow">
-        <h2>6. Cash Flow Diagrams</h2>
-        <p>Karmaşık finansal senaryoları görselleştirmek için kullanılır.</p>
-        <pre class="code-pre">Cash inflows  ↑   (revenues, savings)
-              |
----+---+---+---+---+---+--→  time
-   0   1   2   3   4   5
-              |
-Cash outflows ↓   (costs, investments)</pre>
-        <div class="callout">
-          <strong>End-of-Period Convention:</strong> Bir dönem içindeki tüm cash flow'lar,
-          o dönemin <em>sonunda</em> gerçekleşiyormuş gibi kabul edilir.
-        </div>
-        <p><strong>Net Cash Flow:</strong></p>
-        $$\text{Net CF} = \text{Cash Inflows} - \text{Cash Outflows}$$
-      </section>
-
-      <!-- 7 -->
-      <section id="marr">
-        <h2>7. Rate of Return ve MARR</h2>
-        $$ROR = \frac{\text{net profit}}{\text{amount invested}} \times 100\%$$
-        <p><strong>MARR (Minimum Attractive Rate of Return)</strong> – bir projenin kabul edilebilmesi için en az sağlaması gereken return rate'tir. Yöneticiler tarafından belirlenir.</p>
-        <p><strong>WACC (Weighted Average Cost of Capital):</strong></p>
-        $$WACC = w_d \cdot k_d + w_e \cdot k_e$$
-        <div class="example">
-          <div class="example-label">Örnek (Tahtadan)</div>
-          %40 debt @ %18/year + %60 equity @ %5/year
-          $$WACC = 0.4 \times 18 + 0.6 \times 5 = 10.2\%/\text{year}$$
-        </div>
-      </section>
-
-      <!-- 8 -->
-      <section id="factors">
-        <h2>8. Tekli Ödeme Faktörleri: F/P ve P/F</h2>
-        <p>Faktör notasyonu: $(X/Y,\ i,\ n)$ → "i rate ile n dönem için Y bilindiğinde X'i bul"</p>
-        <h3>F/P – Single-Payment Compound Amount Factor</h3>
-        $$F = P \cdot (F/P,\ i,\ n) = P \cdot (1+i)^n$$
-        <div class="example">
-          <div class="example-label">Örnek</div>
-          $12,000, %8/year, 2 yıl → F = ?
-          $$F = 12{,}000 \times (1.08)^2 = \$13{,}996.80$$
-        </div>
-        <h3>P/F – Single-Payment Present Worth Factor</h3>
-        $$P = F \cdot (P/F,\ i,\ n) = \frac{F}{(1+i)^n}$$
-        <div class="example">
-          <div class="example-label">Örnek</div>
-          3 yıl sonra $4000 gerekiyor, %10/year → P = ?
-          $$P = \frac{4{,}000}{(1.10)^3} = \$3{,}005.26$$
-        </div>
-      </section>
-
-      <!-- 9 -->
-      <section id="series">
-        <h2>9. Uniform Series Faktörleri</h2>
-        <p><strong>A</strong> = her dönem eşit miktarda gerçekleşen ödeme/tahsilat (annuity).</p>
-        <div class="callout">
-          <strong>Kritik kural:</strong> P, A serisinin ilk ödemesinden <em>1 period önce</em> yer alır.
-          F ise son ödemeyle <em>aynı period</em>'dadır.
-        </div>
-        <div class="factor-grid">
-          <div class="factor-card">
-            <div class="factor-name">F/A</div>
-            <div class="factor-label">Uniform Series Compound Amount</div>
-            $$F = A \cdot \frac{(1+i)^n - 1}{i}$$
-          </div>
-          <div class="factor-card">
-            <div class="factor-name">A/F</div>
-            <div class="factor-label">Sinking Fund Factor</div>
-            $$A = F \cdot \frac{i}{(1+i)^n - 1}$$
-          </div>
-          <div class="factor-card">
-            <div class="factor-name">P/A</div>
-            <div class="factor-label">Uniform Series Present Worth</div>
-            $$P = A \cdot \frac{(1+i)^n - 1}{i(1+i)^n}$$
-          </div>
-          <div class="factor-card">
-            <div class="factor-name">A/P</div>
-            <div class="factor-label">Capital Recovery Factor</div>
-            $$A = P \cdot \frac{i(1+i)^n}{(1+i)^n - 1}$$
-          </div>
-        </div>
-        <div class="callout">
-          $(A/P,\ i,\ n) = (A/F,\ i,\ n) + i$
-        </div>
-      </section>
-
-      <!-- 10 -->
-      <section id="rule72">
-        <h2>10. Rule of 72</h2>
-        <p>Bir yatırımın ikiye katlanması için kaç yıl gerekir?</p>
-        $$n \approx \frac{72}{i \times 100}$$
-        <table>
-          <thead><tr><th>Interest Rate</th><th>Rule of 72</th><th>Gerçek Değer</th></tr></thead>
-          <tbody>
-            <tr><td>%5</td><td>14.4 yıl</td><td>14.2 yıl</td></tr>
-            <tr><td>%8</td><td>9.0 yıl</td><td>9.0 yıl</td></tr>
-            <tr><td>%12</td><td>6.0 yıl</td><td>6.1 yıl</td></tr>
-            <tr><td>%18</td><td>4.0 yıl</td><td>4.2 yıl</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- 11 -->
-      <section id="gradient">
-        <h2>11. Arithmetic Gradient Factor</h2>
-        <p>Her period <strong>sabit G miktarı kadar artan ya da azalan</strong> cash flow'lar için kullanılır.</p>
-        <p>Toplam present worth:</p>
-        $$P_{total} = A \cdot (P/A,\ i,\ n) + G \cdot (P/G,\ i,\ n)$$
-        $$\text{burada} \quad (P/G,\ i,\ n) = \frac{(1+i)^n - 1 - n \cdot i}{i^2 \cdot (1+i)^n}$$
-        <div class="example">
-          <div class="example-label">Örnek (Tahtadan)</div>
-          A = $1500, G = $150, n = 5, %8/year
-          $$P = 1500 \times (P/A,\ 8\%,\ 5) + 150 \times (P/G,\ 8\%,\ 5)$$
-          $$P = 1500 \times 3.9927 + 150 \times 7.372 = \$7{,}095$$
-        </div>
-      </section>
-
-      <!-- 12 -->
-      <section id="practice">
-        <h2>12. Pratik Sorular</h2>
-
-        <div class="practice-q">
-          <div class="practice-label">Soru 1 – Simple vs Compound</div>
-          <p>$3000, %6/year, 4 yıl. a) Simple interest → F? &nbsp; b) Compound interest → F?</p>
-          <details>
-            <summary>Çözümü Gör</summary>
-            <div class="solution">
-              a) $F = 3000 \times (1 + 4 \times 0.06) = \$3720$<br/><br/>
-              b) $F = 3000 \times (1.06)^4 = \$3787.50$ &nbsp; → Fark: <strong>$67.50</strong>
-            </div>
-          </details>
-        </div>
-
-        <div class="practice-q">
-          <div class="practice-label">Soru 2 – Economic Equivalence</div>
-          <p>Şu anda $5000 ya da 3 yıl sonra $6500. Interest rate %10/year. Hangisi daha avantajlı?</p>
-          <details>
-            <summary>Çözümü Gör</summary>
-            <div class="solution">
-              $F = 5000 \times (1.10)^3 = \$6655$<br/>
-              $6655 > $6500 → <strong>Bugün $5000 almak daha avantajlı.</strong>
-            </div>
-          </details>
-        </div>
-
-        <div class="practice-q">
-          <div class="practice-label">Soru 3 – Uniform Series</div>
-          <p>Her yıl sonunda $2000, 10 yıl, %7/year. a) P = ? &nbsp; b) F = ?</p>
-          <details>
-            <summary>Çözümü Gör</summary>
-            <div class="solution">
-              a) $P = 2000 \times (P/A,\ 7\%,\ 10) = 2000 \times 7.0236 = \$14{,}047$<br/><br/>
-              b) $F = 2000 \times (F/A,\ 7\%,\ 10) = 2000 \times 13.816 = \$27{,}632$
-            </div>
-          </details>
-        </div>
-
-        <div class="practice-q">
-          <div class="practice-label">Soru 4 – Rule of 72</div>
-          <p>a) %9/year ile yatırımın ikiye katlanması kaç yıl sürer? &nbsp; b) 6 yılda ikiye katlamak için i = ?</p>
-          <details>
-            <summary>Çözümü Gör</summary>
-            <div class="solution">
-              a) $n \approx 72/9 =$ <strong>8 yıl</strong><br/>
-              b) $i \approx 72/6 =$ <strong>%12</strong>
-            </div>
-          </details>
-        </div>
-
-        <div class="practice-q">
-          <div class="practice-label">Soru 5 – Capital Recovery</div>
-          <p>$10,000 kredi, %8/year, 5 yılda eşit taksitler. A = ? Toplam interest = ?</p>
-          <details>
-            <summary>Çözümü Gör</summary>
-            <div class="solution">
-              $A = 10{,}000 \times (A/P,\ 8\%,\ 5) = \$2{,}504.60/\text{year}$<br/>
-              Toplam ödenen: $5 \times 2504.60 = \$12{,}523$<br/>
-              Toplam interest: $12{,}523 - 10{,}000 = $ <strong>$2,523</strong>
-            </div>
-          </details>
-        </div>
-      </section>
-
-    </main>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
   </div>
+</nav>
 
-  <footer class="footer">
-    <p>Kadir Hanbaba &copy; 2026 — <a href="../index.html#notes">← Tüm Notlar</a></p>
-  </footer>
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#intro">1. Mühendislik Ekonomisi</a></li>
+    <li><a href="#interest">2. Faiz Nedir?</a></li>
+    <li><a href="#simple">3. Simple Interest</a></li>
+    <li><a href="#compound">4. Compound Interest</a></li>
+    <li><a href="#equiv">5. Economic Equivalence</a></li>
+    <li><a href="#cf">6. Cash Flow Diyagramları</a></li>
+    <li><a href="#ror">7. ROR, MARR ve WACC</a></li>
+    <li><a href="#fp-pf">8. F/P ve P/F Faktörleri</a></li>
+    <li><a href="#pa-ap">9. P/A ve A/P Faktörleri</a></li>
+    <li><a href="#fa-af">10. F/A ve A/F Faktörleri</a></li>
+    <li><a href="#rule72">11. Rule of 72</a></li>
+    <li><a href="#gradient">12. Arithmetic Gradient</a></li>
+    <li><a href="#loan">13. Kredi Geri Ödeme Planları</a></li>
+    <li><a href="#practice">14. Pratik Sorular</a></li>
+  </ul>
+</aside>
 
-  <script src="../script.js"></script>
-  <script>
-    // Tema toggle – not sayfası için
-    document.getElementById('themeToggle')?.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
-  </script>
+<main class="note-content">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 202</span>
+    <span class="note-week-label">Hafta 1</span>
+  </div>
+  <h1 class="note-main-title">Faiz, Eşdeğerlik ve Temel Faktörler</h1>
+  <p class="note-intro">Paranın zaman değeri, basit ve bileşik faiz, nakit akış diyagramları, tek ödeme ve uniform seri faktörleri (F/P, P/F, P/A, F/A, A/P, A/F) ve aritmetik gradient serisi. Dersin temel taşları bu haftada atılıyor.</p>
+  <div class="note-divider"></div>
+
+  <section id="intro">
+    <h2>1. Mühendislik Ekonomisi Nedir?</h2>
+    <p>Mühendislik ekonomisi, mühendislik alternatifleri arasında <strong>ekonomik açıdan en iyi kararı</strong> vermek için kullanılan sistematik analiz yöntemlerinin bütünüdür. Farklı zaman noktalarındaki para miktarlarını ortak bir paydada karşılaştırır.</p>
+    <div class="callout">
+      <strong>Tipik sorular:</strong> Bu makineyi satın mı alalım, kiraya mı verelim? Hangi proje daha yüksek getiri sağlar? Krediyi şimdi mi, sonra mı ödeyeyim?
+    </div>
+  </section>
+
+  <section id="interest">
+    <h2>2. Faiz Nedir?</h2>
+    <p>Faiz, paranın bir süre için kullanımının bedeli ya da yatırımın karşılığıdır. Borçlayan için maliyet, borç veren için kazançtır.</p>
+    $$\text{Faiz} = \text{Şu an borçlu olunan miktar} - \text{Orijinal borç miktarı}$$
+    $$\text{Faiz Oranı} = \frac{\text{Dönemde biriken faiz}}{\text{Orijinal anapara}} \times 100\%$$
+    <div class="example">
+      <div class="example-label">Örnek 1 (Tahtadan)</div>
+      <p>$10,000 borç aldın, 3 yıl sonra $10,300 geri ödeyeceksin.</p>
+      $$\text{Faiz} = 10{,}300 - 10{,}000 = \$300 \qquad \text{Faiz oranı} = \frac{300}{10{,}000} = 3\%\ (\text{3 yıl için toplam})$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek 2 (Tahtadan) — Yıllık Faiz</div>
+      <p>$20,000 borç, yıllık %9 faiz, 2 yıl vadeli. Toplam ödeme?</p>
+      $$\text{Yıllık faiz} = 20{,}000 \times 0.09 = \$1{,}800 \qquad \text{Toplam} = 20{,}000 + 2 \times 1{,}800 = \$23{,}600$$
+    </div>
+    <p><strong>Önemli:</strong> Faiz oranı her zaman bir <em>zaman birimi</em> ile birlikte ifade edilmelidir. "Yıllık %7" — burada zaman birimi = yıl, dönemlik oran = %7.</p>
+  </section>
+
+  <section id="simple">
+    <h2>3. Simple Interest (Basit Faiz)</h2>
+    <p>Her dönem yalnızca <strong>orijinal anapara</strong> üzerinden faiz hesaplanır. Ara dönem faizleri anaparaya eklenmez.</p>
+    $$F = P(1 + i \cdot n)$$
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — $1000, %5, 3 Yıl</div>
+      <table>
+        <thead><tr><th>Yıl sonu</th><th>Yıllık faiz</th><th>Birikmiş borç</th><th>Ödeme</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>—</td><td>$1,000</td><td>—</td></tr>
+          <tr><td>1</td><td>$50</td><td>$1,050</td><td>—</td></tr>
+          <tr><td>2</td><td>$50</td><td>$1,100</td><td>—</td></tr>
+          <tr><td>3</td><td>$50</td><td>$1,150</td><td>$1,150</td></tr>
+        </tbody>
+      </table>
+      <p>Her yıl aynı $50 faiz — lineer büyüme. $F = 1000(1+0.05\times3) = \$1{,}150$</p>
+    </div>
+  </section>
+
+  <section id="compound">
+    <h2>4. Compound Interest (Bileşik Faiz)</h2>
+    <p>Her dönemde, o ana kadar biriken tüm faiz de anaparaya eklenir ve faiz bu toplam üzerinden hesaplanır. Gerçek hayattaki neredeyse tüm finansal işlemler bileşik faiz kullanır.</p>
+    $$\text{Faiz}_t = (\text{Dönem başı anapara} + \text{Tüm birikmiş faiz}) \times i$$
+    $$F = P(1+i)^n$$
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — $1000, %5, 3 Yıl Bileşik</div>
+      <table>
+        <thead><tr><th>Yıl</th><th>Dönem başı</th><th>Faiz</th><th>Dönem sonu</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>$1,000.00</td><td>$50.00</td><td>$1,050.00 = $1000(1.05)¹</td></tr>
+          <tr><td>2</td><td>$1,050.00</td><td>$52.50</td><td>$1,102.50 = $1000(1.05)²</td></tr>
+          <tr><td>3</td><td>$1,102.50</td><td>$55.13</td><td>$1,157.63 = $1000(1.05)³</td></tr>
+        </tbody>
+      </table>
+      <p>Basit faize göre $7.63 fark — exponential büyüme, uzun vadede çok büyük fark yaratır.</p>
+    </div>
+    <table>
+      <thead><tr><th></th><th>Simple Interest</th><th>Compound Interest</th></tr></thead>
+      <tbody>
+        <tr><td>Formül</td><td>$F = P(1+in)$</td><td>$F = P(1+i)^n$</td></tr>
+        <tr><td>Büyüme tipi</td><td>Lineer</td><td>Exponential</td></tr>
+        <tr><td>Faiz hesabı</td><td>Sadece anaparadan</td><td>Anapara + birikmiş faizden</td></tr>
+        <tr><td>Gerçek kullanım</td><td>Nadiren</td><td>Hemen her zaman</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="equiv">
+    <h2>5. Economic Equivalence (Ekonomik Eşdeğerlik)</h2>
+    <p>Belirli bir faiz oranı altında, farklı zaman noktalarındaki farklı para miktarları <strong>aynı ekonomik değere</strong> sahip olabilir. Bu kavram tüm mühendislik ekonomisinin temelidir.</p>
+    <div class="callout">
+      <strong>Analoji:</strong> 1 metre = 100 cm. Farklı birimler, aynı uzunluk. Ekonomik eşdeğerlik de böyle — farklı zaman noktalarındaki faralar aynı "değerde" olabilir.
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — %6 Faiz ile Eşdeğer Değerler</div>
+      <table>
+        <thead><tr><th>Zaman</th><th>Eşdeğer Miktar</th><th>Hesap</th></tr></thead>
+        <tbody>
+          <tr><td>Bugün (t=0)</td><td>$100.00</td><td>—</td></tr>
+          <tr><td>t=1</td><td>$106.00</td><td>$100 × 1.06</td></tr>
+          <tr><td>t=4</td><td>$126.25</td><td>$100 × (1.06)⁴</td></tr>
+          <tr><td>t=5</td><td>$133.82</td><td>$100 × (1.06)⁵</td></tr>
+        </tbody>
+      </table>
+      <p>Bu değerlerden herhangi biri %6 faizle diğerlerine dönüştürülebilir — ekonomik karar açısından fark yoktur.</p>
+    </div>
+  </section>
+
+  <section id="cf">
+    <h2>6. Cash Flow Diyagramları</h2>
+    <p>Nakit akışlarını zaman ekseninde görsel olarak gösteren diyagramlar. Her analizin ilk adımı diyagram çizmektir.</p>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">↓</div>
+        <div class="factor-label">Outflow (Çıkış)</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Aşağı ok = ödeme, maliyet, ilk yatırım</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">↑</div>
+        <div class="factor-label">Inflow (Giriş)</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Yukarı ok = gelir, kazanç, salvage</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">EOY</div>
+        <div class="factor-label">End-of-Period</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Tüm CF'ler dönem SONUNDA oluşmuş sayılır</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">NCF</div>
+        <div class="factor-label">Net Cash Flow</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Aynı dönem giriş − çıkış = net miktar</p>
+      </div>
+    </div>
+    <h3>5 Temel Değişken</h3>
+    <table>
+      <thead><tr><th>Sembol</th><th>Anlamı</th><th>Kural</th></tr></thead>
+      <tbody>
+        <tr><td><strong>P</strong></td><td>Present Value — bugünkü değer</td><td>t=0 veya referans noktasında</td></tr>
+        <tr><td><strong>F</strong></td><td>Future Value — gelecekteki değer</td><td>Belirli t anında tek ödeme</td></tr>
+        <tr><td><strong>A</strong></td><td>Annual — eşit dönemlik seri</td><td>Her dönem aynı tutar, her dönem sonunda</td></tr>
+        <tr><td><strong>n</strong></td><td>Number of periods</td><td>Dönem sayısı (yıl, ay vb.)</td></tr>
+        <tr><td><strong>i</strong></td><td>Interest rate per period</td><td>Her zaman EFFECTIVE oran kullan</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>Her problem kuralı:</strong> P, F, A, n, i'den en az 4'ü bilinir, 5.'si (genellikle P, F veya A) hesaplanır.
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — Diyagram Çizimi</div>
+      <p>$10,000 borç, yıllık %8, 5 yıl eşit taksit. A=?</p>
+      <pre class="code-pre">t:  0         1       2       3       4       5
+    ↑$10,000  ↓A      ↓A      ↓A      ↓A      ↓A
+              (borçlunun bakış açısı)</pre>
+      <p>Borç veren için ise ok yönleri tam ters olur.</p>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — Shifted Series</div>
+      <p>2 yıl sonraki bir P hesapla: $4000/yıl, 5 yıl (t=3'ten t=7'ye kadar), i=%8.</p>
+      <pre class="code-pre">t: 0   1   2   3    4    5    6    7
+           P=↑  ↓A   ↓A   ↓A   ↓A   ↓A</pre>
+      <p>P/A faktörü t=2'ye koyar (seriden 1 önce). Sonra P/F ile t=0'a çek.</p>
+    </div>
+  </section>
+
+  <section id="ror">
+    <h2>7. ROR, MARR ve WACC</h2>
+    <h3>Rate of Return (ROR)</h3>
+    <p>Bir yatırımın fiilen kazandırdığı getiri oranı. Geriye dönük hesaplanır ya da tahmin edilir.</p>
+    <h3>MARR — Minimum Attractive Rate of Return</h3>
+    <p>Bir yatırımın kabul edilmesi için karşılaması gereken minimum getiri oranı. <strong>Şirket yöneticileri</strong> tarafından belirlenir — hesaplanmaz, kararla belirlenir.</p>
+    <div class="callout">
+      <strong>Karar kuralı:</strong> $ROR \geq MARR$ → kabul et. $ROR < MARR$ → reddet.<br/>
+      MARR, şirketin sermaye maliyetinden mutlaka yüksek olmalıdır (risk primi için).
+    </div>
+    <h3>WACC — Weighted Average Cost of Capital</h3>
+    <p>Şirket hem borçla hem öz sermayeyle finanse edilir. WACC, bu iki kaynağın ağırlıklı ortalama maliyetidir ve MARR'ın alt sınırı olarak kullanılır.</p>
+    $$WACC = w_{debt} \cdot r_{debt} + w_{equity} \cdot r_{equity}$$
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — WACC Hesabı</div>
+      <p>Şirket %40 krediyle (%18/yıl) ve %60 tasarruf hesabıyla (%5/yıl) finanse ediliyor.</p>
+      $$WACC = 0.40 \times 18\% + 0.60 \times 5\% = 7.2 + 3.0 = 10.2\%/\text{yıl}$$
+      <p>Bu şirketin MARR'ı en az %10.2 olmalıdır.</p>
+    </div>
+  </section>
+
+  <section id="fp-pf">
+    <h2>8. F/P ve P/F Faktörleri — Single Payment</h2>
+    <p>Tek bir ödemenin zaman içinde nasıl değiştiğini gösterir. Notasyon: $(X/Y, i, n)$ → "Y'den X'e git".</p>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">(F/P,i,n)</div>
+        <div class="factor-label">Compound Amount Factor</div>
+        $$F = P(1+i)^n$$
+        <p style="font-size:0.82rem;color:var(--text-muted)">Bugünkü parayı geleceğe götür</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">(P/F,i,n)</div>
+        <div class="factor-label">Present Worth Factor</div>
+        $$P = \frac{F}{(1+i)^n} = F(1+i)^{-n}$$
+        <p style="font-size:0.82rem;color:var(--text-muted)">Gelecekteki parayı bugüne indir. HER ZAMAN P/F &lt; 1</p>
+      </div>
+    </div>
+    <p>İlişki: $(F/P,i,n) \times (P/F,i,n) = 1$ — birbirinin tersidir.</p>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — F/P</div>
+      <p>$12,000 yatırım, %8 ROR, 24 yıl. F=?</p>
+      $$F = 12{,}000 \times (F/P,8\%,24) = 12{,}000 \times (1.08)^{24} = 12{,}000 \times 6.341 \approx \$76{,}100$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — P/F (Bugüne İndirme)</div>
+      <p>5 yıl sonra $30,000 gerekiyor. Bugün %10 faizli hesaba ne yatırmalısın?</p>
+      $$P = 30{,}000 \times (P/F,10\%,5) = \frac{30{,}000}{(1.10)^5} = \frac{30{,}000}{1.6105} \approx \$18{,}628$$
+    </div>
+  </section>
+
+  <section id="pa-ap">
+    <h2>9. P/A ve A/P Faktörleri — Uniform Series</h2>
+    <p>Eşit dönemlik ödemeler (uniform series A) için kullanılır.</p>
+    <h3>P/A Türetimi (Geometrik Seri Toplamı)</h3>
+    $$P = \frac{A}{(1+i)} + \frac{A}{(1+i)^2} + \cdots + \frac{A}{(1+i)^n}$$
+    <p>Her iki tarafı $(1+i)$ ile çarp, sonra orijinalden çıkar:</p>
+    $$P\cdot i = A\left[1-\frac{1}{(1+i)^n}\right] \implies P = A \cdot \frac{(1+i)^n-1}{i(1+i)^n}$$
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">(P/A,i,n)</div>
+        <div class="factor-label">Uniform Series PW Factor</div>
+        $$P = A \cdot \frac{(1+i)^n-1}{i(1+i)^n}$$
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">(A/P,i,n)</div>
+        <div class="factor-label">Capital Recovery Factor</div>
+        $$A = P \cdot \frac{i(1+i)^n}{(1+i)^n-1}$$
+      </div>
+    </div>
+    <div class="callout">
+      <strong>ALTIN KURAL — P/A:</strong> Hesaplanan P, serinin <em>ilk ödemesinden 1 dönem ÖNCE</em> konumlanır. Seri t=3'te başlıyorsa P → t=2'dedir! Oradan (P/F,i,2) ile t=0'a çek.
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — P/A</div>
+      <p>$600/yıl, 3 yıl, %16. P=?</p>
+      $$P = 600 \times (P/A,16\%,3) = 600 \times \frac{(1.16)^3-1}{0.16\times(1.16)^3} = 600 \times 2.2459 \approx \$1{,}348$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — A/P</div>
+      <p>$2,000 borç, %7, 10 yıl eşit taksit. A=?</p>
+      $$A = 2{,}000 \times (A/P,7\%,10) = 2{,}000 \times \frac{0.07\times(1.07)^{10}}{(1.07)^{10}-1} \approx \$277/\text{yıl}$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — Shifted P/A</div>
+      <p>$5,000 bugün + yıllık $500 (t=3'ten t=8'e), i=%8. PW=?</p>
+      <pre class="code-pre">t: 0      1   2   3    4    5    6    7    8
+   ↓5000           ↓500 ↓500 ↓500 ↓500 ↓500 ↓500</pre>
+      $$P_A' = 500(P/A,8\%,6) \quad\text{(t=2'de)}$$
+      $$P_A = P_A'(P/F,8\%,2) \quad\text{(t=0'a)}$$
+      $$P_T = 5{,}000 + 500(P/A,8\%,6)(P/F,8\%,2) \approx \$6{,}981$$
+    </div>
+  </section>
+
+  <section id="fa-af">
+    <h2>10. F/A ve A/F Faktörleri</h2>
+    <div class="callout">
+      <strong>ALTIN KURAL — F/A:</strong> Hesaplanan F, serinin <em>son ödemesiyle AYNI dönemde</em> konumlanır.
+    </div>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">(F/A,i,n)</div>
+        <div class="factor-label">Uniform Series FW Factor</div>
+        $$F = A \cdot \frac{(1+i)^n-1}{i}$$
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">(A/F,i,n)</div>
+        <div class="factor-label">Sinking Fund Factor</div>
+        $$A = F \cdot \frac{i}{(1+i)^n-1}$$
+      </div>
+    </div>
+    <p>Önemli ilişkiler: $\quad(F/A) = (F/P)(P/A)\qquad (A/F,i,n) = (A/P,i,n) - i$</p>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — F/A</div>
+      <p>$1,000/yıl, %14, 8 yıl. 8. yıl sonunda F=?</p>
+      $$F = 1{,}000 \times (F/A,14\%,8) = 1{,}000 \times \frac{(1.14)^8-1}{0.14} = 1{,}000 \times 13.232 = \$13{,}232$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek — A/F (Hedef Birikim)</div>
+      <p>7 yıl sonra $4,000 biriktirmek istiyorsun. %5.5 faizle yıllık A=?</p>
+      $$A = 4{,}000 \times (A/F,5.5\%,7) = 4{,}000 \times \frac{0.055}{(1.055)^7-1} \approx \$492/\text{yıl}$$
+    </div>
+  </section>
+
+  <section id="rule72">
+    <h2>11. Rule of 72 (72 Kuralı)</h2>
+    <p>Paranın ikilenme süresini hızla tahmin etmeye yarayan pratik kural.</p>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">$\hat{n} \approx \dfrac{72}{i\%}$</div>
+        <div class="factor-label">Bileşik Faiz için</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">i'yi yüzde olarak kullan. Örn: %6 → n ≈ 72/6 = 12 yıl</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">$\hat{n} \approx \dfrac{100}{i\%}$</div>
+        <div class="factor-label">Basit Faiz için</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Örn: %12 → n ≈ 100/12 = 8.3 yıl</p>
+      </div>
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan)</div>
+      <p>%5 faizle paranın ikilenme süresi: $\hat{n} = 72/5 = 14.4$ yıl.</p>
+      <p>Gerçek değer: $n = \ln(2)/\ln(1.05) = 14.2$ yıl — kural yeterince isabetli!</p>
+    </div>
+  </section>
+
+  <section id="gradient">
+    <h2>12. Arithmetic Gradient Serisi</h2>
+    <p>Her dönem sabit bir <strong>G tutarı</strong> kadar artan ya da azalan nakit akış serisi. İlk dönemde (t=1) gradient kısmı sıfırdır, t=2'de G, t=3'te 2G başlar.</p>
+    <pre class="code-pre">t:    1      2       3       4    ...    n
+CF:   A    A+G    A+2G   A+3G   ...  A+(n-1)G
+
+Gradient kısmı (base olmadan):
+t:    1     2      3      4    ...    n
+      0     G     2G     3G   ...  (n-1)G</pre>
+    <h3>P/G Faktörünün Türetimi</h3>
+    $$P_G = \frac{G}{(1+i)^2} + \frac{2G}{(1+i)^3} + \cdots + \frac{(n-1)G}{(1+i)^n}$$
+    <p>Her iki tarafı $(1+i)$ ile çarp ve orijinalden çıkar → P ve P(1+i) arasındaki fark alınır:</p>
+    $$(P/G,i,n) = \frac{(1+i)^n - in - 1}{i^2(1+i)^n}$$
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">(P/G,i,n)</div>
+        <div class="factor-label">Gradient PW Factor</div>
+        $$P_G = G \cdot (P/G,i,n)$$
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">(A/G,i,n)</div>
+        <div class="factor-label">Gradient-to-Uniform</div>
+        $$A_G = G \cdot (A/G,i,n)$$
+        $$(A/G,i,n) = \frac{1}{i} - \frac{n}{(1+i)^n-1}$$
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Toplam PW formülleri:</strong><br/>
+      Artan: $P_T = A(P/A,i,n) + G(P/G,i,n)$<br/>
+      Azalan: $P_T = A(P/A,i,n) - G(P/G,i,n)$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — Artan Gradient</div>
+      <p>t=1: $1500, her yıl $50 artıyor, 8 dönem, i=%5. P=?</p>
+      $$P_T = 1500(P/A,5\%,8) + 50(P/G,5\%,8)$$
+      $$= 1500 \times 6.4632 + 50 \times 17.9216 = 9{,}694.8 + 896.1 = \$10{,}590.9$$
+    </div>
+    <div class="example">
+      <div class="example-label">Örnek (Tahtadan) — A/G Kullanımı</div>
+      <p>$1,000 F/A yerine G(A/G,i,n) yaklaşımı: G=$100, i=%5, n=7. Eşdeğer uniform A=?</p>
+      $$A_G = 100 \times (A/G,5\%,7) = 100 \times 2.694 = \$269.4/\text{yıl}$$
+    </div>
+  </section>
+
+  <section id="loan">
+    <h2>13. Kredi Geri Ödeme Planları</h2>
+    <p>Aynı borç için birden fazla geri ödeme planı mümkündür. Tüm planlar aynı i oranında <em>ekonomik olarak eşdeğerdir</em> — fakat toplam ödemeler farklıdır.</p>
+    <div class="example">
+      <div class="example-label">HW Problemi (Tahtadan) — $5,000 Borç, %8, 5 Yıl</div>
+      <table>
+        <thead><tr><th>Plan</th><th>Yöntem</th><th>Toplam Ödeme</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Plan 1</strong></td><td>Simple interest, tümü 5. yıl sonunda: $5000 + $5000×0.08×5 = $7000 tek seferde</td><td>$7,000</td></tr>
+          <tr><td><strong>Plan 2</strong></td><td>Compound interest, tümü sonda: $5000×(1.08)⁵ tek seferde</td><td>$7,346.64</td></tr>
+          <tr><td><strong>Plan 3</strong></td><td>Her yıl basit faiz öde ($400/yıl), 5. yılda anapara ($5000) öde</td><td>$7,000</td></tr>
+          <tr><td><strong>Plan 4</strong></td><td>Her yıl bileşik faiz + anaparanın 1/5'ini öde (azalan taksitler)</td><td>$6,200</td></tr>
+          <tr><td><strong>Plan 5</strong></td><td>Eşit yıllık taksitler: A = 5000×(A/P,8%,5) = $1,252.28/yıl</td><td>$6,261.40</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Plan 5 hesabı:</strong> $A = 5000 \times \frac{0.08(1.08)^5}{(1.08)^5-1} = 5000 \times 0.25046 = \$1{,}252.28/\text{yıl}$</p>
+    </div>
+    <div class="callout">
+      <strong>Sınav notu:</strong> Tüm planların bugünkü değeri (i=%8 ile) $5,000'a eşittir. Farklı toplam ödemeler, ekonomik eşdeğerliği bozmaz — sadece farklı zaman yapıları söz konusudur.
+    </div>
+  </section>
+
+  <section id="practice">
+    <h2>14. Pratik Sorular</h2>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 1 — F/P</div>
+      <p>$8,000 yatırım, %12/yıl bileşik, 10 yıl. F=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">$F = 8000(1.12)^{10} = 8000 \times 3.1058 = \$24{,}846$</div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 2 — P/F</div>
+      <p>7 yıl sonra $20,000 gerekiyor. %9 faizle bugün ne yatırmalısın?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">$P = 20{,}000/(1.09)^7 = 20{,}000/1.8280 = \$10{,}940$</div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 3 — A/P (Kredi Taksiti)</div>
+      <p>$15,000 kredi, %6/yıl, 4 yıl aylık taksit. Aylık A=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $i=0.5\%$/ay, $n=48$ ay<br/>
+          $A = 15{,}000 \times (A/P,0.5\%,48) = 15{,}000 \times 0.02349 = \$352/\text{ay}$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 4 — F/A</div>
+      <p>Her yıl $3,000 yatırıyorsun. %7/yıl, 20 yıl. F=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">$F = 3{,}000 \times (F/A,7\%,20) = 3{,}000 \times 40.995 = \$122{,}985$</div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 5 — Arithmetic Gradient</div>
+      <p>Makine bakım: 1. yıl $2,000, her yıl $300 artıyor, 6 yıl, i=%10. PW=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $(P/A,10\%,6)=4.3553$, $(P/G,10\%,6)=9.6842$<br/>
+          $P_T = 2000(4.3553) + 300(9.6842) = 8{,}710.6 + 2{,}905.3 = \$11{,}615.9$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 6 — Shifted P/A</div>
+      <p>$8,000 bugün yatırıyorsun. 4. yıldan itibaren 7 yıl boyunca $1,500/yıl alacaksın. i=%10. Net PW=?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          P/A t=3'e koyar: $P_3 = 1500(P/A,10\%,7) = 1500 \times 4.8684 = \$7{,}302.6$<br/>
+          $P_0 = 7302.6(P/F,10\%,3) = 7302.6 \times 0.7513 = \$5{,}487$<br/>
+          $PW_{net} = -8{,}000 + 5{,}487 = -\$2{,}513$ (bu yatırım MARR'ı karşılamıyor)
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 7 — Eşdeğerlik Kontrolü</div>
+      <p>Bugün $5,000 mu, yoksa %8 faizle 4 yıl sonra $6,900 mu daha değerli?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $6,900'ün bugünkü değeri: $P = 6900/(1.08)^4 = 6900/1.3605 = \$5{,}072$<br/>
+          $\$5{,}072 > \$5{,}000$ → <strong>4 yıl sonraki $6,900 daha değerlidir.</strong>
+        </div>
+      </details>
+    </div>
+
+  </section>
+</main>
+</div>
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
 </body>
 </html>
