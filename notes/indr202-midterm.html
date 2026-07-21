@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INDR 202 – Midterm Hazırlık | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="notes.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });"></script>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+  <style>
+    .midterm-banner {
+      background: linear-gradient(135deg, rgba(160,126,216,0.15) 0%, rgba(196,104,152,0.15) 100%);
+      border: 1px solid var(--purple);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .midterm-banner h2 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .midterm-banner p { color: var(--text-muted); margin: 0; }
+    .formula-sheet { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+    .formula-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+    }
+    .formula-card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--purple-soft);
+      font-family: var(--font-mono);
+      margin-bottom: 0.6rem;
+    }
+    .exam-q {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .exam-q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .exam-q-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--purple-soft);
+      font-family: var(--font-mono);
+    }
+    .exam-q-pts {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--pink-soft);
+      background: rgba(196,104,152,0.12);
+      border-radius: 99px;
+      padding: 2px 10px;
+    }
+    .tip-box {
+      background: rgba(160,126,216,0.08);
+      border: 1px dashed var(--purple);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .tip-box strong { color: var(--text); }
+    .scope-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; margin: 1.25rem 0; }
+    .scope-item {
+      background: var(--surface);
+      border-left: 3px solid var(--purple);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .scope-item strong { display: block; color: var(--text); font-size: 0.8rem; margin-bottom: 2px; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index.html" class="nav-logo">
+      <img src="../img.png" alt="KH Logo" class="nav-logo-img" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html#projects">Projeler</a></li>
+      <li><a href="../index.html#notes">Notlar</a></li>
+      <li><a href="../index.html#contact">İletişim</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+        <span class="icon-sun">☀️</span>
+        <span class="icon-moon">🌙</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="note-layout">
+
+    <aside class="toc">
+      <p class="toc-title">İçindekiler</p>
+      <ul>
+        <li><a href="#kapsam">Midterm Kapsamı</a></li>
+        <li><a href="#formulas">Hızlı Formül Özeti</a></li>
+        <li><a href="#mcq">MCQ İpuçları</a></li>
+        <li><a href="#past-q1">Eski Sınav – S1 (Enflasyon)</a></li>
+        <li><a href="#past-q2">Eski Sınav – S2 (PW/EAW)</a></li>
+        <li><a href="#past-q3">Eski Sınav – S3 (Payback/PW)</a></li>
+        <li><a href="#past-q4">Eski Sınav – S4 (Replacement)</a></li>
+        <li><a href="#strategy">Sınav Stratejisi</a></li>
+      </ul>
+    </aside>
+
+    <main class="note-content">
+      <div class="note-meta">
+        <span class="note-course-badge">INDR 202</span>
+        <span class="note-week-label">Midterm Hazırlık</span>
+      </div>
+      <h1 class="note-main-title">Midterm Hazırlık: Formüller, Eski Sorular & Stratejiler</h1>
+
+      <div class="midterm-banner">
+        <h2>📅 Sınav: 30 Temmuz · 12:00–14:00</h2>
+        <p>A4 çift taraflı cheat sheet serbest · Hesap makinesi serbet · 120 dakika</p>
+      </div>
+
+      <div class="note-divider"></div>
+
+      <!-- KAPSAM -->
+      <section id="kapsam">
+        <h2>Midterm Kapsamı (Hafta 1–3)</h2>
+        <div class="scope-grid">
+          <div class="scope-item"><strong>Hafta 1</strong>Time Value of Money, Simple/Compound Interest, Economic Equivalence, F/P, P/F, P/A, A/P, F/A, A/F, Arithmetic Gradient (P/G, A/G), Rule of 72</div>
+          <div class="scope-item"><strong>Hafta 2</strong>Shifted Gradient, Combining Factors, Shifted Uniform Series, Nominal vs Effective Rate, PP≥CP (M1/M2), Geometric Gradient</div>
+          <div class="scope-item"><strong>Hafta 3</strong>PP&lt;CP (interperiod), Continuous Compounding, PW Analizi, ME/Independent/DN, Farklı Ömür (LCM), Capitalized Cost, Payback Period, Annual Worth, Capital Recovery</div>
+          <div class="scope-item"><strong>Fisher Denklemi</strong>$(1+i) = (1+i')(1+f)$ · Nominal vs Real · Enflasyon etkisi</div>
+        </div>
+      </section>
+
+      <!-- FORMÜL ÖZETİ -->
+      <section id="formulas">
+        <h2>Hızlı Formül Özeti</h2>
+        <div class="formula-sheet">
+          <div class="formula-card">
+            <div class="formula-card-title">Temel Faktörler</div>
+            $(F/P,i,n) = (1+i)^n$<br/>
+            $(P/F,i,n) = (1+i)^{-n}$<br/>
+            $(F/A,i,n) = \dfrac{(1+i)^n-1}{i}$<br/>
+            $(P/A,i,n) = \dfrac{(1+i)^n-1}{i(1+i)^n}$<br/>
+            $(A/P,i,n) = \dfrac{i(1+i)^n}{(1+i)^n-1}$<br/>
+            $(A/F,i,n) = \dfrac{i}{(1+i)^n-1}$
+          </div>
+          <div class="formula-card">
+            <div class="formula-card-title">Gradient</div>
+            $(P/G,i,n) = \dfrac{(1+i)^n - in - 1}{i^2(1+i)^n}$<br/><br/>
+            $(A/G,i,n) = \dfrac{1}{i} - \dfrac{n}{(1+i)^n - 1}$<br/><br/>
+            <strong>Geometric (g≠i):</strong><br/>
+            $P = A_1 \cdot \dfrac{1-(1+g)^n(1+i)^{-n}}{i-g}$<br/><br/>
+            <strong>Geometric (g=i):</strong><br/>
+            $P = A_1 \cdot \dfrac{n}{1+i}$
+          </div>
+          <div class="formula-card">
+            <div class="formula-card-title">Effective Interest Rate</div>
+            <strong>Genel:</strong> $i_{eff} = \left(1+\dfrac{r}{m}\right)^m - 1$<br/><br/>
+            <strong>Continuous:</strong> $i_{eff} = e^r - 1$<br/><br/>
+            <strong>Fisher:</strong> $(1+i) = (1+i')(1+f)$<br/>
+            veya: $i' = \dfrac{1+i}{1+f} - 1$<br/><br/>
+            <strong>PP başına:</strong> $i_{PP} = \left(1+\dfrac{r_{PP}}{m}\right)^m - 1$
+          </div>
+          <div class="formula-card">
+            <div class="formula-card-title">PW & AW Analizi</div>
+            $PW = \sum CF_t (P/F,i,t)$<br/><br/>
+            $AW = PW(A/P,i,n) = FW(A/F,i,n)$<br/><br/>
+            <strong>Capitalized Cost:</strong><br/>
+            $CC = A/i \quad (n \to \infty)$<br/><br/>
+            <strong>Capital Recovery:</strong><br/>
+            $CR = -[P(A/P,i,n) - S(A/F,i,n)]$<br/><br/>
+            <strong>AW toplam:</strong><br/>
+            $AW = CR + AOC$
+          </div>
+          <div class="formula-card">
+            <div class="formula-card-title">Payback Period</div>
+            <strong>Simple (i=0):</strong> $n_p = P/NCF$<br/><br/>
+            <strong>Discounted:</strong><br/>
+            $0 = -P + NCF(P/A,i,n_p)$<br/><br/>
+            <strong>Non-uniform NCF:</strong><br/>
+            Birikimli CF hesapla, sıfırı geçtiği yıl $n_p$.
+          </div>
+          <div class="formula-card">
+            <div class="formula-card-title">Shifted Series Hatırlatmaları</div>
+            <strong>P/A kuralı:</strong> PW, serinin ilk ödemesinden <em>1 dönem önce</em> konumlanır.<br/><br/>
+            <strong>F/A kuralı:</strong> FW, serinin <em>son ödemesiyle aynı dönemde</em> konumlanır.<br/><br/>
+            <strong>LCM:</strong> Farklı ömürlü alternatifleri PW yöntemiyle karşılaştırmak için ömürlerin LCM'si kadar süre kullan.<br/><br/>
+            <strong>AW:</strong> Farklı ömürde LCM gerekmez — tek döngü yeterli.
+          </div>
+        </div>
+      </section>
+
+      <!-- MCQ İPUÇLARI -->
+      <section id="mcq">
+        <h2>MCQ İpuçları (Geçen Yıl Örneği)</h2>
+        <p>Geçen yıl sınavında MCQ'lar toplam 10 puan (5×2). Genelde kavramsal ve hızlı çözülebilir.</p>
+
+        <div class="example">
+          <div class="example-label">Fall 2025 MCQ Soruları ve Cevapları</div>
+          <table>
+            <thead><tr><th>#</th><th>Soru Özeti</th><th>Cevap</th><th>Neden?</th></tr></thead>
+            <tbody>
+              <tr><td>MCQ-1</td><td>Effective rate neden nominal'den farklı?</td><td><strong>B</strong></td><td>Compounding frequency hesaba katılır</td></tr>
+              <tr><td>MCQ-2</td><td>Geometric gradient ne zaman kullanılır?</td><td><strong>C</strong></td><td>Sabit yüzde (%) artış/azalış</td></tr>
+              <tr><td>MCQ-3</td><td>Real (enflasyonsuz) interest rate nasıl hesaplanır?</td><td><strong>C</strong></td><td>Fisher: $(1+i) = (1+i')(1+f)$</td></tr>
+              <tr><td>MCQ-4</td><td>Farklı ömürlü alternatifleri doğru karşılaştırma yöntemi?</td><td><strong>B</strong></td><td>LCM ile PW veya Annual Worth</td></tr>
+              <tr><td>MCQ-5</td><td>Hangi yöntem yıllık eşdeğer değer verir?</td><td><strong>C</strong></td><td>Annual Worth (EAW)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tip-box">
+          <strong>MCQ taktikleri:</strong> Geometric = sabit %, Arithmetic = sabit tutar.
+          Fisher denklemi mutlaka ezber. Farklı ömür → LCM veya AW.
+          Effective rate her zaman nominal'den büyük veya eşit (m≥1).
+          P/A faktörü küçük i ve büyük n'de n/i'ye yaklaşır.
+        </div>
+      </section>
+
+      <!-- ESKİ SINAV SORULARI -->
+      <section id="past-q1">
+        <h2>Eski Sınav – Soru 1: Enflasyon ve Geometric Gradient (35 puan)</h2>
+
+        <div class="exam-q">
+          <div class="exam-q-header">
+            <span class="exam-q-label">Fall 2025 – Q1 (Home Savings)</span>
+            <span class="exam-q-pts">35 puan</span>
+          </div>
+          <p>
+            10 yıl sonra ev almak istiyorsun. Bugünkü (reel) peşinat = 900,000 TL.
+            Ayın sonundan itibaren aylık yatırım yapacaksın, yatırımlar reel olarak aylık %0.3 büyüyecek (geometric gradient).
+            Banka: %8 nominal/yıl, günlük bileşik (360 günlük yıl, 30 gün/ay).
+            Genel enflasyon: yıllık %6, aylık bileşik.
+          </p>
+          <p><strong>(a)</strong> Aylık market rate $i_m$, aylık enflasyon $f_m$, aylık reel rate $i'_m$ = ?</p>
+          <p><strong>(b)</strong> İlk ay yatırımı $A_1$ = ?</p>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Çözüm (a) – Üç Oranı Bul</div>
+          <p><strong>Aylık market rate:</strong> Günlük nominal rate = 0.08/360. 30 gün per ay:</p>
+          $$i_m = \left(1 + \frac{0.08}{360}\right)^{30} - 1 \approx 0.6688\%/\text{ay}$$
+
+          <p><strong>Aylık enflasyon:</strong> Yıllık %6 compound monthly:</p>
+          $$f_m = (1+0.06)^{1/12} - 1 \approx 0.4868\%/\text{ay}$$
+
+          <p><strong>Aylık reel rate (Fisher):</strong></p>
+          $$i'_m = \frac{1 + i_m}{1 + f_m} - 1 = \frac{1.006688}{1.004868} - 1 \approx 0.1812\%/\text{ay}$$
+        </div>
+
+        <div class="example">
+          <div class="example-label">Çözüm (b) – İlk Yatırım A₁</div>
+          <p>Reel analizde: geometric gradient, g = 0.3%/ay = 0.003, i' = 0.1812%/ay, N = 120 ay.</p>
+          <p>g &gt; i' olduğuna dikkat. Future worth of geometric gradient:</p>
+          $$F_{real,120} = A_1 \cdot \frac{(1+i')^{120} - (1+g)^{120}}{i' - g}$$
+          $$900{,}000 = A_1 \cdot \frac{(1.001812)^{120} - (1.003)^{120}}{0.001812 - 0.003}$$
+          $$A_1 = 900{,}000 \cdot \frac{0.001812 - 0.003}{(1.001812)^{120} - (1.003)^{120}} \approx \mathbf{5{,}630 \text{ TL/ay}}$$
+        </div>
+
+        <div class="tip-box">
+          <strong>Bu sorudan öğrenilecekler:</strong> Fisher denklemini bilmek şart. Geometric gradient future worth formülü:
+          $F = A_1 \cdot [(1+i')^N - (1+g)^N] / (i'-g)$ — bu P/A,g,i,n'in FW versiyonu.
+          Reel ve nominal analizi karıştırma: ya her şey reel + reel rate kullan, ya her şey nominal + nominal rate.
+        </div>
+      </section>
+
+      <section id="past-q2">
+        <h2>Eski Sınav – Soru 2: PW ve EAW Tutarlılığı (20 puan)</h2>
+
+        <div class="exam-q">
+          <div class="exam-q-header">
+            <span class="exam-q-label">Fall 2025 – Q2 (Subscription vs Purchase)</span>
+            <span class="exam-q-pts">20 puan</span>
+          </div>
+          <p>3 yıl için yazılım: <strong>Seçenek A</strong> = yıllık 1,200 TL (t=1,2,3).
+          <strong>Seçenek B</strong> = bugün 2,800 TL + yıllık 450 TL bakım (t=1,2,3). i = %11/yıl.</p>
+          <p>(a) PW hesapla. (b) EAW hesapla. Neden aynı karar?</p>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Çözüm</div>
+          <p>$(P/A, 11\%, 3) = 2.4437$</p>
+          $$PW_A = -1{,}200 \times 2.4437 = -\$2{,}932 \text{ TL}$$
+          $$PW_B = -2{,}800 - 450 \times 2.4437 = -2{,}800 - 1{,}099.7 = -\$3{,}900 \text{ TL}$$
+          <p>$|PW_A| < |PW_B|$ → <strong>Seçenek A daha ucuz.</strong></p>
+          <p>$(A/P,11\%,3) = 0.4092$</p>
+          $$EAW_A = -2{,}932 \times 0.4092 = -1{,}200 \text{ TL/yıl}$$
+          $$EAW_B = -3{,}900 \times 0.4092 = -1{,}596 \text{ TL/yıl}$$
+          <p>Neden aynı karar? $EAW = PW \times (A/P,i,n)$ dönüşümünde $(A/P,i,n)$ pozitif sabit. Sıralama değişmez.</p>
+        </div>
+      </section>
+
+      <section id="past-q3">
+        <h2>Eski Sınav – Soru 3: Payback Screening ve PW (25 puan)</h2>
+
+        <div class="exam-q">
+          <div class="exam-q-header">
+            <span class="exam-q-label">Fall 2025 – Q3 (Machinery Alternatives)</span>
+            <span class="exam-q-pts">25 puan</span>
+          </div>
+          <p>3 makine, hepsi 4 yıl, MARR = %9. Net cash flow'lar (TL):</p>
+          <table>
+            <thead><tr><th>Yıl</th><th>Makine A</th><th>Makine B</th><th>Makine C</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>−18,000</td><td>−28,000</td><td>−36,000</td></tr>
+              <tr><td>1</td><td>6,000</td><td>9,000</td><td>12,000</td></tr>
+              <tr><td>2</td><td>7,000</td><td>10,000</td><td>11,000</td></tr>
+              <tr><td>3</td><td>8,000</td><td>10,000</td><td>10,000</td></tr>
+              <tr><td>4</td><td>9,000</td><td>10,000</td><td>9,000</td></tr>
+            </tbody>
+          </table>
+          <p>(a) Payback &gt; 3 yıl olanları ele. Geçenlerin PW'sini hesapla. (b) Makine C için EAW ve birim başına değer.</p>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Çözüm (a) – Payback Screening</div>
+          <table>
+            <thead><tr><th>Makine</th><th>Birikimli (kümülatif)</th><th>Payback</th><th>Geçti mi?</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td>Y1:-12k, Y2:-5k, Y3:+3k</td><td>≈ 2.63 yıl</td><td>✓ Geçti</td></tr>
+              <tr><td>B</td><td>Y1:-19k, Y2:-9k, Y3:+1k</td><td>≈ 2.90 yıl</td><td>✓ Geçti</td></tr>
+              <tr><td>C</td><td>Y1:-24k, Y2:-13k, Y3:-3k, Y4:+6k</td><td>≈ 3.33 yıl</td><td>✗ Elendi</td></tr>
+            </tbody>
+          </table>
+          <p>$P_1=0.9174,\ P_2=0.8417,\ P_3=0.7722,\ P_4=0.7084$ (P/F faktörleri, %9)</p>
+          $$PW_A = -18{,}000 + 6k(0.9174) + 7k(0.8417) + 8k(0.7722) + 9k(0.7084) \approx +\$5{,}950$$
+          $$PW_B = -28{,}000 + 9k(0.9174) + 10k(0.8417) + 10k(0.7722) + 10k(0.7084) \approx +\$3{,}480$$
+          <p>Her ikisi de pozitif → kabul. $PW_A > PW_B$ → <strong>Makine A seçilir.</strong></p>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Çözüm (b) – EAW ve Birim Başına Değer (Makine C)</div>
+          $$PW_C = -36{,}000 + 12k(0.9174) + 11k(0.8417) + 10k(0.7722) + 9k(0.7084) \approx -\$1{,}635$$
+          $$(A/P,9\%,4) = 0.3087$$
+          $$EAW_C = -1{,}635 \times 0.3087 \approx -\$504.7/\text{yıl}$$
+          <p>Üretim: 800+1000+1300+1500 = 4600 birim, ortalama = 1150/yıl</p>
+          $$\text{Birim başına} = \frac{-504.7}{1150} \approx -\$0.44/\text{birim/yıl}$$
+        </div>
+      </section>
+
+      <section id="past-q4">
+        <h2>Eski Sınav – Soru 4: Kiralama vs Satın Alma (10 puan)</h2>
+
+        <div class="exam-q">
+          <div class="exam-q-header">
+            <span class="exam-q-label">Fall 2025 – Q4 (Concrete Mixer)</span>
+            <span class="exam-q-pts">10 puan</span>
+          </div>
+          <p>
+            <strong>X (Satın al):</strong> 45,000 TL + 9,000 TL/yıl AOC, 3 yıl ömür, S=0.<br/>
+            <strong>Y (Kirala):</strong> R TL/yıl. MARR = %10. Sadece <em>2 yıl</em> kullanılacaksa maksimum kabul edilebilir kira $R_{max}$ = ?
+          </p>
+        </div>
+
+        <div class="example">
+          <div class="example-label">Çözüm</div>
+          <p>2 yıl için her iki seçeneğin PW'sini eşitle:</p>
+          $$PW_X = -45{,}000 - 9{,}000(P/A,\ 10\%,\ 2)$$
+          $$(P/A,10\%,2) = 1.7355$$
+          $$PW_X = -45{,}000 - 9{,}000(1.7355) = -45{,}000 - 15{,}619 = -60{,}619 \text{ TL}$$
+
+          <p>Kiralamanın PW'si:</p>
+          $$PW_Y = -R \cdot (P/A,\ 10\%,\ 2) = -1.7355R$$
+
+          <p>Eşitleme ($PW_X = PW_Y$ indifference noktası):</p>
+          $$-1.7355R = -60{,}619$$
+          $$R_{max} = \frac{60{,}619}{1.7355} \approx \mathbf{34{,}930 \text{ TL/yıl}}$$
+          <p>Eğer kira $\leq 34,930$ TL/yıl ise kiralamak tercih edilir. Gerçek kira 18,000 TL &lt; 34,930 TL → Kirala.</p>
+        </div>
+      </section>
+
+      <!-- STRATEJİ -->
+      <section id="strategy">
+        <h2>Sınav Stratejisi ve Son Hatırlatmalar</h2>
+
+        <div class="tip-box">
+          <strong>1. Faktör notasyonu mutlaka yaz:</strong> Hocalar "intermediate steps and factor notation matter" diyor.
+          $(P/A, 8\%, 5)$ gibi açık yazım puan kaybını önler.
+        </div>
+        <div class="tip-box">
+          <strong>2. Cash flow diyagramı çiz:</strong> Özellikle shifted series ve combining factors sorularında
+          diyagram çizmek hem seni organize eder hem de hocaya ne düşündüğünü gösterir.
+        </div>
+        <div class="tip-box">
+          <strong>3. Birimini kontrol et:</strong> P/A faktörü PW'yi serinin ilk ödemesinden 1 dönem <em>öncesine</em>
+          koyar. Shifted series'te ekstra (P/F) ile doğru noktaya taşımayı unutma.
+        </div>
+        <div class="tip-box">
+          <strong>4. Nominal → Effective dönüşümünü hep yap:</strong> "12%/year comp monthly" görürsen direkt
+          %12 kullanma! Önce $i_{eff} = (1+0.01)^{12}-1 = 12.68\%$ hesapla.
+        </div>
+        <div class="tip-box">
+          <strong>5. PW vs AW kararı tutarlıdır:</strong> Aynı $n$ ve $i$ için PW ≥ 0 ↔ AW ≥ 0.
+          Soru PW istiyorsa PW, AW istiyorsa AW yap — ama karar her zaman aynı.
+        </div>
+        <div class="tip-box">
+          <strong>6. Capitalized Cost → A/i:</strong> "sonsuza kadar" veya "perpetuity" kelimelerini görürsen CC.
+          Her k yılda bir tekrarlayan maliyet P için: $A = P(A/F,i,k)$, sonra $CC = A/i$.
+        </div>
+        <div class="tip-box">
+          <strong>7. Cheat sheet'e ne koymalısın:</strong> Tüm faktör formülleri, Fisher denklemi,
+          geometric gradient formülü (g≠i ve g=i), CC=A/i, CR formülü, PP&lt;CP kuralı (no-interperiod int).
+          Karmaşık örneklerden ziyade formüller daha faydalı.
+        </div>
+
+        <div class="callout">
+          <strong>Son söz:</strong> Her soruyu dikkatle oku, istenen şey PW mi, AW mi, CC mi, payback mı?
+          Faktör notasyonunu yaz. Ara adımları göster. Vakit kalırsa birim kontrolü yap.
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  </script>
+</body>
+</html>
