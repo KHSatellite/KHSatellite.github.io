@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 202 – Hafta 5 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#decision">1. Karar Yöntemleri Özeti</a></li>
+    <li><a href="#incremental-bc">2. Incremental B/C Analizi</a></li>
+    <li><a href="#bc-example">3. Incremental B/C Örneği</a></li>
+    <li><a href="#de-mix">4. Debt/Equity (D/E) Mix</a></li>
+    <li><a href="#wacc">5. WACC Hesabı</a></li>
+    <li><a href="#marr-set">6. MARR Nasıl Belirlenir?</a></li>
+    <li><a href="#practice">7. Pratik Sorular</a></li>
+  </ul>
+</aside>
+
+<main class="note-content">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 202</span>
+    <span class="note-week-label">Hafta 5</span>
+  </div>
+  <h1 class="note-main-title">Incremental B/C, D/E Mix ve WACC</h1>
+  <p class="note-intro">Tüm karar yöntemlerinin karşılaştırmalı özeti, çoklu kamu alternatiflerini karşılaştırmak için kullanılan incremental B/C analizi, projelerin borç–öz sermaye finansman karışımı (D/E Mix) ve gerçekçi bir MARR belirlemek için WACC hesabı.</p>
+  <div class="note-divider"></div>
+
+  <!-- 1 -->
+  <section id="decision">
+    <h2>1. Karar Yöntemleri — Genel Çerçeve (Tahtadan)</h2>
+    <p>Derste gördüğümüz tüm yöntemler tek bir karar çerçevesi içinde birleşir:</p>
+    <table>
+      <thead><tr><th>Yöntem</th><th>Tek Alternatif</th><th>ME Alternatifleri</th><th>Bağımsız Alternatifleri</th><th>Kamu Projeleri</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PW</strong></td><td>PW ≥ 0</td><td>Max PW (LCM gerekli)</td><td>PW ≥ 0 olanlar</td><td>—</td></tr>
+        <tr><td><strong>AW</strong></td><td>AW ≥ 0</td><td>Max AW (1 döngü yeterli)</td><td>AW ≥ 0 olanlar</td><td>—</td></tr>
+        <tr><td><strong>FW</strong></td><td>FW ≥ 0</td><td>Max FW (LCM gerekli)</td><td>FW ≥ 0 olanlar</td><td>—</td></tr>
+        <tr><td><strong>ROR</strong></td><td>i* ≥ MARR</td><td>Incremental i* ≥ MARR</td><td>i* ≥ MARR olanlar</td><td>—</td></tr>
+        <tr><td><strong>B/C</strong></td><td>B/C ≥ 1</td><td>Incremental ΔB/ΔC ≥ 1</td><td>B/C ≥ 1 olanlar</td><td>✓ Ana yöntem</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>LCM kuralı (Tahtadan):</strong><br/>
+      PW ve FW → alternatiflerin LCM'i kadar süre analizi gerektirir.<br/>
+      AW → tek bir döngü yeterlidir; farklı ömürlü alternatiflerde avantajlıdır.<br/>
+      ROR ve B/C → incremental analiz gerektirir (ME için).
+    </div>
+
+    <h3>Yöntem Seçim Akışı (Tahtadan)</h3>
+    <div class="example">
+      <div class="example-label">Hangi Yöntemi Ne Zaman Kullan?</div>
+      <table>
+        <thead><tr><th>Durum</th><th>Önerilen Yöntem</th></tr></thead>
+        <tbody>
+          <tr><td>Tek proje, hızlı karar</td><td>PW veya AW (MARR biliniyorsa)</td></tr>
+          <tr><td>Farklı ömürlü ME alternatifler</td><td>AW (LCM gereksiz)</td></tr>
+          <tr><td>Eşit ömürlü ME alternatifler</td><td>PW veya AW</td></tr>
+          <tr><td>Kamu sektörü, ME alternatifler</td><td>Incremental B/C</td></tr>
+          <tr><td>Getiri oranı bilinmek isteniyorsa</td><td>ROR / IRR (dikkat: multiple i* riski)</td></tr>
+          <tr><td>Sonsuz ömürlü proje</td><td>CC (Capitalized Cost)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="incremental-bc">
+    <h2>2. Incremental B/C Analizi — Çoklu Kamu Alternatifleri</h2>
+    <p>ME kamu alternatiflerini karşılaştırırken bireysel B/C oranları sıralama yapmaz; <strong>artışsal (incremental)</strong> analiz gerekir.</p>
+    <h3>Prosedür</h3>
+    <p><strong>1.</strong> Alternatifleri başlangıç maliyetine göre küçükten büyüğe sırala.<br/>
+    <strong>2.</strong> "Do-Nothing" (DN) ile en ucuz alternatiifi karşılaştır: B/C(en ucuz) ≥ 1 ise defender olur, değilse DN kalır.<br/>
+    <strong>3.</strong> Defender ve sonraki challenger arasında artışsal CF hesapla:</p>
+    $$\Delta B = AW_{\text{fayda,challenger}} - AW_{\text{fayda,defender}}$$
+    $$\Delta C = AW_{\text{maliyet,challenger}} - AW_{\text{maliyet,defender}}$$
+    $$\frac{\Delta B}{\Delta C} \geq 1 \Rightarrow \text{challenger'ı seç (yeni defender)}$$
+    <p><strong>4.</strong> Tüm alternatifler bitene kadar tekrarla. Son kalan defender en iyi seçimdir.</p>
+
+    <div class="callout callout--warn">
+      <strong>Dikkat:</strong> $\Delta C < 0$ ise ($\Delta B$ de negatif olabilir) paydayı sıfıra bölemezsiniz. Bu durumda <strong>net benefit</strong> formülü $(B-C)$ kullanın: $\Delta(B-C) \geq 0$ → challenger seç.
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section id="bc-example">
+    <h2>3. Incremental B/C Çözümlü Örnek (Tahtadan)</h2>
+    <div class="example">
+      <div class="example-label">Örnek — İki Yol Tasarımı Karşılaştırması</div>
+      <p>İki karayolu tasarımı, 30 yıl ömür, iskonto oranı = %5:</p>
+      <table>
+        <thead><tr><th>Özellik</th><th>Tasarım A</th><th>Tasarım B</th></tr></thead>
+        <tbody>
+          <tr><td>İlk inşaat maliyeti</td><td>$10,000,000</td><td>$15,000,000</td></tr>
+          <tr><td>AOC (yıllık işletme)</td><td>$35,000</td><td>$55,000</td></tr>
+          <tr><td>Kullanıcı maliyeti/yıl</td><td>$450,000</td><td>$200,000</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Adım 1 — Her tasarımın AW maliyetini hesapla:</strong></p>
+      $$(A/P,\,5\%,\,30) = \frac{0.05(1.05)^{30}}{(1.05)^{30}-1} = 0.06505$$
+
+      $$AW_A^{\text{maliyet}} = 10{,}000{,}000 \times 0.06505 + 35{,}000 = 650{,}500 + 35{,}000 = \$685{,}500$$
+      $$AW_B^{\text{maliyet}} = 15{,}000{,}000 \times 0.06505 + 55{,}000 = 975{,}750 + 55{,}000 = \$1{,}030{,}750$$
+
+      <p><strong>Adım 2 — Artışsal analiz (B defender, A challenger sıralaması maliyet bazlı):</strong></p>
+      <p>A daha ucuz → defender. B challenger.</p>
+      $$\Delta C = AW_B^{\text{maliyet}} - AW_A^{\text{maliyet}} = 1{,}030{,}750 - 685{,}500 = \$345{,}250/\text{yıl}$$
+      <p>Fayda: kullanıcı maliyetindeki tasarruf (düşük kullanıcı maliyeti = fayda)</p>
+      $$\Delta B = AW_A^{\text{kullanıcı}} - AW_B^{\text{kullanıcı}} = 450{,}000 - 200{,}000 = \$250{,}000/\text{yıl}$$
+
+      $$\frac{\Delta B}{\Delta C} = \frac{250{,}000}{345{,}250} = 0.72 < 1$$
+
+      <div class="callout callout--warn">$\Delta B/\Delta C < 1$ → <strong>Challenger (B) reddedilir, Tasarım A seçilir.</strong><br/>
+      Ek yatırımın getirisi maliyet artışını karşılamıyor.</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section id="de-mix">
+    <h2>4. Debt/Equity (D/E) Mix — Borç ve Öz Sermaye Karışımı</h2>
+    <p>Bir proje genellikle iki kaynaktan finanse edilir:</p>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">Borç (Debt)</div>
+        <div class="factor-label">Yabancı Kaynak</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Banka kredisi, tahvil ihracı. Faizi sabittir, geri ödeme zorunludur.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">Öz Sermaye (Equity)</div>
+        <div class="factor-label">İç Kaynak</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Hisse senedi ihracı veya dağıtılmamış kârlar. Geri ödeme zorunluluğu yok ama maliyet var.</p>
+      </div>
+    </div>
+    <p>Her kaynağın <strong>maliyeti ayrı ayrı hesaplanır</strong>, sonra ağırlıklı ortalaması alınır. Bu değer şirketin <em>sermaye maliyetini</em> verir ve MARR'ı belirlemede kullanılır.</p>
+    <h3>Öz Sermaye Bileşenleri</h3>
+    <table>
+      <thead><tr><th>Kaynak</th><th>Açıklama</th></tr></thead>
+      <tbody>
+        <tr><td>Hisse senetleri (stocks)</td><td>Dışarıdan yatırımcılara satılan hisseler</td></tr>
+        <tr><td>Dağıtılmamış kârlar (retained earnings)</td><td>Şirkette bırakılan geçmiş kârlar</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 5 -->
+  <section id="wacc">
+    <h2>5. WACC — Ağırlıklı Ortalama Sermaye Maliyeti</h2>
+    $$WACC = \sum_{j} w_j \cdot r_j$$
+    <p>$w_j$ = her kaynağın toplam sermaye içindeki ağırlığı (yüzde olarak), $r_j$ = o kaynağın maliyeti.</p>
+    <div class="callout">
+      <strong>MARR ile ilişki:</strong> Gerçekçi bir MARR belirlemek için WACC alt sınır olarak kullanılır:<br/>
+      $MARR \geq WACC$ (risk ve fırsat maliyeti için WACC üzerine ek prim eklenir)
+    </div>
+
+    <h3>MARR'ı Etkileyen Faktörler (Tahtadan)</h3>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">Proje Riski</div>
+        <div class="factor-label">Project Risk</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Risk ne kadar yüksekse MARR o kadar yüksek tutulur.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">Yatırım Fırsatı</div>
+        <div class="factor-label">Investment Opportunity</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Alternatif yatırım fırsatları varsa MARR yükseltilir.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">Sermaye Kısıtı</div>
+        <div class="factor-label">Capital Limit</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Borç ve öz sermaye sınıra ulaşırsa MARR artar.</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="example-label">Örnek 1 (Tahtadan) — Basit İki Kaynak</div>
+      <p>Şirket: %40 borç (%7.5 maliyet), %60 öz sermaye (%10 maliyet).</p>
+      $$WACC = 0.40 \times 7.5\% + 0.60 \times 10\% = 3.0 + 6.0 = 9.0\%$$
+    </div>
+
+    <div class="example">
+      <div class="example-label">Örnek 2 (Tahtadan) — Üç Kaynak</div>
+      <p>$10,000,000 sermaye ihtiyacı:</p>
+      <table>
+        <thead><tr><th>Kaynak</th><th>Miktar</th><th>Ağırlık</th><th>Maliyet</th></tr></thead>
+        <tbody>
+          <tr><td>Hisse senedi (stocks)</td><td>$5,000,000</td><td>%50</td><td>%13.2</td></tr>
+          <tr><td>Dağıtılmamış kâr</td><td>$2,000,000</td><td>%20</td><td>%8.9</td></tr>
+          <tr><td>Borç finansmanı</td><td>$3,000,000</td><td>%30</td><td>%7.5</td></tr>
+          <tr><td><strong>Toplam</strong></td><td>$10,000,000</td><td>%100</td><td>—</td></tr>
+        </tbody>
+      </table>
+      $$WACC = 0.50 \times 13.2\% + 0.20 \times 8.9\% + 0.30 \times 7.5\%$$
+      $$= 6.60 + 1.78 + 2.25 = \mathbf{10.63\%}$$
+      <p>Bu şirketin MARR'ı en az %10.63 olmalıdır. Risk ve fırsat primlerini ekleyerek genellikle %12–15 aralığında belirlenir.</p>
+    </div>
+
+    <div class="callout callout--warn">
+      <strong>MARR Düzeyi (Tahtadan):</strong><br/>
+      $MARR > WACC$ — risk priminin üstünde olmalı<br/>
+      Borç ve öz sermaye maliyeti birlikte yükseldikçe MARR da yükselir<br/>
+      Tipik aralık: özel sektörde %15–30, kamu sektöründe %5–10
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section id="marr-set">
+    <h2>6. MARR Nasıl Belirlenir?</h2>
+    <p>MARR hesaplanmaz — <strong>yönetim tarafından kararlaştırılır</strong>. Ancak WACC bu kararın alt sınırını belirler.</p>
+    <table>
+      <thead><tr><th>MARR Bileşeni</th><th>Açıklama</th></tr></thead>
+      <tbody>
+        <tr><td>WACC (alt sınır)</td><td>Tüm sermaye kaynaklarının ağırlıklı maliyeti</td></tr>
+        <tr><td>+ Risk primi</td><td>Projeye özgü belirsizlik ve risk için ek getiri talebi</td></tr>
+        <tr><td>+ Fırsat maliyeti</td><td>Reddedilen en iyi alternatif yatırımın getirisi</td></tr>
+        <tr><td>= <strong>MARR</strong></td><td>Projenin kabul edilebilmesi için sağlaması gereken minimum getiri</td></tr>
+      </tbody>
+    </table>
+    <h3>D/E Oranının MARR'a Etkisi</h3>
+    <p>D/E oranı arttıkça (daha fazla borç) finansal risk artar. Borç verenler daha yüksek faiz talep eder → WACC artar → MARR artar.</p>
+    <div class="example">
+      <div class="example-label">Senaryo Karşılaştırması</div>
+      <table>
+        <thead><tr><th>D/E Oranı</th><th>Borç Maliyeti</th><th>Öz Sermaye Maliyeti</th><th>WACC</th></tr></thead>
+        <tbody>
+          <tr><td>%30 Borç / %70 Öz</td><td>%6</td><td>%12</td><td>$0.3(6)+0.7(12)=10.2\%$</td></tr>
+          <tr><td>%50 Borç / %50 Öz</td><td>%8</td><td>%14</td><td>$0.5(8)+0.5(14)=11.0\%$</td></tr>
+          <tr><td>%70 Borç / %30 Öz</td><td>%11</td><td>%18</td><td>$0.7(11)+0.3(18)=13.1\%$</td></tr>
+        </tbody>
+      </table>
+      <p>Daha fazla borç → daha yüksek WACC ve MARR. Optimal D/E karışımı projeye ve sektöre göre değişir.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section id="practice">
+    <h2>7. Pratik Sorular</h2>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 1 — WACC Hesabı</div>
+      <p>Bir şirketin sermaye yapısı: $8M hisse (%14), $3M dağıtılmamış kâr (%9), $4M banka kredisi (%6.5). Toplam sermaye $15M. WACC = ?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $w_{\text{hisse}}=8/15=0.533$, $w_{\text{kâr}}=3/15=0.200$, $w_{\text{borç}}=4/15=0.267$<br/>
+          $WACC = 0.533(14\%)+0.200(9\%)+0.267(6.5\%) = 7.46+1.80+1.74 = \mathbf{11.0\%}$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 2 — Incremental B/C, İki Alternatif</div>
+      <p>MARR = %8, 20 yıl. A: P=$500k, AW(B)=$95k, AW(D)=$12k, AOC=$18k. B: P=$900k, AW(B)=$160k, AW(D)=$18k, AOC=$22k. Hangisi seçilmeli?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          A maliyeti daha düşük → defender.<br/>
+          $\Delta C_{AB} = [900k(A/P,8\%,20)+22k] - [500k(A/P,8\%,20)+18k]$<br/>
+          $(A/P,8\%,20)=0.10185$<br/>
+          $\Delta C = [91{,}665+22{,}000]-[50{,}925+18{,}000] = 113{,}665-68{,}925 = \$44{,}740$<br/>
+          $\Delta B = (160{,}000-18{,}000)-(95{,}000-12{,}000) = 142{,}000-83{,}000 = \$59{,}000$<br/>
+          $\Delta B/\Delta C = 59{,}000/44{,}740 = 1.32 \geq 1$ → <strong>Alternatif B seçilir.</strong>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 3 — Modified B/C ile Karar</div>
+      <p>Proje: P=$3,000,000, S=$200,000, n=25 yıl, i=%7. AW(fayda)=$400,000, disbenefit=$60,000, AOC=$80,000. Mod B/C = ?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $(A/P,7\%,25)=0.08581$, $(A/F,7\%,25)=0.01581$<br/>
+          $CR = 3{,}000{,}000(0.08581)-200{,}000(0.01581) = 257{,}430-3{,}162 = \$254{,}268$<br/>
+          $\text{mod }B/C = \frac{400{,}000-60{,}000-80{,}000}{254{,}268} = \frac{260{,}000}{254{,}268} = 1.02 \geq 1$ → <strong>Kabul.</strong>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 4 — MARR Belirleme</div>
+      <p>Şirket: %60 öz sermaye (%16), %40 borç (%9). Proje riski için %3 prim, fırsat maliyeti için %2 prim. MARR = ?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $WACC = 0.60(16\%)+0.40(9\%) = 9.6+3.6 = 13.2\%$<br/>
+          $MARR = WACC + \text{risk primi} + \text{fırsat maliyeti} = 13.2+3+2 = \mathbf{18.2\%}$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 5 — Üç Kamu Alternatifi, Incremental B/C</div>
+      <p>MARR = %6, 30 yıl. Sırasıyla (maliyet küçükten büyüğe):</p>
+      <table>
+        <thead><tr><th>Alt.</th><th>İlk Maliyet</th><th>Yıllık Fayda</th><th>Yıllık Disbenefit</th><th>AOC</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>$5M</td><td>$600k</td><td>$50k</td><td>$80k</td></tr>
+          <tr><td>B</td><td>$9M</td><td>$1,100k</td><td>$80k</td><td>$120k</td></tr>
+          <tr><td>C</td><td>$13M</td><td>$1,500k</td><td>$100k</td><td>$150k</td></tr>
+        </tbody>
+      </table>
+      <p>Hangi alternatif seçilmeli?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $(A/P,6\%,30)=0.07265$<br/>
+          $AW_A^C = 5M(0.07265)+80k=363{,}250+80{,}000=\$443{,}250$<br/>
+          $AW_B^C = 9M(0.07265)+120k=653{,}850+120{,}000=\$773{,}850$<br/>
+          $AW_C^C = 13M(0.07265)+150k=944{,}450+150{,}000=\$1{,}094{,}450$<br/><br/>
+          <strong>DN vs A:</strong> $B/C_A=(600-50)/443.25=1.24\geq1$ → A defender<br/>
+          <strong>A vs B:</strong> $\Delta B=(1100-80)-(600-50)=1020-550=470k$; $\Delta C=773.85-443.25=330.6k$<br/>
+          $\Delta B/\Delta C=470/330.6=1.42\geq1$ → B defender<br/>
+          <strong>B vs C:</strong> $\Delta B=(1500-100)-(1100-80)=1400-1020=380k$; $\Delta C=1094.45-773.85=320.6k$<br/>
+          $\Delta B/\Delta C=380/320.6=1.19\geq1$ → <strong>Alternatif C seçilir.</strong>
+        </div>
+      </details>
+    </div>
+
+  </section>
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>
