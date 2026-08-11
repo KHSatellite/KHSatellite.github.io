@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 202 – Hafta 6 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#capm">1. CAPM — Öz Sermaye Maliyeti</a></li>
+    <li><a href="#replacement">2. Replacement & Retention</a></li>
+    <li><a href="#esl">3. ESL — Ekonomik Servis Ömrü</a></li>
+    <li><a href="#replacement-study">4. Replacement Study Prosedürü</a></li>
+    <li><a href="#example">5. Çözümlü Örnek</a></li>
+    <li><a href="#breakeven">6. Breakeven Analizi</a></li>
+    <li><a href="#breakeven-two">7. İki Alternatif Breakeven</a></li>
+    <li><a href="#practice">8. Pratik Sorular</a></li>
+  </ul>
+</aside>
+
+<main class="note-content">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 202</span>
+    <span class="note-week-label">Hafta 6</span>
+  </div>
+  <h1 class="note-main-title">CAPM, Replacement Analysis ve Breakeven</h1>
+  <p class="note-intro">Öz sermaye maliyetini belirlemek için CAPM, mevcut ekipmanın değiştirilip değiştirilmeyeceğine karar vermek için ESL ve Replacement Study, iki alternatifin eşit olduğu noktayı bulmak için Breakeven analizi.</p>
+  <div class="note-divider"></div>
+
+  <!-- 1. CAPM -->
+  <section id="capm">
+    <h2>1. CAPM — Öz Sermaye Maliyeti Belirleme</h2>
+    <p>Öz sermaye maliyetini ($R_e$) hesaplamak için iki yöntem vardır:</p>
+
+    <h3>Yöntem 1 — Temettü Büyüme Modeli (DGM)</h3>
+    $$R_e = \frac{DV_1}{P} + g$$
+    <p>$DV_1$ = birinci yıl temettüsü, $P$ = hisse senedi fiyatı, $g$ = beklenen temettü büyüme oranı (ondalık). Bu yöntem dışsal faktörlere bağlı olup lineer regresyon ile tahmin edilebilir.</p>
+
+    <h3>Yöntem 2 — CAPM (Capital Asset Pricing Model)</h3>
+    $$R_e = R_f + \beta(R_m - R_f)$$
+
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">$R_f$</div>
+        <div class="factor-label">Risk-free return</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Risksiz getiri oranı. Genellikle devlet tahvili faizi.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">$\beta$</div>
+        <div class="factor-label">Beta katsayısı</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Hisse senedinin piyasaya göre oynaklığı. $\beta=1$ → piyasayla aynı risk.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">$R_m$</div>
+        <div class="factor-label">Market return</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Piyasa portföyünün beklenen getirisi.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">$R_m - R_f$</div>
+        <div class="factor-label">Market risk premium</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Piyasanın risksiz getirinin üzerindeki ek getirisi.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>β yorumu (Tahtadan):</strong><br/>
+      $\beta < 1$ → hisse piyasadan daha az oynak (düşük risk)<br/>
+      $\beta = 1$ → piyasayla aynı davranış, varsayılan başlangıç noktası<br/>
+      $\beta > 1$ → hisse piyasadan daha oynak (yüksek risk, yüksek beklenen getiri)
+    </div>
+
+    <div class="example">
+      <div class="example-label">Örnek — CAPM ile Öz Sermaye Maliyeti</div>
+      <p>$R_f = \%5$, $\beta = 1.3$, $R_m = \%12$. Öz sermaye maliyeti = ?</p>
+      $$R_e = 5\% + 1.3 \times (12\% - 5\%) = 5\% + 9.1\% = \mathbf{14.1\%}$$
+    </div>
+  </section>
+
+  <!-- 2. Replacement & Retention -->
+  <section id="replacement">
+    <h2>2. Replacement &amp; Retention — Değiştirme ve Tutma Kararları</h2>
+    <p>Replacement analizi, hâlihazırda kullanılan bir varlığın (<strong>Defender</strong>) daha yeni bir alternatifle (<strong>Challenger</strong>) değiştirilip değiştirilmeyeceğine karar verir. AW yönteminin eşit olmayan ömürler için uygulamasıdır.</p>
+
+    <h3>Defender vs Challenger Çerçevesi (Tahtadan)</h3>
+    <table>
+      <thead><tr><th>Kavram</th><th>Defender</th><th>Challenger</th></tr></thead>
+      <tbody>
+        <tr><td>Tanım</td><td>Mevcut, kurulu sistem/varlık</td><td>Potansiyel yeni alternatif</td></tr>
+        <tr><td>İlk maliyet (P)</td><td>Mevcut <strong>piyasa değeri (MV)</strong></td><td>Yeni satın alma fiyatı</td></tr>
+        <tr><td>Sunk cost</td><td>Geçmişte ödenen — <strong>analize dahil edilmez!</strong></td><td>—</td></tr>
+        <tr><td>Trade-in value</td><td>MV olarak kullanılır</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout--warn">
+      <strong>Sunk Cost (Tahtadan):</strong> Geçmişte ödenmiş, geri alınamaz maliyetler. Replacement analizinde kullanılmaz — yalnızca bugünkü ve gelecekteki maliyetler geçerlidir.<br/>
+      Defender'ın ilk maliyeti = güncel <strong>piyasa değeri (MV)</strong>, orijinal alım fiyatı değil.
+    </div>
+
+    <h3>Neden Değiştirme Kararı Gerekir? (Tahtadan)</h3>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">Düşük Performans</div>
+        <div class="factor-label">Altered Performance</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Güvenilirlik ve verimlilik sorunları. Örn: eski PC vs laptop karşılaştırması.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">Değişen Gereksinimler</div>
+        <div class="factor-label">Altered Requirements</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">İş ihtiyaçları değişti, mevcut sistem yetersiz kaldı.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">Eskime</div>
+        <div class="factor-label">Obsolescence</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Teknoloji ilerlemesi nedeniyle sistem artık uygun değil.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ESL -->
+  <section id="esl">
+    <h2>3. ESL — Economic Service Life (Ekonomik Servis Ömrü)</h2>
+    <p>ESL, bir varlığın toplam yıllık maliyetini (AW) <strong>minimum</strong> yapan yıl sayısıdır. Tahmini ömür bilinmiyorsa ESL kullanılır.</p>
+
+    <h3>Formüller</h3>
+    $$AW_{\text{toplam}} = -CR - AW_{\text{AOC}}$$
+    $$CR = P(A/P,\,i,\,n) - S(A/F,\,i,\,n)$$
+    $$AW_{\text{AOC}} = \left[\sum_{k=1}^{n} AOC_k \cdot (P/F,\,i,\,k)\right](A/P,\,i,\,n)$$
+
+    <div class="callout">
+      <strong>Marginal Cost (MC) Yöntemi (Tahtadan):</strong><br/>
+      Yıllık MC = o yılın sahip olma maliyeti:<br/>
+      • Kaybedilen faiz geliri (MV üzerinden)<br/>
+      • MV'deki değer kaybı<br/>
+      • O yılın AOC'si<br/>
+      <br/>
+      $AW_{\text{MC}} = \text{toplam AW maliyeti}$<br/>
+      ESL → MC'nin en düşük olduğu yıl = AW'nin minimum olduğu yıl.
+    </div>
+
+    <h3>ESL Belirleme Prosedürü</h3>
+    <p>Her $n$ değeri için (1, 2, 3, … yıl) toplam AW hesapla. AW en küçük olduğu $n$ → ESL.</p>
+    <table>
+      <thead><tr><th>Yıl (n)</th><th>CR ($)</th><th>AW(AOC) ($)</th><th>Toplam AW ($)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Yüksek</td><td>Düşük</td><td>Yüksek</td></tr>
+        <tr><td>ESL yılı</td><td>↓</td><td>↑</td><td><strong>Minimum ✓</strong></td></tr>
+        <tr><td>n artınca</td><td>Azalır</td><td>Artar</td><td>Artar</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4. Replacement Study Prosedürü -->
+  <section id="replacement-study">
+    <h2>4. Replacement Study Prosedürü (Tahtadan)</h2>
+    <p>Belirlenmiş bir planlama ufku (study period) varsa AW yöntemi uygulanır:</p>
+    <p><strong>1.</strong> Challenger'ın sabit yıllık maliyeti ($AW_C$) hesapla.<br/>
+    <strong>2.</strong> Defender'ı kaç yıl daha tutabileceğini belirle (min ve max).<br/>
+    <strong>3.</strong> Her "Defender k yıl / Challenger kalan yıl" kombinasyonu için toplam AW hesapla.<br/>
+    <strong>4.</strong> En düşük toplam maliyeti veren kombinasyonu seç.</p>
+
+    <div class="callout">
+      Eğer $AW_{\text{defender}} \leq AW_{\text{challenger}}$ → <strong>Defender'ı tut.</strong><br/>
+      Eğer $AW_{\text{challenger}} < AW_{\text{defender}}$ → <strong>Hemen değiştir.</strong>
+    </div>
+  </section>
+
+  <!-- 5. Çözümlü Örnek -->
+  <section id="example">
+    <h2>5. Çözümlü Replacement Örneği (Tahtadan)</h2>
+    <div class="example">
+      <div class="example-label">Örnek — 6 Yıllık Planlama Ufku, MARR = %12</div>
+      <p><strong>Defender:</strong> Şu anki MV = $100,000; her yıl $25,000 düşüyor; AOC = $25,000/yıl<br/>
+      2, 3 veya 4 yıl daha tutulabilir.<br/>
+      <strong>Challenger:</strong> Sabit yıllık maliyet $AW_C = \$60,000$<br/>
+      Minimum 2 yıl, maksimum 5 yıl hizmet verebilir. Toplam planlama ufku = 6 yıl.</p>
+
+      <p><strong>Adım 1 — Defender AW hesapları:</strong></p>
+
+      <p>Defender'ı 2 yıl tutarsak: MV₀=$100k, MV₁=$75k, MV₂=$50k, AOC=$25k/yıl</p>
+      $$AW_{D2} = -100{,}000(A/P,12\%,2) + 50{,}000(A/F,12\%,2) - 25{,}000$$
+      $$(A/P,12\%,2)=0.5917,\quad (A/F,12\%,2)=0.4717$$
+      $$AW_{D2} = -59{,}170 + 23{,}585 - 25{,}000 = \mathbf{-\$60{,}585}$$
+
+      <p>Defender'ı 3 yıl tutarsak: MV₃=$25k</p>
+      $$AW_{D3} = -100{,}000(A/P,12\%,3) + 25{,}000(A/F,12\%,3) - 25{,}000$$
+      $$(A/P,12\%,3)=0.4163,\quad (A/F,12\%,3)=0.2963$$
+      $$AW_{D3} = -41{,}630 + 7{,}408 - 25{,}000 = \mathbf{-\$59{,}222}$$
+
+      <p>Defender'ı 4 yıl tutarsak: MV₄=$0</p>
+      $$AW_{D4} = -100{,}000(A/P,12\%,4) - 25{,}000$$
+      $$(A/P,12\%,4)=0.3292$$
+      $$AW_{D4} = -32{,}920 - 25{,}000 = \mathbf{-\$57{,}920}$$
+
+      <p><strong>Adım 2 — Kombinasyon tablosu (toplam 6 yıl):</strong></p>
+      <table>
+        <thead><tr><th>Seçenek</th><th>Defender (yıl)</th><th>Challenger (yıl)</th><th>AW_D</th><th>AW_C</th><th>Yorum</th></tr></thead>
+        <tbody>
+          <tr><td>X</td><td>2</td><td>4</td><td>−$60,585</td><td>−$60,000</td><td>AW farklı dönemler → PW üzerinden karşılaştır</td></tr>
+          <tr><td>Y</td><td>3</td><td>3</td><td>−$59,222</td><td>−$60,000</td><td>Eşit süre → AW karşılaştırması yapılabilir</td></tr>
+          <tr><td>Z</td><td>4</td><td>2</td><td>−$57,920</td><td>−$60,000</td><td>Eşit süre → AW karşılaştırması yapılabilir</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        Seçenek Z'de Defender AW ($57,920) &lt; Challenger AW ($60,000) → <strong>Defender'ı 4 yıl daha tut, sonra Challenger'a geç.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Breakeven Analizi -->
+  <section id="breakeven">
+    <h2>6. Breakeven Analizi — Tek Proje</h2>
+    <p>Belirli bir değişkenin ($Q$, $n$, $i$ vb.) bilinmediği durumlarda, PW veya AW = 0 yapacak değeri bulmak için kullanılır.</p>
+
+    <h3>Sabit Maliyet vs Değişken Maliyet</h3>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">FC</div>
+        <div class="factor-label">Fixed Cost — Sabit Maliyet</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Üretim miktarından bağımsız: bina kirası, sigorta, amortisman.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">VC</div>
+        <div class="factor-label">Variable Cost — Değişken Maliyet</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Üretim miktarıyla değişir: hammadde, işçilik, enerji.</p>
+      </div>
+    </div>
+
+    $$TC = FC + VC = FC + v \cdot Q$$
+    $$\text{Gelir} = r \cdot Q$$
+    $$\text{Kâr} = R - TC = r \cdot Q - FC - v \cdot Q$$
+
+    <h3>Breakeven Noktası $Q_{BE}$</h3>
+    <p>Kâr = 0 → Gelir = Toplam Maliyet:</p>
+    $$r \cdot Q_{BE} = FC + v \cdot Q_{BE}$$
+    $$\boxed{Q_{BE} = \frac{FC}{r - v}}$$
+    <p>$r$ = birim başına gelir, $v$ = birim başına değişken maliyet, $(r-v)$ = birim katkı payı.</p>
+
+    <div class="callout">
+      <strong>Karar kuralı (Tahtadan):</strong><br/>
+      $Q > Q_{BE}$ → Kâr bölgesi<br/>
+      $Q < Q_{BE}$ → Zarar bölgesi<br/>
+      $Q = Q_{BE}$ → Başabaş noktası (ne kâr ne zarar)
+    </div>
+
+    <div class="example">
+      <div class="example-label">Örnek — Breakeven Miktarı</div>
+      <p>FC = $50,000/yıl, birim değişken maliyet $v = \$8$, birim satış fiyatı $r = \$13$. $Q_{BE}$ = ?</p>
+      $$Q_{BE} = \frac{50{,}000}{13 - 8} = \frac{50{,}000}{5} = \mathbf{10{,}000 \text{ birim/yıl}}$$
+      <p>10,000 birimden fazla üretilirse kâr elde edilir.</p>
+    </div>
+  </section>
+
+  <!-- 7. İki Alternatif Breakeven -->
+  <section id="breakeven-two">
+    <h2>7. İki Alternatif Arasında Breakeven Analizi</h2>
+    <p>İki alternatifin maliyetinin eşit olduğu üretim/kullanım miktarını bulur. Bu noktanın altında ve üstünde hangi alternatifin daha iyi olduğu belirlenir.</p>
+
+    <div class="example">
+      <div class="example-label">Örnek — Makine A vs Makine B</div>
+      <p><strong>A:</strong> FC = $20,000/yıl, VC = $5/birim<br/>
+      <strong>B:</strong> FC = $50,000/yıl, VC = $2/birim<br/>
+      Hangi üretim miktarında A ve B eşit maliyetli?</p>
+      $$TC_A = TC_B$$
+      $$20{,}000 + 5Q = 50{,}000 + 2Q$$
+      $$3Q = 30{,}000 \Rightarrow Q_{BE} = 10{,}000 \text{ birim}$$
+      <div class="callout">
+        $Q < 10{,}000$ → A daha ucuz (düşük sabit maliyet)<br/>
+        $Q > 10{,}000$ → B daha ucuz (düşük değişken maliyet)<br/>
+        $Q = 10{,}000$ → Eşit maliyet
+      </div>
+    </div>
+
+    <div class="callout callout--warn">
+      <strong>Sensitivity Analysis ile fark (Tahtadan):</strong> Breakeven analizi tahminlerin kesin olduğunu varsayar. Belirsizlik varsa sensitivity analysis yapılır — değişkenlerin belli bir aralıkta değişmesi durumunda kararın nasıl etkilendiği incelenir.
+    </div>
+  </section>
+
+  <!-- 8. Pratik Sorular -->
+  <section id="practice">
+    <h2>8. Pratik Sorular</h2>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 1 — CAPM</div>
+      <p>$R_f = \%4.5$, $R_m = \%11$, $\beta = 0.85$. Öz sermaye maliyeti ve WACC'ı hesapla (%60 öz sermaye, %40 borç; borç maliyeti %7).</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $R_e = 4.5 + 0.85(11-4.5) = 4.5 + 5.525 = 10.025\%$<br/>
+          $WACC = 0.60(10.025) + 0.40(7) = 6.015 + 2.8 = \mathbf{8.815\%}$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 2 — ESL Belirleme</div>
+      <p>Makine: P = $80,000, S = 0, AOC: Yıl 1 = $15,000; Yıl 2 = $18,000; Yıl 3 = $22,000. MARR = %10. ESL = ?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          <strong>n=1:</strong> $CR = 80{,}000(A/P,10\%,1) = 80{,}000(1.10) = 88{,}000$<br/>
+          $AW_1 = -88{,}000 - 15{,}000 = -\$103{,}000$<br/><br/>
+          <strong>n=2:</strong> $CR = 80{,}000(0.5762) = 46{,}096$<br/>
+          $AW_{\text{AOC}} = [15{,}000(P/F,10\%,1)+18{,}000(P/F,10\%,2)](A/P,10\%,2)$<br/>
+          $= [13{,}636+14{,}876](0.5762) = 16{,}405$<br/>
+          $AW_2 = -46{,}096 - 16{,}405 = -\$62{,}501$<br/><br/>
+          <strong>n=3:</strong> $CR = 80{,}000(0.4021) = 32{,}168$<br/>
+          $AW_{\text{AOC}} ≈ [13{,}636+14{,}876+16{,}529](0.4021) = 18{,}162$<br/>
+          $AW_3 = -32{,}168 - 18{,}162 = -\$50{,}330$<br/><br/>
+          AW 3. yılda hâlâ düşüyorsa ESL &gt; 3 yıl. AOC artışı CR azalmasını geçtiği noktada ESL belirlenir.
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 3 — Replacement Kararı</div>
+      <p>Defender: MV = $40,000, AOC = $12,000/yıl, 3 yıl daha kullanılabilir. Challenger: P = $70,000, S = $5,000, n = 8 yıl, AOC = $8,000/yıl. MARR = %10. Hangi karar?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $AW_D = -40{,}000(A/P,10\%,3) - 12{,}000 = -40{,}000(0.4021) - 12{,}000 = -\$28{,}084$<br/>
+          $AW_C = -70{,}000(A/P,10\%,8) + 5{,}000(A/F,10\%,8) - 8{,}000$<br/>
+          $(A/P,10\%,8)=0.1874$, $(A/F,10\%,8)=0.0874$<br/>
+          $AW_C = -13{,}118 + 437 - 8{,}000 = -\$20{,}681$<br/><br/>
+          $|AW_C| < |AW_D|$ → <strong>Challenger daha ekonomik, hemen değiştir.</strong>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 4 — Breakeven Analizi</div>
+      <p>Bir fabrika: FC = $120,000/yıl, birim VC = $15, birim satış fiyatı = $27. (a) $Q_{BE}$ = ? (b) 12,000 birim üretirsek kâr/zarar ne kadar?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          (a) $Q_{BE} = 120{,}000 / (27-15) = 120{,}000 / 12 = \mathbf{10{,}000 \text{ birim}}$<br/><br/>
+          (b) $\text{Kâr} = (27-15)(12{,}000) - 120{,}000 = 144{,}000 - 120{,}000 = \mathbf{\$24{,}000}$
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 5 — İki Alternatif Breakeven</div>
+      <p>Manuel işlem: FC = $10,000, VC = $3.50/birim. Otomatik: FC = $40,000, VC = $0.80/birim. Hangi miktarda eşit? Yıllık 15,000 birim üretimde hangisi seçilmeli?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $10{,}000 + 3.50Q = 40{,}000 + 0.80Q$<br/>
+          $2.70Q = 30{,}000 \Rightarrow Q_{BE} = 11{,}111 \text{ birim}$<br/><br/>
+          15,000 > 11,111 → <strong>Otomatik sistem seçilir</strong> (düşük birim maliyeti kazanır).<br/>
+          $TC_{\text{oto}} = 40{,}000 + 0.80(15{,}000) = \$52{,}000$<br/>
+          $TC_{\text{man}} = 10{,}000 + 3.50(15{,}000) = \$62{,}500$
+        </div>
+      </details>
+    </div>
+
+  </section>
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>
