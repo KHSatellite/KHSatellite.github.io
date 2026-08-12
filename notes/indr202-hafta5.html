@@ -124,14 +124,21 @@
         </tbody>
       </table>
 
-      <p><strong>Adım 1 — Her tasarımın AW maliyetini hesapla:</strong></p>
-      $$(A/P,\,5\%,\,30) = \frac{0.05(1.05)^{30}}{(1.05)^{30}-1} = 0.06505$$
+      <p><strong>Adım 1 — (A/P) faktörünü hesapla:</strong></p>
+      <p>Formül: $(A/P,\,i,\,n) = \dfrac{i(1+i)^n}{(1+i)^n - 1}$</p>
+      <p>$(1.05)^{30} = 4.3219$ olduğundan:</p>
+      $$(A/P,\,5\%,\,30) = \frac{0.05 \times 4.3219}{4.3219 - 1} = \frac{0.21610}{3.3219} = 0.06505$$
+      <div class="callout" style="margin:0.5rem 0;">
+        <strong>Excel alternatifi:</strong> <code>=PMT(0.05, 30, -10000000)</code> → A'nın CR'ını doğrudan verir ($650,500).<br/>
+        Genel: <code>=PMT(oran; n; -P; S)</code> formülü Capital Recovery'yi tek adımda hesaplar.
+      </div>
 
+      <p><strong>Adım 2 — Her tasarımın AW maliyetini hesapla:</strong></p>
       $$AW_A^{\text{maliyet}} = 10{,}000{,}000 \times 0.06505 + 35{,}000 = 650{,}500 + 35{,}000 = \$685{,}500$$
       $$AW_B^{\text{maliyet}} = 15{,}000{,}000 \times 0.06505 + 55{,}000 = 975{,}750 + 55{,}000 = \$1{,}030{,}750$$
 
-      <p><strong>Adım 2 — Artışsal analiz (B defender, A challenger sıralaması maliyet bazlı):</strong></p>
-      <p>A daha ucuz → defender. B challenger.</p>
+      <p><strong>Adım 3 — Artışsal analiz (maliyet sırasına göre: A defender, B challenger):</strong></p>
+      <p>A daha ucuz başlangıç maliyeti → defender. B challenger.</p>
       $$\Delta C = AW_B^{\text{maliyet}} - AW_A^{\text{maliyet}} = 1{,}030{,}750 - 685{,}500 = \$345{,}250/\text{yıl}$$
       <p>Fayda: kullanıcı maliyetindeki tasarruf (düşük kullanıcı maliyeti = fayda)</p>
       $$\Delta B = AW_A^{\text{kullanıcı}} - AW_B^{\text{kullanıcı}} = 450{,}000 - 200{,}000 = \$250{,}000/\text{yıl}$$

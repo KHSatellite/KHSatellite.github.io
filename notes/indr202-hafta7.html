@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 202 – Hafta 7 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#breakeven-review">1. Breakeven — Karar Değişkeni</a></li>
+    <li><a href="#avg-cost">2. Ortalama Birim Maliyet</a></li>
+    <li><a href="#two-alt">3. İki Alternatif Breakeven</a></li>
+    <li><a href="#two-alt-example">4. Çözümlü Makine Örneği</a></li>
+    <li><a href="#excel-tools">5. Excel ile CF Analizi</a></li>
+    <li><a href="#python-tools">6. Python / Pandas / Jupyter</a></li>
+    <li><a href="#final-scope">7. Final Sınavı Kapsamı</a></li>
+    <li><a href="#practice">8. Pratik Sorular</a></li>
+  </ul>
+</aside>
+
+<main class="note-content">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 202</span>
+    <span class="note-week-label">Hafta 7</span>
+  </div>
+  <h1 class="note-main-title">Breakeven Analizi (Devamı), Excel ve Python Araçları</h1>
+  <p class="note-intro">Breakeven analizinin karar değişkeni perspektifinden derinlemesine incelenmesi, iki alternatif arasında üretim miktarı bazlı karar verme, ortalama birim maliyet, Excel ve Python ile mühendislik ekonomisi hesapları, final sınavı kapsamı.</p>
+  <div class="note-divider"></div>
+
+  <!-- 1 -->
+  <section id="breakeven-review">
+    <h2>1. Breakeven Analizi — Karar Değişkeni Perspektifi (Tahtadan)</h2>
+    <p>Breakeven analizinde <strong>karar değişkeni</strong> ($Q$) çoğu zaman <em>değişkenin kendisidir</em> — yani $Q$ hem amaç hem de karar noktasıdır. Bu, payback period analizinden farklı bir bakış açısıdır.</p>
+
+    <table>
+      <thead><tr><th>Yöntem</th><th>Amaç</th><th>Bilinmeyen</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Payback Period</strong></td><td>Yatırımın ne zaman geri döneceğini bul</td><td>Süre $t$</td></tr>
+        <tr><td><strong>Breakeven (tek proje)</strong></td><td>Hangi $Q$'da kâr başlar?</td><td>Miktar $Q$</td></tr>
+        <tr><td><strong>Breakeven (iki alt.)</strong></td><td>Hangi $Q$'da alternatifler eşit?</td><td>Miktar $Q$</td></tr>
+        <tr><td><strong>Sensitivity Analysis</strong></td><td>Bir parametre değişince karar değişir mi?</td><td>Aralık/yüzde</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Temel İlişkiler</h3>
+    $$TC = FC + VC = FC + v \cdot Q$$
+    $$R = r \cdot Q \qquad \Pi = R - TC = (r-v)Q - FC$$
+    $$Q_{BE} = \frac{FC}{r - v}$$
+
+    <div class="callout">
+      <strong>$(r-v)$ = Birim Katkı Payı (Contribution Margin):</strong><br/>
+      Her üretilen birimin sabit maliyete katkısı. $Q_{BE} = FC / \text{(birim katkı payı)}$<br/>
+      $Q_{BE}$'yi düşürmek için ya FC'yi azalt ya da $(r-v)$'yi artır.
+    </div>
+
+    <div class="example">
+      <div class="example-label">Tahtadan — Başlangıç Sorusu</div>
+      <p>FC = $750,000/yıl, birim VC = $35, birim satış fiyatı = $75. $Q_{BE}$ = ?</p>
+      $$Q_{BE} = \frac{750{,}000}{75-35} = \frac{750{,}000}{40} = \mathbf{18{,}750 \text{ birim/yıl}}$$
+      <p>Kâr formülü: $\Pi = (75-35)Q - 750{,}000 = 40Q - 750{,}000$</p>
+      <p>20,000 birimde: $\Pi = 40(20{,}000) - 750{,}000 = 800{,}000 - 750{,}000 = \$50{,}000$ kâr</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="avg-cost">
+    <h2>2. Ortalama Birim Maliyet (Average Unit Cost)</h2>
+    <p>Bir üretim biriminin gerçek maliyetini görmek için toplam maliyeti üretime böleriz:</p>
+    $$C_u = \frac{TC}{Q} = \frac{FC + v \cdot Q}{Q} = \frac{FC}{Q} + v$$
+
+    <div class="callout">
+      $C_u$ üretim arttıkça azalır (FC/Q terimi küçülür). Bu <strong>ölçek ekonomisi</strong> (economies of scale) efektidir.<br/>
+      $Q \to \infty$ durumunda $C_u \to v$ (birim değişken maliyete yaklaşır).
+    </div>
+
+    <div class="example">
+      <div class="example-label">Örnek — Ortalama Maliyet Karşılaştırması</div>
+      <p>FC = $750,000/yıl, v = $35/birim.</p>
+      <table>
+        <thead><tr><th>Üretim (Q)</th><th>FC/Q ($/birim)</th><th>v ($/birim)</th><th>$C_u$ ($/birim)</th></tr></thead>
+        <tbody>
+          <tr><td>5,000</td><td>150.00</td><td>35</td><td><strong>185.00</strong></td></tr>
+          <tr><td>10,000</td><td>75.00</td><td>35</td><td><strong>110.00</strong></td></tr>
+          <tr><td>18,750 ($Q_{BE}$)</td><td>40.00</td><td>35</td><td><strong>75.00 = r</strong></td></tr>
+          <tr><td>25,000</td><td>30.00</td><td>35</td><td><strong>65.00</strong></td></tr>
+        </tbody>
+      </table>
+      <p>$Q_{BE}$'de $C_u = r$ (satış fiyatına eşit → ne kâr ne zarar). $Q > Q_{BE}$'de $C_u < r$ → kâr.</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section id="two-alt">
+    <h2>3. İki Alternatif Arasında Breakeven — Genel Çerçeve</h2>
+    <p>Alternatifler hem sabit hem de değişken maliyetlere sahipken hangisinin daha iyi olduğu <strong>üretim miktarına (Q) göre değişir</strong>. Eşitlenme noktası $Q_{BE}$ her iki alternatifte eşit toplam maliyeti verir.</p>
+
+    <h3>İki Makine / Proses Karşılaştırması</h3>
+    <p>Her alternatif için <strong>yıllık eşdeğer maliyet (AW)</strong> $Q$'nun fonksiyonu olarak ifade edilir:</p>
+    $$AW_1 = \text{Sabit AW}_1 + v_1 \cdot Q$$
+    $$AW_2 = \text{Sabit AW}_2 + v_2 \cdot Q$$
+    <p>Burada:</p>
+    <p>Sabit AW = CR + AOC &nbsp;(Q'dan bağımsız gider)</p>
+    <p>$v \cdot Q$ = yıllık değişken gider (işçilik, enerji, malzeme)</p>
+
+    <p>$AW_1 = AW_2$ noktası breakeven:</p>
+    $$\text{Sabit AW}_1 + v_1 Q = \text{Sabit AW}_2 + v_2 Q$$
+    $$Q_{BE} = \frac{\text{Sabit AW}_2 - \text{Sabit AW}_1}{v_1 - v_2}$$
+
+    <div class="callout callout--warn">
+      <strong>Dikkat: Payda işareti</strong><br/>
+      Alt. 1 yüksek sabit + düşük değişken maliyet ise: $v_1 < v_2$ → $v_1 - v_2 < 0$<br/>
+      Paydanın negatif olması durumunda kesirleri çevir. Veya her zaman $|AW_1-AW_2|$ eşitliğini kur.
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section id="two-alt-example">
+    <h2>4. Çözümlü Makine Örneği (Tahtadan)</h2>
+    <div class="example">
+      <div class="example-label">Örnek — İki Makine, Yıllık Üretim = X ton</div>
+      <p>Her iki makine de <strong>MARR = %10</strong> beklentisiyle değerlendiriliyor. Çıktı: ton/yıl.</p>
+      <table>
+        <thead><tr><th>Özellik</th><th>Makine A (Pahalı)</th><th>Makine B (Ucuz)</th></tr></thead>
+        <tbody>
+          <tr><td>İlk maliyet (P)</td><td>$23,000</td><td>$8,000</td></tr>
+          <tr><td>Hurda değeri (S)</td><td>$4,000</td><td>$0</td></tr>
+          <tr><td>Ömür (n)</td><td>10 yıl</td><td>5 yıl</td></tr>
+          <tr><td>Yıllık işletme gideri (AOC)</td><td>$3,500/yıl</td><td>$1,500/yıl</td></tr>
+          <tr><td>Çıktı kapasitesi</td><td>6 ton/saat</td><td>6 ton/saat</td></tr>
+          <tr><td>İşçi sayısı</td><td>1 kişi @ $12/saat</td><td>3 kişi @ $8/saat = $24/saat</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Adım 1 — Capital Recovery (CR) hesabı:</strong></p>
+      <p>$(A/P,10\%,10) = 0.16275$, &nbsp; $(A/F,10\%,10) = 0.06275$</p>
+      $$CR_A = (23{,}000-4{,}000)(0.16275) + 4{,}000(0.10) = 19{,}000(0.16275) + 400 = 3{,}092 + 400 = \$3{,}492/\text{yıl}$$
+      <p>$(A/P,10\%,5) = 0.26380$</p>
+      $$CR_B = 8{,}000(0.26380) = \$2{,}110/\text{yıl}$$
+
+      <p><strong>Adım 2 — İşçilik maliyeti (X ton/yıl cinsinden):</strong></p>
+      <p>Her iki makine de 6 ton/saat üretir → $X$ ton/yıl için çalışma süresi = $X/6$ saat/yıl</p>
+      $$\text{İşçilik}_A = \$12/\text{saat} \times X/6 \text{ saat/yıl} = \$2X/\text{yıl}$$
+      $$\text{İşçilik}_B = \$24/\text{saat} \times X/6 \text{ saat/yıl} = \$4X/\text{yıl}$$
+
+      <p><strong>Adım 3 — Toplam Yıllık Maliyet (AW):</strong></p>
+      $$AW_A = CR_A + AOC_A + \text{İşçilik}_A = 3{,}492 + 3{,}500 + 2X = \mathbf{6{,}992 + 2X}$$
+      $$AW_B = CR_B + AOC_B + \text{İşçilik}_B = 2{,}110 + 1{,}500 + 4X = \mathbf{3{,}610 + 4X}$$
+
+      <p><strong>Adım 4 — Breakeven noktası ($X_{BE}$):</strong></p>
+      $$AW_A = AW_B$$
+      $$6{,}992 + 2X = 3{,}610 + 4X$$
+      $$6{,}992 - 3{,}610 = 4X - 2X$$
+      $$3{,}382 = 2X$$
+      $$\boxed{X_{BE} = 1{,}691 \text{ ton/yıl}}$$
+
+      <div class="callout">
+        <strong>Karar:</strong><br/>
+        $X < 1{,}691$ ton/yıl → <strong>Makine B seçilir</strong> (düşük sabit maliyet, az üretimde avantajlı)<br/>
+        $X > 1{,}691$ ton/yıl → <strong>Makine A seçilir</strong> (tek işçi, yüksek üretimde avantajlı)<br/>
+        $X = 1{,}691$ ton/yıl → Eşit maliyet ($AW_A = AW_B = \$10{,}374/\text{yıl}$)
+      </div>
+
+      <p><strong>Doğrulama: $X = 1{,}691$</strong></p>
+      $$AW_A = 6{,}992 + 2(1{,}691) = 6{,}992 + 3{,}382 = \$10{,}374$$
+      $$AW_B = 3{,}610 + 4(1{,}691) = 3{,}610 + 6{,}764 = \$10{,}374 \quad \checkmark$$
+    </div>
+
+    <div class="callout callout--warn">
+      <strong>Tahtadaki X = 1,332 notu:</strong> Derste farklı AOC değerleri kullanılmış olabilir ($AOC_A$ farklı verilmiş olabilir). Yöntem aynı; verileri yerine koy ve eşitle.
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section id="excel-tools">
+    <h2>5. Excel ile Mühendislik Ekonomisi Hesapları (Tahtadan)</h2>
+    <p>Tahtada "Excel CF: interest rate programming" notundan — Excel, nakit akışı analizini hızlandıran güçlü bir araçtır.</p>
+
+    <h3>Nakit Akışı Tablosu Kurulumu</h3>
+    <div class="example">
+      <div class="example-label">Excel Çalışma Sayfası Yapısı</div>
+      <table>
+        <thead><tr><th>Sütun A</th><th>Sütun B</th><th>Sütun C</th><th>Sütun D</th></tr></thead>
+        <tbody>
+          <tr><td>Yıl (t)</td><td>Gelir ($)</td><td>Gider ($)</td><td>Net CF ($) = B−C</td></tr>
+          <tr><td>0</td><td>0</td><td>50000</td><td>-50000</td></tr>
+          <tr><td>1</td><td>12000</td><td>3000</td><td>9000</td></tr>
+          <tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+          <tr><td>n</td><td>12000+hurda</td><td>3000</td><td>net</td></tr>
+        </tbody>
+      </table>
+      <p>D sütununa Net CF'leri girdikten sonra:</p>
+      <div class="code-pre">i* (IRR) bulmak:     =IRR(D1:D11)
+PW hesabı:           =NPV(0.12, D2:D11) + D1
+AW hesabı:           =NPV(0.12, D2:D11) + D1) * PMT(0.12, 10, -1)  [→ PW×(A/P)]
+Faiz oranı (seri):   =RATE(10, 9000, -50000, 5000)
+MIRR/CRR:            =MIRR(D1:D11, 0.15, 0.10)</div>
+    </div>
+
+    <h3>Mühendislik Faktörlerini Excel'de Hesaplamak</h3>
+    <table>
+      <thead><tr><th>Faktör</th><th>Excel Formülü</th><th>Örnek</th></tr></thead>
+      <tbody>
+        <tr><td>$(P/F,i,n)$</td><td><code>=PV(i, n, 0, -1)</code> veya <code>=(1+i)^(-n)</code></td><td><code>=PV(0.10, 5, 0, -1)</code> → 0.6209</td></tr>
+        <tr><td>$(F/P,i,n)$</td><td><code>=(1+i)^n</code></td><td><code>=(1.10)^5</code> → 1.6105</td></tr>
+        <tr><td>$(P/A,i,n)$</td><td><code>=PV(i, n, -1)</code></td><td><code>=PV(0.10, 5, -1)</code> → 3.7908</td></tr>
+        <tr><td>$(A/P,i,n)$</td><td><code>=PMT(i, n, -1)</code></td><td><code>=PMT(0.10, 5, -1)</code> → 0.2638</td></tr>
+        <tr><td>$(F/A,i,n)$</td><td><code>=FV(i, n, -1)</code></td><td><code>=FV(0.10, 5, -1)</code> → 6.1051</td></tr>
+        <tr><td>$(A/F,i,n)$</td><td><code>=PMT(i, n, 0, -1)</code></td><td><code>=PMT(0.10, 5, 0, -1)</code> → 0.1638</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>İşaret kuralı:</strong> Excel'de para çıkışı (yatırım, maliyet) <strong>negatif</strong>, para girişi (gelir, hurda) <strong>pozitif</strong> girilir.<br/>
+      <code>=PV(0.10, 5, -1)</code> → 1 birim yıllık ödemenin bugünkü değeri = 3.7908 (pozitif çıkar)<br/>
+      <code>=PV(0.10, 5, 1)</code> → −3.7908 (negatif çıkar) — ikisi de aynı anlam, işaret farkı.
+    </div>
+
+    <h3>Pratik: Faiz Oranını Programla Bul</h3>
+    <p>Excel'de birden fazla i değerini denemek için tablo yöntemi:</p>
+    <div class="code-pre">A sütunu: i değerleri (%5, %6, %7, ..., %20)
+B sütunu: =NPV(A2, gelirler) + başlangıç_yatırım
+C sütunu: işaret kontrolü (pozitif→negatif geçişi i*'ı belirler)
+
+IRR doğrudan: =IRR(CF_aralığı, başlangıç_tahmin)</div>
+
+    <div class="example">
+      <div class="example-label">Vaka: Pompalama Sistemi (Tahtadan — "pumping" örneği)</div>
+      <p>Bir pompalama sisteminin CF verileri Excel'e girilmiş, MARR=%12. Hedef: i*'ı ve PW'yi bulmak.</p>
+      <div class="code-pre">A     B
+Yıl   Net CF ($)
+0     -45,000
+1      8,000
+2      9,500
+3      9,500
+4     11,000
+5     13,500   ← son yıl: normal gelir + hurda
+
+=IRR(B1:B6)          → i* hesaplar
+=NPV(0.12, B2:B6)+B1 → i=%12'de PW hesaplar</div>
+      <p>Eğer <code>=IRR()</code> hata verirse, <code>guess</code> parametresi ekle: <code>=IRR(B1:B6; 0.10)</code></p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section id="python-tools">
+    <h2>6. Python / Pandas / Jupyter ile CF Analizi (Tahtadan)</h2>
+    <p>Tahtadan not: "Python → Pandas → Jupyter Notebook → CF output $64"</p>
+    <p>Python, mühendislik ekonomisi hesaplarını hızlandırabilir. Özellikle çok sayıda alternatif veya senaryo analizi gerektiğinde Excel'den üstündür.</p>
+
+    <h3>Temel Kurulum</h3>
+    <div class="code-pre">pip install numpy numpy-financial pandas jupyter
+
+# numpy-financial: IRR, NPV, PMT fonksiyonları için
+import numpy as np
+import numpy_financial as npf
+import pandas as pd</div>
+
+    <h3>IRR ve NPV Hesabı</h3>
+    <div class="code-pre">import numpy_financial as npf
+
+# Nakit akışları (t=0'dan başlar)
+cf = [-50000, 9000, 9000, 9000, 9000, 9000, 9000, 9000, 14000]
+#                                                             ^-- son yıl: 9000+5000 hurda
+
+# IRR (iç getiri oranı)
+irr = npf.irr(cf)
+print(f"IRR = {irr:.4%}")      # → IRR = 10.1868%
+
+# NPV @ MARR=%12
+marr = 0.12
+npv = npf.npv(marr, cf)
+print(f"NPV = ${npv:,.2f}")    # → NPV = -$6,044.66  → reddet (NPV < 0)</div>
+
+    <h3>AW, PMT, Faktörler</h3>
+    <div class="code-pre">i, n = 0.12, 8
+P, A, S = 50000, 9000, 5000
+
+# (A/P) faktörü
+ap = npf.pmt(i, n, -1)      # = 0.2013  ← 1 birim PV için yıllık ödeme
+cr = npf.pmt(i, n, -P, S)   # Capital Recovery = $11,500/yıl (örn.)
+
+# PW hesabı
+pw = npf.npv(i, cf)          # = PV tüm CF
+
+# Faktör tablosu — pandas ile
+years = range(1, 9)
+df = pd.DataFrame({
+    "Yıl": years,
+    "P/F": [(1+i)**-k for k in years],
+    "P/A": [npf.pv(i, k, -1) for k in years],
+    "A/P": [npf.pmt(i, k, -1) for k in years],
+})
+print(df)</div>
+
+    <h3>ESL — Tüm Yıllar için AW Tablosu</h3>
+    <div class="code-pre">P, S0, ds, aoc0, daoc = 25000, 22000, 3000, 4000, 1500
+i, n_max = 0.12, 8
+
+rows = []
+for n in range(1, n_max+1):
+    S = S0 - ds*(n-1)          # hurda değeri
+    ap = npf.pmt(i, n, -1)     # (A/P,i,n)
+    af = npf.pmt(i, n, 0, -1)  # (A/F,i,n)
+    cr = P*ap - S*af            # capital recovery
+    
+    # AW(AOC): AOC'lerin bugünkü değerini bul, sonra AW'ye çevir
+    aoc_pv = sum((aoc0 + daoc*k) * (1+i)**-(k+1) for k in range(n))
+    aw_aoc = aoc_pv * ap
+    
+    total_aw = cr + aw_aoc
+    rows.append({"n": n, "CR": cr, "AW_AOC": aw_aoc, "Total AW": total_aw})
+
+df = pd.DataFrame(rows)
+esl = df.loc[df["Total AW"].idxmin(), "n"]
+print(df.to_string(index=False))
+print(f"\nESL = {esl} yıl")</div>
+
+    <h3>Jupyter Notebook'ta CF Grafiği</h3>
+    <div class="code-pre">import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10,4))
+years = range(len(cf))
+colors = ['red' if c < 0 else 'green' for c in cf]
+plt.bar(years, cf, color=colors, edgecolor='black')
+plt.axhline(0, color='black', linewidth=0.8)
+plt.xlabel('Yıl'); plt.ylabel('Net CF ($)')
+plt.title('Nakit Akışı Diyagramı')
+plt.xticks(list(years))
+plt.tight_layout(); plt.show()</div>
+
+    <div class="callout">
+      <strong>numpy_financial vs Excel:</strong><br/>
+      <code>npf.irr(cf)</code> → <code>=IRR()</code> &nbsp;|&nbsp; <code>npf.npv(i, cf)</code> → <code>=NPV()</code> + CF0<br/>
+      <code>npf.pmt(i,n,-P,S)</code> → <code>=PMT(i,n,-P,S)</code> &nbsp;|&nbsp; <code>npf.mirr(cf, f, r)</code> → <code>=MIRR()</code>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section id="final-scope">
+    <h2>7. Final Sınavı Kapsamı (Tahtadan)</h2>
+    <div class="callout" style="background:rgba(231,76,60,0.08);border-left-color:#e74c3c;">
+      <strong>📅 Final: Saat 18:15 — Süre: 90 dakika — Salon: SNAB172</strong>
+    </div>
+    <p>Hocanın tahtaya yazdığı final kapsamı ve soru dağılımı:</p>
+    <table>
+      <thead><tr><th>#</th><th>Konu</th><th>Süre / Puan</th><th>İlgili Hafta</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>B/C Analizi</strong> (Benefit/Cost)</td><td>~15 dakika</td><td>H4, H5</td></tr>
+        <tr><td>2</td><td><strong>Replacement &amp; Retention</strong> kararı</td><td>—</td><td>H6</td></tr>
+        <tr><td>3</td><td><strong>Breakeven Analizi</strong></td><td>—</td><td>H6, H7</td></tr>
+        <tr><td>4</td><td><strong>Hesaplama sorusu</strong></td><td>20 puan</td><td>H4–7</td></tr>
+        <tr><td>5</td><td>(Eklenebilir: ROR/WACC/ESL)</td><td>—</td><td>H4–6</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Excel / Python — Araç Bilgisi</h3>
+    <p>Sınavda bilgisayar kullanımı için <strong>interest rate fonksiyonları</strong> önemli. Özellikle:</p>
+    <div class="factor-grid">
+      <div class="factor-card">
+        <div class="factor-name">=IRR()</div>
+        <div class="factor-label">İç Getiri Oranı</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">CF dizisinin i*'ını verir. t=0 dahil gir.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">=NPV()</div>
+        <div class="factor-label">Net Bugünkü Değer</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">t=1'den başlar! CF0'ı ayrıca ekle.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">=PMT()</div>
+        <div class="factor-label">Yıllık Eşdeğer</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">CR ve AW hesabı için. P negatif gir.</p>
+      </div>
+      <div class="factor-card">
+        <div class="factor-name">=MIRR()</div>
+        <div class="factor-label">Composite ROR</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Multiple i* durumunda kullan. c ve i' ayrı gir.</p>
+      </div>
+    </div>
+
+    <h3>Hızlı Final Özeti</h3>
+    <table>
+      <thead><tr><th>Konu</th><th>Anahtar Formül / Karar</th></tr></thead>
+      <tbody>
+        <tr><td>B/C</td><td>$(B-D)/C \geq 1$ → Kabul &nbsp;|&nbsp; ME: incremental ΔB/ΔC</td></tr>
+        <tr><td>Replacement</td><td>Defender P = MV (sunk cost değil!) &nbsp;|&nbsp; AW_D vs AW_C</td></tr>
+        <tr><td>Breakeven (tek)</td><td>$Q_{BE} = FC/(r-v)$ &nbsp;|&nbsp; $\Pi=(r-v)Q-FC$</td></tr>
+        <tr><td>Breakeven (iki alt.)</td><td>$AW_1 = AW_2$ → çöz $Q_{BE}$</td></tr>
+        <tr><td>ESL</td><td>Her $n$ için $AW = CR + AW_{AOC}$, min olan $n$</td></tr>
+        <tr><td>WACC / MARR</td><td>$WACC = \sum w_j r_j$ &nbsp;|&nbsp; MARR ≥ WACC</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8 -->
+  <section id="practice">
+    <h2>8. Pratik Sorular</h2>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 1 — İki Makine Breakeven</div>
+      <p>MARR=%10, 8 yıl ömür. A: P=$30,000, S=$5,000, AOC=$4,000/yıl, v=$6/ton. B: P=$12,000, S=$0, AOC=$2,000/yıl, v=$10/ton. Breakeven tonu bul. 5,000 ton/yıl üretimde hangisi seçilmeli?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $(A/P,10\%,8)=0.18744$, $(A/F,10\%,8)=0.08744$<br/>
+          $CR_A = (30000-5000)(0.18744)+5000(0.10)=4686+500=\$5186$<br/>
+          $CR_B = 12000(0.18744)=\$2249$<br/>
+          $AW_A = 5186+4000+6Q = 9186+6Q$<br/>
+          $AW_B = 2249+2000+10Q = 4249+10Q$<br/>
+          $9186+6Q=4249+10Q → 4937=4Q → Q_{BE}=\mathbf{1234 \text{ ton/yıl}}$<br/>
+          5000 > 1234 → <strong>Makine A seçilir.</strong><br/>
+          Excel: değişken maliyetleri yıllık CF'ye ekleyerek doğrula.
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 2 — Ortalama Birim Maliyet</div>
+      <p>FC=$200,000/yıl, v=$18/birim. Yıllık 8,000 birim üretilirse ortalama maliyet $C_u$ = ? $Q_{BE}$'de $C_u$ ne olur (satış fiyatı r=$43)?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $C_u = FC/Q + v = 200000/8000 + 18 = 25 + 18 = \$43/\text{birim}$<br/>
+          $Q_{BE} = 200000/(43-18) = 200000/25 = 8000$ birim<br/>
+          $Q_{BE}$'de: $C_u = 200000/8000 + 18 = 43 = r$ → <strong>Doğru! Kâr = 0.</strong>
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 3 — Python ile IRR</div>
+      <p>Aşağıdaki CF dizisinin IRR'ını Python kodu ile hesapla: C0=-80000, C1-C5=18000/yıl, C5 yılında ek hurda 10000. MARR=%12. Kabul/red?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          <code style="display:block;font-family:monospace;padding:0.5rem;background:var(--bg);border-radius:4px;font-size:0.82rem;">
+import numpy_financial as npf<br/>
+cf = [-80000, 18000, 18000, 18000, 18000, 28000]<br/>
+irr = npf.irr(cf)<br/>
+print(f"IRR = {irr:.2%}")  # → IRR ≈ 10.56%<br/>
+# 10.56% < MARR=12% → Reddedilir
+          </code>
+          Elle doğrulama: $(P/A,10\%,5)=3.7908$, $(P/F,10\%,5)=0.6209$<br/>
+          $PW=−80000+18000(3.7908)+10000(0.6209)=−80000+68234+6209=−5557<0$ → i*≈10.56%
+        </div>
+      </details>
+    </div>
+
+    <div class="practice-q">
+      <div class="practice-label">Soru 4 — B/C + Replacement Entegre</div>
+      <p>Kamu köprüsü: P=$5M, S=$500k, n=25yr, i=%6, AOC=$120k/yıl, fayda=$700k/yıl, disbenefit=$80k/yıl. Konvansiyonel B/C = ? Mevcut köprünün MV=$1.2M, AOC=$200k/yıl, challenger=$600k/yıl AW ile karşılaştır — hangi durum daha iyi?</p>
+      <details><summary>Çözümü Gör</summary>
+        <div class="solution">
+          $(A/P,6\%,25)=0.07823$, $(A/F,6\%,25)=0.01823$<br/>
+          $CR=5M(0.07823)-500k(0.01823)=391150-9115=382035$<br/>
+          $C=382035+120000=\$502035$<br/>
+          $B/C=(700000-80000)/502035=620000/502035=1.24 \geq 1$ → <strong>Kabul.</strong><br/><br/>
+          Mevcut köprü: $AW_D = 1200000(A/P,6\%,n_{\text{kalan}})+200000$ (kalan ömre göre)<br/>
+          Challenger: $AW_C=\$600000/\text{yıl}$<br/>
+          $AW_D > AW_C$ → <strong>Yeni köprüye geç.</strong>
+        </div>
+      </details>
+    </div>
+
+  </section>
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

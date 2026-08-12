@@ -164,14 +164,59 @@
       ESL → MC'nin en düşük olduğu yıl = AW'nin minimum olduğu yıl.
     </div>
 
-    <h3>ESL Belirleme Prosedürü</h3>
-    <p>Her $n$ değeri için (1, 2, 3, … yıl) toplam AW hesapla. AW en küçük olduğu $n$ → ESL.</p>
+    <h3>ESL Belirleme Prosedürü — Adım Adım</h3>
+    <p>Her $n$ değeri için sırasıyla CR ve AW(AOC) hesaplanır; toplam AW minimuma ulaşan $n$ → ESL.</p>
+
+    <div class="example">
+      <div class="example-label">Tam Sayısal Örnek — ESL Tablosu (MARR = %12)</div>
+      <p><strong>Veri:</strong> P = $25,000 &nbsp;|&nbsp; Hurda değeri her yıl $3,000 düşüyor: $S_n = 25000 - 3000n$ &nbsp;|&nbsp; AOC başlangıçta $4,000, her yıl $1,500 artıyor: $AOC_k = 4000 + 1500(k-1)$</p>
+
+      <p>Faktörler (MARR=%12): $(P/F,12\%,1)=0.8929$, $(P/F,12\%,2)=0.7972$, $(P/F,12\%,3)=0.7118$, $(P/F,12\%,4)=0.6355$</p>
+      <p>$(A/P,12\%,1)=1.1200$, $(A/P,12\%,2)=0.5917$, $(A/P,12\%,3)=0.4163$, $(A/P,12\%,4)=0.3292$</p>
+      <p>$(A/F,12\%,1)=1.0000$, $(A/F,12\%,2)=0.4717$, $(A/F,12\%,3)=0.2963$, $(A/F,12\%,4)=0.2092$</p>
+
+      <p><strong>n = 1</strong> ($S_1 = 22{,}000$; $AOC_1 = 4{,}000$):</p>
+      $$CR_1 = 25{,}000(1.1200) - 22{,}000(1.0000) = 28{,}000 - 22{,}000 = 6{,}000$$
+      $$AW_{\text{AOC},1} = 4{,}000 \times 0.8929 \times 1.1200 = 3{,}571 \times 1.1200 = 3{,}999 \approx 4{,}000$$
+      $$AW_1 = 6{,}000 + 4{,}000 = \mathbf{\$10{,}000}$$
+
+      <p><strong>n = 2</strong> ($S_2 = 19{,}000$; $AOC_1=4{,}000$, $AOC_2=5{,}500$):</p>
+      $$CR_2 = 25{,}000(0.5917) - 19{,}000(0.4717) = 14{,}793 - 8{,}962 = 5{,}831$$
+      $$AW_{\text{AOC},2} = [4{,}000(0.8929) + 5{,}500(0.7972)] \times 0.5917 = [3{,}572 + 4{,}385] \times 0.5917 = 7{,}957 \times 0.5917 = 4{,}708$$
+      $$AW_2 = 5{,}831 + 4{,}708 = \mathbf{\$10{,}539}$$
+
+      <p><strong>n = 3</strong> ($S_3 = 16{,}000$; $AOC_3=7{,}000$):</p>
+      $$CR_3 = 25{,}000(0.4163) - 16{,}000(0.2963) = 10{,}408 - 4{,}741 = 5{,}667$$
+      $$AW_{\text{AOC},3} = [3{,}572 + 4{,}385 + 7{,}000(0.7118)] \times 0.4163 = [3{,}572+4{,}385+4{,}983] \times 0.4163 = 12{,}940 \times 0.4163 = 5{,}387$$
+      $$AW_3 = 5{,}667 + 5{,}387 = \mathbf{\$11{,}054}$$
+
+      <p><strong>n = 4</strong> ($S_4 = 13{,}000$; $AOC_4=8{,}500$):</p>
+      $$CR_4 = 25{,}000(0.3292) - 13{,}000(0.2092) = 8{,}230 - 2{,}720 = 5{,}510$$
+      $$AW_{\text{AOC},4} = [3{,}572+4{,}385+4{,}983+8{,}500(0.6355)] \times 0.3292 = [3{,}572+4{,}385+4{,}983+5{,}402] \times 0.3292 = 18{,}342 \times 0.3292 = 6{,}041$$
+      $$AW_4 = 5{,}510 + 6{,}041 = \mathbf{\$11{,}551}$$
+
+      <p><strong>Özet Tablosu:</strong></p>
+      <table>
+        <thead><tr><th>Yıl (n)</th><th>CR ($)</th><th>AW(AOC) ($)</th><th>Toplam AW ($)</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>6,000</td><td>4,000</td><td><strong>10,000</strong></td><td>← <strong>MİNİMUM = ESL</strong></td></tr>
+          <tr><td>2</td><td>5,831</td><td>4,708</td><td>10,539</td><td></td></tr>
+          <tr><td>3</td><td>5,667</td><td>5,387</td><td>11,054</td><td></td></tr>
+          <tr><td>4</td><td>5,510</td><td>6,041</td><td>11,551</td><td></td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout--warn">
+        <strong>ESL = 1 yıl</strong> — Bu durumda ekipman hızlı değer kaybediyor ve AOC hızlı artıyor. En ekonomik ömür 1 yıldır; her yıl değiştirmek en uygun stratejidir.<br/>
+        <strong>Excel:</strong> <code>=PMT(0.12, n, -25000, S_n) + AW_AOC</code> — Her n için ayrı satırda hesapla, en küçük toplamı bul.
+      </div>
+    </div>
+
     <table>
-      <thead><tr><th>Yıl (n)</th><th>CR ($)</th><th>AW(AOC) ($)</th><th>Toplam AW ($)</th></tr></thead>
+      <thead><tr><th>Yıl (n)</th><th>CR trendi</th><th>AW(AOC) trendi</th><th>Toplam AW trendi</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td>Yüksek</td><td>Düşük</td><td>Yüksek</td></tr>
-        <tr><td>ESL yılı</td><td>↓</td><td>↑</td><td><strong>Minimum ✓</strong></td></tr>
-        <tr><td>n artınca</td><td>Azalır</td><td>Artar</td><td>Artar</td></tr>
+        <tr><td>Küçük n</td><td>Yüksek (büyük P, kısa süre)</td><td>Düşük (AOC henüz düşük)</td><td>CR domine eder</td></tr>
+        <tr><td>ESL</td><td>↓</td><td>↑</td><td><strong>Minimum ✓</strong></td></tr>
+        <tr><td>Büyük n</td><td>Azalır</td><td>Hızla artar</td><td>AOC domine eder</td></tr>
       </tbody>
     </table>
   </section>

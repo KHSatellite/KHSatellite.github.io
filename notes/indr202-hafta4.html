@@ -33,17 +33,18 @@
 <aside class="toc">
   <p class="toc-title">İçindekiler</p>
   <ul>
-    <li><a href="#ror-intro">1. ROR Nedir?</a></li>
-    <li><a href="#ror-def">2. IRR Tanımı</a></li>
-    <li><a href="#ror-calc">3. ROR Hesaplama</a></li>
-    <li><a href="#multiple-i">4. Multiple i* Problemi</a></li>
-    <li><a href="#crr">5. Composite ROR (CRR)</a></li>
-    <li><a href="#incremental">6. Incremental ROR</a></li>
-    <li><a href="#bc-intro">7. Benefit/Cost Oranı</a></li>
-    <li><a href="#bc-types">8. B/C Türleri</a></li>
-    <li><a href="#bc-public">9. Kamu Sektörü</a></li>
-    <li><a href="#bc-example">10. B/C Örneği</a></li>
-    <li><a href="#practice">11. Pratik Sorular</a></li>
+    <li><a href="#ror-intro">1. ROR / IRR Nedir?</a></li>
+    <li><a href="#ror-def">2. İki Tanım</a></li>
+    <li><a href="#ror-calc">3. Deneme-Yanılma + İnterpolasyon</a></li>
+    <li><a href="#excel">4. Excel ile ROR</a></li>
+    <li><a href="#multiple-i">5. Multiple i* Problemi</a></li>
+    <li><a href="#crr">6. Composite ROR (CRR/MIRR)</a></li>
+    <li><a href="#incremental">7. Incremental ROR</a></li>
+    <li><a href="#bc-intro">8. Benefit/Cost Oranı</a></li>
+    <li><a href="#bc-types">9. B/C Türleri</a></li>
+    <li><a href="#bc-public">10. Kamu Sektörü</a></li>
+    <li><a href="#bc-example">11. B/C Örneği</a></li>
+    <li><a href="#practice">12. Pratik Sorular</a></li>
   </ul>
 </aside>
 
@@ -53,18 +54,18 @@
     <span class="note-week-label">Hafta 4</span>
   </div>
   <h1 class="note-main-title">Rate of Return ve Benefit/Cost Analizi</h1>
-  <p class="note-intro">Bir yatırımın gerçek getirisini bulmak için kullanılan ROR / IRR yöntemi, birden fazla çözüm yaratan multiple i* problemi, bunu çözen Composite ROR, incremental ROR ile çoklu alternatif karşılaştırması ve kamu projelerinde kullanılan Benefit/Cost oranı.</p>
+  <p class="note-intro">Bir yatırımın gerçek getirisini bulmak için kullanılan ROR / IRR yöntemi — deneme-yanılma ve doğrusal interpolasyonla elle nasıl hesaplanır, Excel'de hangi fonksiyonlar kullanılır; multiple i* problemi, Composite ROR ve Benefit/Cost analizi.</p>
   <div class="note-divider"></div>
 
   <!-- 1 -->
   <section id="ror-intro">
     <h2>1. Rate of Return (ROR) Nedir?</h2>
-    <p>ROR (Rate of Return), bir yatırımın sağladığı <strong>gerçek getiri oranıdır</strong>. IRR (Internal Rate of Return) veya i* ile gösterilir. Diğer isimler:</p>
+    <p>ROR (Rate of Return), bir yatırımın sağladığı <strong>gerçek getiri oranıdır</strong>. IRR (Internal Rate of Return) veya $i^*$ ile gösterilir.</p>
     <div class="factor-grid">
       <div class="factor-card">
         <div class="factor-name">IRR</div>
         <div class="factor-label">Internal Rate of Return</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">En yaygın isim. Projenin iç getiri oranı.</p>
+        <p style="font-size:0.82rem;color:var(--text-muted)">En yaygın isim. Projenin iç getiri oranı. Nakit akışlarının NPV'sini sıfır yapan oran.</p>
       </div>
       <div class="factor-card">
         <div class="factor-name">ROI</div>
@@ -72,181 +73,350 @@
         <p style="font-size:0.82rem;color:var(--text-muted)">Yatırım getirisi. Özellikle finans sektöründe kullanılır.</p>
       </div>
       <div class="factor-card">
-        <div class="factor-name">PI</div>
-        <div class="factor-label">Profitability Index</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">Kârlılık endeksi. PW(fayda) / PW(maliyet) oranıdır.</p>
+        <div class="factor-name">i*</div>
+        <div class="factor-label">i-star</div>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Mühendislik ekonomisinde standart gösterim. PW = 0 denkleminin çözümü.</p>
       </div>
     </div>
     <div class="callout">
       <strong>Karar kuralı:</strong> $i^* \geq MARR$ → yatırımı kabul et. $i^* < MARR$ → reddet.
     </div>
+    <p>Matematiksel ifade: IRR, tüm nakit akışlarının bugünkü değerini <strong>sıfır</strong> yapan $i^*$ oranıdır:</p>
+    $$0 = \sum_{t=0}^{n} C_t \cdot (1+i^*)^{-t} = -PW_{\text{maliyet}} + PW_{\text{gelir}}$$
+    <p>Bu denklem çoğu zaman <strong>kapalı form çözümü yok</strong> — dolayısıyla deneme-yanılma, interpolasyon veya Excel gerektirir.</p>
   </section>
 
   <!-- 2 -->
   <section id="ror-def">
     <h2>2. IRR'ın İki Tanımı (Tahtadan)</h2>
     <h3>Borçlunun Bakış Açısından</h3>
-    <p>Faiz oranı, <strong>"unpaid balance" (ödenmemiş bakiye)</strong> üzerine uygulanır; öyle ki toplam borç ve faizin tamamı son ödemeyle tam olarak kapanır.</p>
+    <p>IRR, <strong>"unpaid balance" (ödenmemiş bakiye)</strong> üzerine uygulanır; öyle ki toplam borç ve faizin tamamı son ödemeyle tam olarak kapanır.</p>
     <h3>Borç Verenin Bakış Açısından</h3>
     <p>IRR, <strong>"unrecovered balance" (kurtarılmamış bakiye)</strong> üzerine ödenen orandır; bir ödeme veya gelir bu bakiyeyi tam olarak <strong>sıfıra</strong> getirir.</p>
     <div class="callout">
-      <strong>Temel fikir:</strong> IRR, nakit akışlarının Net Present Value'sini (NPV) tam olarak sıfır yapan orandır.
+      <strong>Temel fikir:</strong> Her iki tanım da aynı noktada buluşur — IRR, projenin "kendi kendini finanse ettiği" orandır.
     </div>
-    <h3>Matematiksel İfade</h3>
-    <p>PW yaklaşımı ile:</p>
-    $$0 = -PW_{\text{maliyet}} + PW_{\text{gelir}} \quad \Rightarrow \quad 0 = \sum_{t=0}^{n} C_t \cdot (1+i^*)^{-t}$$
-    <p>AW yaklaşımı ile:</p>
-    $$0 = -AW_{\text{maliyet}} + AW_{\text{gelir}}$$
-    <p>Her iki denklemde de <strong>bilinmeyen $i^*$'dır</strong>. Genellikle deneme-yanılma (trial & error) veya Excel'in <code>IRR()</code> / <code>RATE()</code> fonksiyonuyla çözülür.</p>
+    <div class="example">
+      <div class="example-label">Somut Örnek — Ödenmemiş Bakiye Takibi</div>
+      <p>$1,000 borç alındı, $i^*=10\%$/yıl, 2 yıl sonra $1,210 geri ödenecek.</p>
+      <table>
+        <thead><tr><th>Yıl</th><th>Başlangıç bakiyesi</th><th>Faiz (%10)</th><th>Ödeme</th><th>Son bakiye</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>$1,000</td><td>$100</td><td>$0</td><td>$1,100</td></tr>
+          <tr><td>2</td><td>$1,100</td><td>$110</td><td>$1,210</td><td><strong>$0</strong></td></tr>
+        </tbody>
+      </table>
+      <p>Son bakiye tam olarak $0 — bu $i^*=10\%$ olduğunu doğrular.</p>
+    </div>
   </section>
 
   <!-- 3 -->
   <section id="ror-calc">
-    <h2>3. ROR Hesaplama</h2>
-    <h3>Adım Adım Yöntem</h3>
-    <p>1. CF diyagramını çiz. 2. PW veya AW denklemini kur. 3. Deneme-yanılma ile $i^*$ bul (veya Excel'de IRR fonksiyonu). 4. $i^*$ ile MARR'ı karşılaştır.</p>
-    <div class="example">
-      <div class="example-label">Örnek (Tahtadan) — Excel HW</div>
-      <p>Bugün $500,000 harca, 10 yıl boyunca $10,000/yıl al, 10. yıl sonunda $700,000 al. ROR = ?</p>
-      $$0 = -500{,}000 + 10{,}000(P/A,\,i^*,\,10) + 700{,}000(P/F,\,i^*,\,10)$$
-      <p>Deneme-yanılma veya Excel <code>=IRR()</code> ile: $i^* \approx 5.16\%$ <em>(ve aynı zamanda $-32\%$ — birden fazla çözüm!)</em></p>
-      <p>Bu durum "multiple i*" problemini gösteriyor — aşağıda açıklanıyor.</p>
-    </div>
-    <div class="example">
-      <div class="example-label">Örnek — Basit Tek Çözüm</div>
-      <p>$1,200 yatırım, 5 yıl boyunca $300/yıl gelir, salvage değeri $100. $i^*$ = ?</p>
-      $$0 = -1200 + 300(P/A,\,i^*,\,5) + 100(P/F,\,i^*,\,5)$$
-      <p>i=%10: $PW = -1200+300(3.7908)+100(0.6209) = -1200+1137.24+62.09 = -0.67 \approx 0$</p>
-      <p>$\therefore i^* \approx 10\%$</p>
-    </div>
-  </section>
+    <h2>3. Deneme-Yanılma ve Doğrusal İnterpolasyon</h2>
+    <p>IRR denklemi analitik çözüme sahip değildir (birden fazla CF terimi varsa). El hesabında <strong>bracket-then-interpolate</strong> (sınırla-sonra-interpolasyon-yap) yöntemi kullanılır:</p>
 
-  <!-- 4 -->
-  <section id="multiple-i">
-    <h2>4. Multiple i* Problemi</h2>
-    <p>Nakit akışı serisi <strong>birden fazla işaret değiştiriyorsa</strong> (+ → − → + gibi), Descartes işaret kuralına göre birden fazla pozitif gerçek kök (i*) bulunabilir. Bu durum ROR analizini karmaşık hale getirir.</p>
-    <div class="callout callout--warn">
-      <strong>İşaret değişimi kuralı (Descartes):</strong> Net CF'lerin işaret değişim sayısı = olası pozitif i* sayısı üst sınırı.<br/>
-      Örn: +, −, +, − → 3 işaret değişimi → en fazla 3 farklı i* olabilir.
-    </div>
+    <h3>Adım Adım Yöntem</h3>
     <div class="example">
-      <div class="example-label">Örnek (Tahtadan) — CF Tablosu ile Multiple i*</div>
+      <div class="example-label">Genel Prosedür</div>
+      <p><strong>Adım 1:</strong> PW denklemini kur: $0 = -P + A(P/A,i^*,n) + S(P/F,i^*,n)$</p>
+      <p><strong>Adım 2:</strong> Bir başlangıç tahmini seç (genellikle %10–15). PW'yi hesapla.</p>
+      <p><strong>Adım 3:</strong> PW > 0 ise $i^*$'ı artır; PW < 0 ise azalt. <em>PW işaret değiştirene kadar devam et.</em></p>
+      <p><strong>Adım 4:</strong> İki oran arasında doğrusal interpolasyon yap:</p>
+      $$i^* \approx i_{\text{düşük}} + (i_{\text{yüksek}} - i_{\text{düşük}}) \times \frac{|PW(i_{\text{düşük}})|}{|PW(i_{\text{düşük}})| + |PW(i_{\text{yüksek}})|}$$
+      <p><strong>Adım 5:</strong> $i^*$ ile MARR'ı karşılaştır.</p>
+    </div>
+
+    <div class="callout">
+      <strong>İnterpolasyon Formülü — Sözel Açıklama:</strong><br/>
+      İki deneme arasındaki mesafeyi, PW değerlerinin <em>mutlak oranına</em> göre bölüştür.<br/>
+      $i_{\text{düşük}}$'te PW = $+347$, $i_{\text{yüksek}}$'te PW = $-1515$ → $i^*$ alt sınıra daha yakın (347 küçük, 1515 büyük).
+    </div>
+
+    <div class="example">
+      <div class="example-label">Tam Çözümlü Örnek — Adım Adım</div>
+      <p><strong>Veri:</strong> P = $50,000 &nbsp;|&nbsp; Yıllık gelir A = $9,000 &nbsp;|&nbsp; Hurda S = $5,000 &nbsp;|&nbsp; n = 8 yıl &nbsp;|&nbsp; MARR = %12</p>
+      <p><strong>Denklem:</strong> $0 = -50{,}000 + 9{,}000(P/A,\,i^*,\,8) + 5{,}000(P/F,\,i^*,\,8)$</p>
+
+      <p><strong>Deneme 1 — i = %10:</strong></p>
       <table>
-        <thead><tr><th>Yıl</th><th>Net CF</th><th>Kümülatif CF</th></tr></thead>
+        <thead><tr><th>Faktör</th><th>Değer</th><th>Hesap</th></tr></thead>
         <tbody>
-          <tr><td>0</td><td>0</td><td>0</td></tr>
-          <tr><td>1</td><td>+200</td><td>+200</td></tr>
-          <tr><td>2</td><td>+100</td><td>+300</td></tr>
-          <tr><td>3</td><td>+50</td><td>+350</td></tr>
-          <tr><td>4</td><td>−1,800</td><td>−1,450</td></tr>
-          <tr><td>5</td><td>+600</td><td>−850</td></tr>
+          <tr><td>$(P/A,10\%,8)$</td><td>5.3349</td><td>$9000 \times 5.3349 = +48{,}014$</td></tr>
+          <tr><td>$(P/F,10\%,8)$</td><td>0.4665</td><td>$5000 \times 0.4665 = +2{,}333$</td></tr>
+          <tr><td>İlk yatırım</td><td>—</td><td>$-50{,}000$</td></tr>
+          <tr><td><strong>PW (%10)</strong></td><td></td><td><strong>$+347 > 0$</strong> → i* büyük, testi yukarı taşı</td></tr>
         </tbody>
       </table>
-      <p>MARR = %15. İşaret: +,+,+,−,+ → 2 işaret değişimi → iki farklı i* mümkün. $i^* = 100\%$ bir çözüm; başka bir negatif i* de var.</p>
+
+      <p><strong>Deneme 2 — i = %11:</strong></p>
+      <table>
+        <thead><tr><th>Faktör</th><th>Değer</th><th>Hesap</th></tr></thead>
+        <tbody>
+          <tr><td>$(P/A,11\%,8)$</td><td>5.1461</td><td>$9000 \times 5.1461 = +46{,}315$</td></tr>
+          <tr><td>$(P/F,11\%,8)$</td><td>0.4339</td><td>$5000 \times 0.4339 = +2{,}170$</td></tr>
+          <tr><td>İlk yatırım</td><td>—</td><td>$-50{,}000$</td></tr>
+          <tr><td><strong>PW (%11)</strong></td><td></td><td><strong>$-1{,}515 < 0$</strong> → Bulduk! Bracket: %10 ≤ i* ≤ %11</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>İnterpolasyon:</strong></p>
+      $$i^* \approx 10 + (11-10) \times \frac{|{+347}|}{|{+347}| + |{-1{,}515}|} = 10 + 1 \times \frac{347}{1{,}862} = 10 + 0.186 = \mathbf{10.19\%}$$
+
+      <div class="callout callout--warn">
+        $i^* \approx 10.19\% < MARR = 12\%$ → <strong>Proje reddedilir.</strong><br/>
+        Not: İnterpolasyon doğrusal yaklaşım olduğundan küçük hata içerir; aralık ne kadar dar olursa (örn. %10 ve %11 gibi 1 puanlık) sonuç o kadar doğru olur.
+      </div>
     </div>
-    <h3>Reinvestment Rate Sorunu</h3>
-    <p>PW ve AW yöntemleri, tüm net pozitif nakit akışlarının <strong>MARR oranıyla yeniden yatırıldığını</strong> varsayar. Oysa ROR, bunların $i^*$ oranıyla yeniden yatırıldığını varsayar. Eğer $i^* \gg MARR$ ise bu varsayım gerçekçi değildir.</p>
+
+    <h3>İnterpolasyon Hatasını Azaltmak İçin</h3>
+    <p>Aralığı 1–2 yüzde puanına sıkıştır. 5 puanlık aralıklarda (örn. %10 ve %15) hata artabilir. Şüphede kalırsan Excel ile doğrula.</p>
+  </section>
+
+  <!-- 4 — YENİ: Excel ile ROR -->
+  <section id="excel">
+    <h2>4. Excel ile ROR Hesabı</h2>
+    <p>Elle interpolasyon zahmetli ve hata yapmaya açık. Excel, tek formülle hem $i^*$ hem de PW değerlerini hesaplar. İşte mühendislik ekonomisinde kullanılan temel Excel fonksiyonları:</p>
+
+    <h3>Fonksiyon Tablosu</h3>
+    <table>
+      <thead><tr><th>Fonksiyon</th><th>Sözdizimi</th><th>Ne Hesaplar?</th></tr></thead>
+      <tbody>
+        <tr><td><code>=IRR()</code></td><td><code>=IRR(değerler; [tahmin])</code></td><td>$i^*$ — nakit akışı dizisinin iç getiri oranı</td></tr>
+        <tr><td><code>=RATE()</code></td><td><code>=RATE(n; A; -P; S)</code></td><td>Dönemsel faiz oranı (düzenli ödemeler için)</td></tr>
+        <tr><td><code>=NPV()</code></td><td><code>=NPV(oran; CF1:CFn)</code></td><td>t=1'den t=n'e kadar CF'lerin bugünkü değeri</td></tr>
+        <tr><td><code>=PV()</code></td><td><code>=PV(oran; n; A; S)</code></td><td>Seri/tek ödemenin bugünkü değeri</td></tr>
+        <tr><td><code>=PMT()</code></td><td><code>=PMT(oran; n; -P; S)</code></td><td>Eşit dönemsel ödeme (A değeri)</td></tr>
+        <tr><td><code>=MIRR()</code></td><td><code>=MIRR(değerler; yatırım_oranı; yeniden_yatırım_oranı)</code></td><td>Composite ROR / MIRR</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Önemli: NPV fonksiyonu tuzağı</h3>
     <div class="callout callout--warn">
-      <strong>Tavsiye (Tahtadan):</strong> Eğer ROR kesinlikle gerekli değilse, MARR üzerinden PW veya AW yöntemi kullanmak <em>çok daha güvenlidir</em>.
+      <strong>Excel'de NPV, t=0'ı içermez!</strong><br/>
+      <code>=NPV(oran; CF1:CFn)</code> yalnızca t=1'den başlar. t=0 yatırımını ayrıca eklemek gerekir:<br/>
+      <code>=NPV(0.10; B2:B9) + B1</code> &nbsp; ← B1 = t=0 CF'si (negatif yatırım)
+    </div>
+
+    <div class="example">
+      <div class="example-label">Excel Örneği — Yukarıdaki $50,000 Problemi</div>
+      <p>Nakit akışlarını Excel'e şöyle gir:</p>
+      <table>
+        <thead><tr><th>Hücre</th><th>Değer</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td>A1</td><td>Yıl</td><td>Başlık</td></tr>
+          <tr><td>B1</td><td>CF ($)</td><td>Başlık</td></tr>
+          <tr><td>A2</td><td>0</td><td></td></tr>
+          <tr><td>B2</td><td>-50000</td><td>t=0 yatırımı</td></tr>
+          <tr><td>A3:A9</td><td>1, 2, …, 7</td><td></td></tr>
+          <tr><td>B3:B9</td><td>9000</td><td>Yıllık gelir</td></tr>
+          <tr><td>A10</td><td>8</td><td></td></tr>
+          <tr><td>B10</td><td>14000</td><td>Son yıl: 9000+5000 hurda</td></tr>
+        </tbody>
+      </table>
+      <p>Sonra boş bir hücreye:</p>
+      <div class="code-pre">=IRR(B2:B10)          → Sonuç: 10.19%  (interpolasyonla aynı!)
+=RATE(8; 9000; -50000; 5000)  → Sonuç: 10.19%  (düzenli seri için)
+=NPV(0.12; B3:B10)+B2  → PW değeri i=%12'de → Eğer negatifse reject</div>
+    </div>
+
+    <div class="example">
+      <div class="example-label">RATE() Fonksiyonunun İşareti — Dikkat!</div>
+      <p>RATE'te PV (bugünkü yatırım) <strong>negatif</strong> girilir:</p>
+      <div class="code-pre">=RATE(n; PMT; PV; FV)
+=RATE(8; 9000; -50000; 5000)  ✓  Doğru (P negatif)
+=RATE(8; 9000; 50000; 5000)   ✗  Yanlış (hata verir veya yanlış sonuç)</div>
+      <p>Genel kural: Para çıkışları negatif, para girişleri pozitif girilir.</p>
+    </div>
+
+    <h3>Composite ROR için Excel — MIRR()</h3>
+    <div class="example">
+      <div class="example-label">MIRR Sözdizimi</div>
+      <div class="code-pre">=MIRR(değerler; finance_rate; reinvest_rate)
+
+değerler       → t=0'dan t=n'e tüm nakit akışları (B2:B10 gibi)
+finance_rate   → borçlanma/yatırım faizi  (F_{t-1} < 0 iken kullanılan oran) = i'
+reinvest_rate  → yeniden yatırım oranı    (F_{t-1} > 0 iken kullanılan oran) = c
+
+Örnek: =MIRR(B2:B5; 0.15; 0.10)
+  → MARR=%15, yeniden yatırım=%10 kabulüyle CRR hesaplar</div>
+      <div class="callout callout--warn">
+        <strong>MIRR'de hangi oran nereye girer?</strong><br/>
+        <code>finance_rate</code> = $i'$ (bulmaya çalıştığımız oran, MARR olarak başlangıç tahmini girilir)<br/>
+        <code>reinvest_rate</code> = $c$ (yeniden yatırım oranı, genellikle MARR veya daha düşük bir oran)
+      </div>
     </div>
   </section>
 
   <!-- 5 -->
-  <section id="crr">
-    <h2>5. Composite Rate of Return (CRR) — Yeniden Yatırım Oranı</h2>
-    <p>CRR (veya MIRR — Modified IRR), multiple i* problemini çözmek için geliştirilmiştir. Net pozitif CF'lerin <strong>harici bir yeniden yatırım oranı $c$</strong> ile büyüdüğü varsayılır. Bulunan tek benzersiz oran $i'$ (i-prime) olarak adlandırılır.</p>
-
-    <div class="callout">
-      <strong>Tanım (Tahtadan):</strong> $i'$, net pozitif nakit akışlarının (projenin hemen ihtiyaç duymadığı paralar) $c$ oranıyla yeniden yatırıldığını varsayan, projenin <em>benzersiz</em> getiri oranıdır.
-    </div>
-
-    <h3>G-Net Yatırım Prosedürü</h3>
-    <p>$F_t$ = t anındaki net yatırım değeri (Net Investment Value). Prosedür:</p>
-    $$F_t = F_{t-1}(1+\lambda) + C_t \qquad t = 1, 2, \ldots, n$$
-    <p>burada $\lambda$ şöyle seçilir:</p>
-    $$\lambda = \begin{cases} c & \text{eğer } F_{t-1} > 0 \quad \text{(proje net pozisyonda → } c \text{ ile yatır)} \\ i' & \text{eğer } F_{t-1} < 0 \quad \text{(proje hâlâ yatırımda → } i' \text{ uygula)} \end{cases}$$
-    <p>Son adım: $F_n = 0$ olacak şekilde $i'$'yi çöz.</p>
-
-    <div class="callout">
-      <strong>c ile i* ilişkisi (Tahtadan):</strong><br/>
-      $c = i^*$ ise $\quad i' = i^*$<br/>
-      $c < i^*$ ise $\quad i' < i^*$<br/>
-      $c > i^*$ ise $\quad i' > i^*$
+  <section id="multiple-i">
+    <h2>5. Multiple i* Problemi</h2>
+    <p>Nakit akışı serisi <strong>birden fazla işaret değiştiriyorsa</strong>, Descartes işaret kuralına göre birden fazla pozitif gerçek kök ($i^*$) bulunabilir.</p>
+    <div class="callout callout--warn">
+      <strong>Descartes İşaret Kuralı:</strong> Net CF'lerin ardışık işaret değişim sayısı = olası pozitif $i^*$ sayısının <em>üst sınırı</em>. Gerçek sayı bu kadar veya daha az olabilir.<br/>
+      Örn: $-, +, -, +$ → 3 işaret değişimi → en fazla 3 farklı $i^*$.
     </div>
 
     <div class="example">
-      <div class="example-label">Örnek (Tahtadan) — c = MARR = %15 ile CRR</div>
-      <p>CF tablosu: yr 6: +500, yr 7: +400, yr 8: +200, yr 9: +200, yr 10: +100 (diğerleri 0).</p>
-      <p>$F_0 = 0$ (pozitif başlangıç → $c = 15\%$ ile büyüt)</p>
-      <p>Her pozitif CF, $c$ ile t=10'a taşınır. Excel ile: <strong>$i' = 21.22\%$</strong>. MARR = %15 olduğundan $i' > MARR$ → kabul.</p>
+      <div class="example-label">Tahtadan — CF Tablosu ile Multiple i* Tespiti</div>
+      <table>
+        <thead><tr><th>Yıl</th><th>Net CF ($)</th><th>İşaret</th><th>Değişim?</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>+200</td><td>+</td><td>—</td></tr>
+          <tr><td>2</td><td>+100</td><td>+</td><td>Yok</td></tr>
+          <tr><td>3</td><td>+50</td><td>+</td><td>Yok</td></tr>
+          <tr><td>4</td><td>−1,800</td><td>−</td><td><strong>Değişim 1</strong></td></tr>
+          <tr><td>5</td><td>+600</td><td>+</td><td><strong>Değişim 2</strong></td></tr>
+        </tbody>
+      </table>
+      <p>2 işaret değişimi → en fazla 2 pozitif $i^*$ olabilir. Bu durumda standart IRR güvenilir değil → CRR kullan.</p>
     </div>
 
-    <div class="example">
-      <div class="example-label">Adım Adım CRR Hesabı</div>
-      <p>CF: $C_0 = -1425$, $C_1 = +50$, $C_2 = +100$ ve c = MARR = %15.</p>
-      <p>$F_0 = -1425 < 0$ → $\lambda = i'$ kullan</p>
-      $$F_1 = -1425(1+i') + 50$$
-      <p>$F_1 < 0$ ise → $\lambda = i'$ devam</p>
-      $$F_2 = F_1(1+i') + 100 = [-1425(1+i')+50](1+i') + 100 = 0$$
-      $$-1425(1+i')^2 + 50(1+i') - 100 = 0$$
-      <p>Çözüm: $i' = 22\%$ (yaklaşık, Excel doğrular)</p>
+    <h3>Neden Bu Sorun?</h3>
+    <p>ROR yöntemi, pozitif nakit akışlarının $i^*$ oranıyla yeniden yatırıldığını varsayar. Eğer $i^* \gg MARR$ ise bu gerçekçi değil. Ayrıca birden fazla $i^*$ varsa hangi değeri kullanacağını bilemezsin.</p>
+    <div class="callout callout--warn">
+      <strong>Pratik Tavsiye:</strong> Mümkünse PW veya AW yöntemini kullan (MARR ile hesap, tek sonuç). ROR şart ise CRR/MIRR'a geç.
     </div>
   </section>
 
   <!-- 6 -->
-  <section id="incremental">
-    <h2>6. Incremental ROR — Çoklu Alternatifler</h2>
-    <p>Birden fazla ME (mutually exclusive) alternatifi karşılaştırırken, <strong>en yüksek ROR'lu alternatif her zaman en iyi değildir</strong>. Bunun yerine <em>incremental (artışsal)</em> analiz yapılır.</p>
-    <div class="callout callout--warn">
-      <strong>Önemli:</strong> ROR değerleri PW, FW veya AW ile aynı sıralamayı vermeyebilir. Bu nedenle ME alternatifler için mutlaka incremental analiz gerekir.
-    </div>
-    <h3>Prosedür</h3>
-    <p>1. Alternatifleri ilk yatırım maliyetine göre küçükten büyüğe sırala.<br/>
-    2. İlk alternatifi "defender" (savunucu) olarak al.<br/>
-    3. Bir sonraki "challenger" ile arasındaki <em>artışsal CF</em>'yi hesapla: $\Delta CF = CF_{\text{challenger}} - CF_{\text{defender}}$<br/>
-    4. Bu artışsal CF'nin ROR'unu bul: $\Delta i^*$<br/>
-    5. $\Delta i^* \geq MARR$ → challenger'ı seç (yeni defender). $\Delta i^* < MARR$ → defender'da kal.<br/>
-    6. Tüm alternatifler bitene kadar tekrarla.</p>
-    <h3>Eşit Olmayan Ömürler</h3>
-    <div class="factor-grid">
-      <div class="factor-card">
-        <div class="factor-name">Eşit Ömür</div>
-        <div class="factor-label">t = 0 ile n arası</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">Doğrudan karşılaştır, büyük başlangıç yatırımı olan daha yüksek maliyet gerektirir</p>
-      </div>
-      <div class="factor-card">
-        <div class="factor-name">Eşit Olmayan Ömür</div>
-        <div class="factor-label">t = 0 ile LCM arası</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">LCM süre boyunca her alternatif tekrarlanır; ya da AW kullanarak 1 döngüyle karşılaştır</p>
-      </div>
-    </div>
+  <section id="crr">
+    <h2>6. Composite Rate of Return (CRR / MIRR)</h2>
+    <p>CRR (veya MIRR), multiple $i^*$ problemini çözmek için geliştirilmiştir. Fikir: pozitif CF'ler projenin dışında <strong>$c$ oranıyla</strong> yeniden yatırılır. Böylece tekil, benzersiz bir oran $i'$ elde edilir.</p>
+
+    <h3>F_t Prosedürü — Adım Adım</h3>
+    <p>$F_t$ = $t$ anındaki <em>Net Yatırım Değeri</em>. Her dönem için:</p>
+    $$F_t = F_{t-1}(1+\lambda) + C_t \qquad \lambda = \begin{cases} c & F_{t-1} > 0 \text{ (yatırım elde → dışarıda } c \text{ ile büyüt)} \\ i' & F_{t-1} < 0 \text{ (proje hâlâ borçlu → } i' \text{ uygula)} \end{cases}$$
+    <p>$n$. adımda $F_n = 0$ olacak şekilde $i'$ çöz.</p>
+
     <div class="example">
-      <div class="example-label">Örnek (Tahtadan) — Kullanılmış vs Yeni Makine</div>
-      <p>Kullanılmış makine: $15,000, yeni makine: $21,000. Servis ömrü = 25 yıl, hurda değeri %5, MARR = ?</p>
-      <p>Her alternatif için i* bulunur. $i^* \leq MARR$ olan elenir. Sonra incremental ROR ile karşılaştırılır.</p>
+      <div class="example-label">Tam F_t Tablosu ile Çözümlü Örnek — c = %10</div>
+      <p><strong>Nakit akışları:</strong> $C_0 = -1000$, $C_1 = +1400$, $C_2 = -100$</p>
+      <p>İşaret değişimi: $-, +, -$ → 2 değişim → multiple $i^*$ riski. CRR kullan.</p>
+
+      <p><strong>t=0:</strong></p>
+      $$F_0 = C_0 = -1000 \quad (F_0 < 0 \Rightarrow \lambda = i')$$
+
+      <p><strong>t=1:</strong></p>
+      $$F_1 = F_0(1+i') + C_1 = -1000(1+i') + 1400 = 400 - 1000i'$$
+      <p>$F_1 > 0$ mı? Eğer $i' < 40\%$ ise $F_1 > 0$ → $\lambda = c = 10\%$ kullanılır.</p>
+
+      <p><strong>t=2 (son adım → $F_2 = 0$):</strong></p>
+      $$F_2 = F_1(1+c) + C_2 = F_1(1.10) - 100 = 0$$
+      $$F_1 = \frac{100}{1.10} = 90.91$$
+
+      <p><strong>$i'$'yi bul:</strong></p>
+      $$F_1 = 400 - 1000i' = 90.91$$
+      $$1000i' = 309.09 \Rightarrow \boxed{i' = 30.9\%}$$
+
+      <p><strong>Doğrulama — tablo:</strong></p>
+      <table>
+        <thead><tr><th>t</th><th>$C_t$</th><th>$F_{t-1}$</th><th>$\lambda$ seçimi</th><th>$F_t$</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>−1000</td><td>—</td><td>—</td><td>−1000</td></tr>
+          <tr><td>1</td><td>+1400</td><td>−1000 (< 0)</td><td>$\lambda = i' = 30.9\%$</td><td>$-1000(1.309)+1400 = +91$</td></tr>
+          <tr><td>2</td><td>−100</td><td>+91 (> 0)</td><td>$\lambda = c = 10\%$</td><td>$91(1.10)-100 = +100.1-100 \approx 0$ ✓</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Excel ile:</strong> <code>=MIRR({-1000; 1400; -100}; 0.309; 0.10)</code> → 30.9%</p>
+    </div>
+
+    <div class="callout">
+      <strong>c ile i* ilişkisi:</strong><br/>
+      $c = i^*$ ise $i' = i^*$ &nbsp;|&nbsp; $c < i^*$ ise $i' < i^*$ &nbsp;|&nbsp; $c > i^*$ ise $i' > i^*$<br/>
+      CRR her zaman <em>tekil çözüm</em> verir → multiple $i^*$ problemini tamamen ortadan kaldırır.
+    </div>
+
+    <div class="example">
+      <div class="example-label">Birden Fazla λ Geçişi Olan Örnek — c = MARR = %15</div>
+      <p>CF: $C_0=-60000$, $C_1=+80000$, $C_2=-50000$, $C_3=+30000$</p>
+      <p>İşaret: $-, +, -, +$ → 3 değişim → CRR gerekli.</p>
+      <table>
+        <thead><tr><th>t</th><th>$C_t$</th><th>$F_{t-1}$</th><th>$\lambda$</th><th>$F_t$ formülü</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>-60000</td><td>—</td><td>—</td><td>-60000</td></tr>
+          <tr><td>1</td><td>+80000</td><td>-60000 &lt; 0</td><td>$i'$</td><td>$-60000(1+i')+80000$</td></tr>
+          <tr><td>2</td><td>-50000</td><td>$F_1$ (muhtemelen > 0)</td><td>$c=15\%$</td><td>$F_1(1.15)-50000$</td></tr>
+          <tr><td>3</td><td>+30000</td><td>$F_2$ (işaretine bak)</td><td>?</td><td>$F_2(\lambda)+30000=0$</td></tr>
+        </tbody>
+      </table>
+      <p>$i'=25\%$ denersek: $F_1=80000-75000=5000>0$ → $\lambda=15\%$ &nbsp;→ $F_2=5000(1.15)-50000=-44250<0$ → $\lambda=i'$ &nbsp;→ $F_3=-44250(1.25)+30000=-55312+30000=-25312\neq0$</p>
+      <p>$i'=18\%$ denersek hesap iterasyonla devam eder. Excel: <code>=MIRR({-60000;80000;-50000;30000}; 0.18; 0.15)</code> → iterasyonsuz sonuç.</p>
     </div>
   </section>
 
   <!-- 7 -->
+  <section id="incremental">
+    <h2>7. Incremental ROR — Çoklu Alternatifler</h2>
+    <p>ME alternatiflerde en yüksek bireysel $i^*$, en iyi alternatifte olmak zorunda değildir. <strong>Artışsal (incremental) analiz</strong> şarttır.</p>
+    <div class="callout callout--warn">
+      <strong>Neden bireysel i* yeterli değil?</strong> $i^*$ oranı, <em>yatırım büyüklüğünü</em> dikkate almaz. Küçük yatırımda yüksek $i^*$, büyük yatırımda daha düşük $i^*$ daha fazla katkı sağlayabilir.
+    </div>
+    <h3>Prosedür</h3>
+    <p>1. Alternatifleri başlangıç maliyetine göre küçükten büyüğe sırala.<br/>
+    2. "Do-Nothing" ile en ucuz alternatifi karşılaştır: $i^* \geq MARR$ ise defender olur.<br/>
+    3. Defender ve challenger arasındaki <strong>artışsal CF'yi</strong> hesapla: $\Delta CF = CF_{\text{challenger}} - CF_{\text{defender}}$<br/>
+    4. $\Delta CF$'nin $\Delta i^*$'ını deneme-yanılma/Excel ile bul.<br/>
+    5. $\Delta i^* \geq MARR$ → challenger'ı seç (yeni defender olur). Değilse defender'da kal.<br/>
+    6. Tüm alternatifler bitene kadar tekrarla.</p>
+
+    <div class="example">
+      <div class="example-label">Tam Çözümlü Örnek — Makine A vs B, MARR = %15</div>
+      <table>
+        <thead><tr><th></th><th>Makine A</th><th>Makine B</th></tr></thead>
+        <tbody>
+          <tr><td>İlk maliyet</td><td>$20,000</td><td>$35,000</td></tr>
+          <tr><td>Yıllık gelir</td><td>$9,000/yıl</td><td>$13,500/yıl</td></tr>
+          <tr><td>Ömür</td><td>5 yıl</td><td>5 yıl</td></tr>
+          <tr><td>Hurda</td><td>$0</td><td>$0</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Adım 1 — Bireysel i* kontrolü:</strong></p>
+      <p>Makine A: $0 = -20000 + 9000(P/A,i^*,5)$ → $(P/A) = 2.222$</p>
+      <p>%34'te $(P/A,34\%,5) \approx 2.222$ → $i^*_A \approx 34\% > 15\%$ → A kabul (defender)</p>
+
+      <p>Makine B: $0 = -35000 + 13500(P/A,i^*,5)$ → $(P/A) = 2.593$</p>
+      <p>%26'da $(P/A,26\%,5) \approx 2.635$, %28'de $\approx 2.532$ → $i^*_B \approx 27\% > 15\%$ → B de kabul, ama bireysel karşılaştırma yapamayız!</p>
+
+      <p><strong>Adım 2 — Artışsal CF (B − A):</strong></p>
+      <table>
+        <thead><tr><th>Yıl</th><th>CF_A</th><th>CF_B</th><th>ΔCF = B−A</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>−20,000</td><td>−35,000</td><td>−15,000</td></tr>
+          <tr><td>1–5</td><td>+9,000</td><td>+13,500</td><td>+4,500</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Adım 3 — Δi* bul:</strong></p>
+      $$0 = -15{,}000 + 4{,}500(P/A,\,\Delta i^*,\,5) \Rightarrow (P/A) = \frac{15{,}000}{4{,}500} = 3.333$$
+      <p>%15'te $(P/A,15\%,5) = 3.3522$, %16'da $(P/A,16\%,5) = 3.2743$</p>
+      $$\Delta i^* \approx 15 + 1 \times \frac{3.3522-3.333}{3.3522-3.2743} = 15 + \frac{0.019}{0.078} = 15 + 0.25 = \mathbf{15.25\%}$$
+
+      <div class="callout">
+        $\Delta i^* = 15.25\% > MARR = 15\%$ → Ek yatırım ($15,000 daha fazla) karşılıklı → <strong>Makine B seçilir.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
   <section id="bc-intro">
-    <h2>7. Benefit/Cost (B/C) Oranı</h2>
-    <p>B/C analizi, özellikle <strong>kamu sektörü projelerinde</strong> ekonomik değerlendirme için geliştirilmiş bir yöntemdir. Amacı, karar sürecine <em>objektiflik</em> kazandırmaktır.</p>
+    <h2>8. Benefit/Cost (B/C) Oranı</h2>
+    <p>B/C analizi, özellikle <strong>kamu sektörü projelerinde</strong> kullanılan değerlendirme yöntemidir. Amacı, fayda ve maliyetleri aynı para birimine indirgeleyerek nesnel karar vermektir.</p>
     <div class="callout">
       <strong>Temel formül:</strong>
       $$B/C = \frac{PW_{\text{fayda}}}{PW_{\text{maliyet}}} = \frac{AW_{\text{fayda}}}{AW_{\text{maliyet}}} = \frac{FW_{\text{fayda}}}{FW_{\text{maliyet}}}$$
-      Tüm CF'ler <strong>aynı para birimine</strong> (PW, AW veya FW) indirgenmeli.
+      Tüm CF'ler aynı para birimine çevrilmeli (PW, AW veya FW — aynı kararı verir).
     </div>
-    <h3>Kamu Sektörü Özellikleri</h3>
+    <h3>Kamu Sektörü Terimleri</h3>
     <table>
-      <thead><tr><th>Kavram</th><th>Tanım</th><th>Örnekler</th></tr></thead>
+      <thead><tr><th>Terim</th><th>Tanım</th><th>Örnekler</th></tr></thead>
       <tbody>
-        <tr><td><strong>Cost (Maliyet)</strong></td><td>Devletin üstlendiği harcamalar</td><td>İnşaat, işletme, bakım giderleri</td></tr>
-        <tr><td><strong>Benefit (Fayda)</strong></td><td>Kamuya sağlanan avantajlar</td><td>Zaman tasarrufu, güvenlik artışı, verimlilik</td></tr>
-        <tr><td><strong>Disbenefit (Dezavantaj)</strong></td><td>Kamuya getirilen olumsuz etkiler</td><td>Trafik aksaklığı, çevresel etki, şikayetler</td></tr>
+        <tr><td><strong>Benefit (B)</strong></td><td>Kamuya sağlanan yararlar</td><td>Zaman tasarrufu, güvenlik artışı</td></tr>
+        <tr><td><strong>Disbenefit (D)</strong></td><td>Kamuya getirilen olumsuzluklar</td><td>Trafik aksaklığı, çevresel etki</td></tr>
+        <tr><td><strong>Cost (C)</strong></td><td>Devletin üstlendiği harcamalar</td><td>İnşaat, bakım, işletme</td></tr>
       </tbody>
     </table>
-    <p>Kamu projelerinde <strong>kâr hedefi yoktur</strong>; faiz oranı genellikle özel sektörden daha düşük tutulur (sosyal iskonto oranı).</p>
-    <h3>Kamu Projesi Yapı Modelleri (Tahtadan)</h3>
     <div class="factor-grid">
       <div class="factor-card">
         <div class="factor-name">BOT</div>
@@ -261,152 +431,141 @@
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 9 -->
   <section id="bc-types">
-    <h2>8. B/C Türleri</h2>
-    <p>Tüm değerler <strong>ortak bir para birimine</strong> (PW, AW veya FW) çevrilmelidir. Üç farklı B/C formülasyonu:</p>
+    <h2>9. B/C Türleri ve Hesaplama</h2>
     <div class="factor-grid">
       <div class="factor-card">
-        <div class="factor-name">Konvansiyonel B/C</div>
+        <div class="factor-name">Konvansiyonel</div>
         <div class="factor-label">Conventional B/C</div>
         $$B/C = \frac{B - D}{C}$$
-        <p style="font-size:0.82rem;color:var(--text-muted)">B = fayda, D = disbenefit, C = maliyet. B/C ≥ 1 → kabul</p>
+        <p style="font-size:0.82rem;color:var(--text-muted)">C = CR + AOC (sermaye geri kazanımı + yıllık işletme gideri). B/C ≥ 1 → kabul.</p>
       </div>
       <div class="factor-card">
-        <div class="factor-name">Modifiye B/C</div>
+        <div class="factor-name">Modifiye</div>
         <div class="factor-label">Modified B/C</div>
-        $$\text{mod }B/C = \frac{B - D - M\&O}{P - S}$$
-        <p style="font-size:0.82rem;color:var(--text-muted)">M&O işletme maliyeti paydadan payaya taşınır. P = ilk yatırım, S = hurda</p>
+        $$\text{mod}\,B/C = \frac{B - D - M\&O}{CR}$$
+        <p style="font-size:0.82rem;color:var(--text-muted)">M&O (işletme gideri) paydan çıkıp paya geçer. CR = P(A/P) − S(A/F). ≥ 1 → kabul.</p>
       </div>
       <div class="factor-card">
         <div class="factor-name">Net Fayda</div>
         <div class="factor-label">(B − C) Kriteri</div>
         $$(B - C) \geq 0 \Rightarrow \text{kabul}$$
-        <p style="font-size:0.82rem;color:var(--text-muted)">Net fayda yaklaşımı. PW veya AW bazlı hesaplanabilir.</p>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Mutlak fark kullanılır. PW veya AW bazlı hesaplanabilir.</p>
       </div>
     </div>
     <div class="callout callout--warn">
-      <strong>Hurda değeri nerede?</strong> Eğer hurda değeri (salvage) paydada negatif maliyet olarak gösterilirse, <em>modified B/C</em>'de paydaya dahil edilir. Konvansiyonel B/C'de ise maliyet tarafında kalır.
-    </div>
-    <div class="callout">
-      <strong>Karar kuralları özeti:</strong><br/>
-      Konvansiyonel: $B/C \geq 1$ → kabul<br/>
-      Modified: $\text{mod }B/C \geq 1$ → kabul<br/>
-      Net fayda: $(B - C) \geq 0$ → kabul<br/>
-      <em>Her üç kriter de aynı kararı verir.</em>
+      <strong>Hurda değeri (Salvage):</strong> Modified B/C'de paydada negatif maliyet olarak gösterilirse CR hesabında çıkar. Konvansiyonel B/C'de maliyet tarafında kalır. Her iki formülasyon da aynı kararı verir.
     </div>
   </section>
 
-  <!-- 9 -->
+  <!-- 10 -->
   <section id="bc-public">
-    <h2>9. Kamu Sektörü Analizi — Dikkat Noktaları</h2>
-    <p>Kamu projelerini özel sektör projelerinden ayıran temel farklar:</p>
+    <h2>10. Kamu vs Özel Sektör Karşılaştırması</h2>
     <table>
       <thead><tr><th>Özellik</th><th>Kamu Sektörü</th><th>Özel Sektör</th></tr></thead>
       <tbody>
         <tr><td>Amaç</td><td>Kamu yararı maksimizasyonu</td><td>Kâr maksimizasyonu</td></tr>
         <tr><td>Finansman</td><td>Vergi, tahvil, hibeler</td><td>Öz sermaye, borç</td></tr>
         <tr><td>Faiz oranı</td><td>Genellikle düşük (sosyal oran)</td><td>MARR (risk primli)</td></tr>
-        <tr><td>Ömür</td><td>Çok uzun (30–100 yıl)</td><td>Görece kısa</td></tr>
-        <tr><td>Değerlendirme kriteri</td><td>B/C oranı</td><td>PW, AW, ROR</td></tr>
+        <tr><td>Proje ömrü</td><td>Çok uzun (30–100 yıl)</td><td>Görece kısa (5–20 yıl)</td></tr>
+        <tr><td>Değerlendirme</td><td>B/C oranı</td><td>PW, AW, ROR</td></tr>
       </tbody>
     </table>
   </section>
 
-  <!-- 10 -->
+  <!-- 11 -->
   <section id="bc-example">
-    <h2>10. B/C Çözümlü Örnek (Tahtadan)</h2>
+    <h2>11. B/C Çözümlü Örnek (Tahtadan)</h2>
     <div class="example">
-      <div class="example-label">Örnek — Hibe Programı</div>
-      <p>Devlet $15,000,000 hibesi veriyor. Proje 10 yıl sürecek, ROR = %6/yıl.</p>
-      <ul>
-        <li>$200,000/yıl tasarruf sağlayacak (n ekstra her yıl)</li>
-        <li>$1,500,000/yıl fayda (benefit)</li>
-        <li>$200,000/yıl disbenefit</li>
-        <li>AOC = $500,000/yıl</li>
-      </ul>
-      <p><strong>Adım 1 — Yatırımın AW'si:</strong></p>
-      $$AW_{\text{yatırım}} = 15{,}000{,}000 \times (A/P,\,6\%,\,10)$$
-      $$(A/P,\,6\%,\,10) = \frac{0.06(1.06)^{10}}{(1.06)^{10}-1} = 0.13587$$
-      $$AW_{\text{yatırım}} = 15{,}000{,}000 \times 0.13587 = \$2{,}038{,}050/\text{yıl}$$
+      <div class="example-label">Adım Adım — Hibe Programı</div>
+      <p><strong>Veri:</strong> $15,000,000 hibe; $i=6\%$; $n=10$ yıl; Yıllık fayda $1,500,000; Disbenefit $200,000; AOC $500,000/yıl</p>
+
+      <p><strong>Adım 1 — AW(maliyet) — Capital Recovery hesabı:</strong></p>
+      $$(A/P,\,6\%,\,10) = \frac{0.06(1.06)^{10}}{(1.06)^{10}-1} = \frac{0.06 \times 1.7908}{0.7908} = 0.13587$$
+      $$CR = 15{,}000{,}000 \times 0.13587 = \$2{,}038{,}050/\text{yıl}$$
+
       <p><strong>Adım 2 — Konvansiyonel B/C:</strong></p>
-      $$B/C = \frac{AW_B - AW_D}{AW_C + AOC} = \frac{1{,}500{,}000 - 200{,}000}{2{,}038{,}050 + 500{,}000} = \frac{1{,}300{,}000}{2{,}538{,}050} = 0.51 < 1$$
-      <p><strong>Adım 3 — Modifiye B/C:</strong></p>
-      $$\text{mod }B/C = \frac{1{,}500{,}000 - 200{,}000 - 500{,}000}{2{,}038{,}050} = \frac{800{,}000}{2{,}038{,}050} = 0.39 < 1$$
+      <p>C = CR + AOC = 2,038,050 + 500,000 = $2,538,050/yıl</p>
+      $$B/C = \frac{AW_B - AW_D}{C} = \frac{1{,}500{,}000 - 200{,}000}{2{,}538{,}050} = \frac{1{,}300{,}000}{2{,}538{,}050} = 0.51 < 1$$
+
+      <p><strong>Adım 3 — Modified B/C:</strong></p>
+      <p>CR tek başına payda; AOC paya eklenir: B − D − AOC = 1,500,000 − 200,000 − 500,000 = $800,000</p>
+      $$\text{mod}\,B/C = \frac{800{,}000}{2{,}038{,}050} = 0.39 < 1$$
+
       <div class="callout callout--warn">Her iki B/C değeri de &lt; 1 → <strong>Proje reddedilir.</strong></div>
     </div>
   </section>
 
-  <!-- 11 -->
+  <!-- 12 -->
   <section id="practice">
-    <h2>11. Pratik Sorular</h2>
+    <h2>12. Pratik Sorular</h2>
 
     <div class="practice-q">
-      <div class="practice-label">Soru 1 — IRR Hesabı</div>
-      <p>$50,000 yatırım, 8 yıl boyunca $9,000/yıl gelir, salvage = $5,000. MARR = %12. i* = ? Proje kabul edilmeli mi?</p>
+      <div class="practice-label">Soru 1 — IRR (Deneme-Yanılma + Excel)</div>
+      <p>$40,000 yatırım, 6 yıl boyunca $9,500/yıl gelir, salvage = $4,000. MARR = %15. Elle interpolasyonla i* bulun, sonra Excel formülünü yazın.</p>
       <details><summary>Çözümü Gör</summary>
         <div class="solution">
-          $0 = -50000 + 9000(P/A,i^*,8) + 5000(P/F,i^*,8)$<br/>
-          i=%10 dene: $PW = -50000+9000(5.3349)+5000(0.4665) = -50000+48014+2333 = +347 \approx 0$<br/>
-          $\therefore i^* \approx 10\% < MARR=12\%$ → <strong>Reddedilir.</strong>
+          $0 = -40000 + 9500(P/A,i^*,6) + 4000(P/F,i^*,6)$<br/><br/>
+          <strong>i=%18:</strong> $(P/A,18\%,6)=3.4976$, $(P/F,18\%,6)=0.3704$<br/>
+          $PW = -40000+9500(3.4976)+4000(0.3704) = -40000+33227+1482 = -5291 < 0$<br/><br/>
+          <strong>i=%14:</strong> $(P/A,14\%,6)=3.8887$, $(P/F,14\%,6)=0.4556$<br/>
+          $PW = -40000+9500(3.8887)+4000(0.4556) = -40000+36943+1822 = -1235 < 0$<br/><br/>
+          <strong>i=%13:</strong> $(P/A,13\%,6)=3.9976$, $(P/F,13\%,6)=0.4803$<br/>
+          $PW = -40000+9500(3.9976)+4000(0.4803) = -40000+37977+1921 = -102 \approx 0$<br/><br/>
+          $i^* \approx 13\% < MARR=15\%$ → <strong>Reddedilir.</strong><br/>
+          Excel: <code>=IRR({-40000; 9500; 9500; 9500; 9500; 9500; 13500})</code> → ~13%<br/>
+          (Son değer: 9500+4000=13500)
         </div>
       </details>
     </div>
 
     <div class="practice-q">
-      <div class="practice-label">Soru 2 — Multiple i* Tespiti</div>
-      <p>CF serisi: $C_0 = -600$, $C_1 = +1400$, $C_2 = -800$. Kaç adet i* beklenebilir?</p>
+      <div class="practice-label">Soru 2 — CRR / MIRR ile F_t Tablosu</div>
+      <p>CF: $C_0=-800$, $C_1=+2000$, $C_2=-1300$. c=MARR=%12. CRR hesapla, Excel formülünü yaz.</p>
       <details><summary>Çözümü Gör</summary>
         <div class="solution">
-          İşaret serisi: −, +, − → 2 işaret değişimi → en fazla 2 pozitif i* var.<br/>
-          $0 = -600 + 1400(P/F,i^*,1) - 800(P/F,i^*,2)$<br/>
-          Çözüm: $i^* = 0\%$ ve $i^* = 33.3\%$ → <strong>İki çözüm bulunur.</strong><br/>
-          Bu durumda CRR analizi önerilir.
+          İşaret: $-, +, -$ → 2 değişim → CRR gerekli.<br/><br/>
+          $F_0 = -800 < 0$ → $\lambda = i'$<br/>
+          $F_1 = -800(1+i') + 2000 = 1200 - 800i'$<br/>
+          $F_1 > 0$ için $i' < 150\%$ → kabul, $\lambda = c = 12\%$<br/>
+          $F_2 = F_1(1.12) - 1300 = 0$<br/>
+          $F_1 = 1300/1.12 = 1160.71$<br/>
+          $1200 - 800i' = 1160.71$<br/>
+          $800i' = 39.29$ → $i' = 4.9\%$<br/><br/>
+          $i' = 4.9\% < MARR = 12\%$ → <strong>Reddedilir.</strong><br/>
+          Excel: <code>=MIRR({-800; 2000; -1300}; 0.12; 0.12)</code>
         </div>
       </details>
     </div>
 
     <div class="practice-q">
       <div class="practice-label">Soru 3 — Konvansiyonel B/C</div>
-      <p>Köprü projesi: PW(maliyet) = $4,500,000, PW(fayda) = $6,200,000, PW(disbenefit) = $800,000. B/C = ? Karar?</p>
+      <p>Köprü: PW(maliyet)=$4,500,000, PW(fayda)=$6,200,000, PW(disbenefit)=$800,000. B/C ve mod B/C = ?</p>
       <details><summary>Çözümü Gör</summary>
         <div class="solution">
-          $B/C = \frac{6{,}200{,}000 - 800{,}000}{4{,}500{,}000} = \frac{5{,}400{,}000}{4{,}500{,}000} = 1.20 \geq 1$ → <strong>Kabul.</strong>
+          B/C = (6,200,000-800,000)/4,500,000 = 5,400,000/4,500,000 = <strong>1.20 ≥ 1 → Kabul</strong><br/>
+          Modified B/C için C sadece CR (AOC ayrıştırılmalı). Bu örnekte sadece PW verildiğinden AOC bilgisi eksik; konvansiyonel 1.20 ile devam.
         </div>
       </details>
     </div>
 
     <div class="practice-q">
-      <div class="practice-label">Soru 4 — Modified B/C</div>
-      <p>Proje: P = $2,000,000, S = $100,000, n = 20 yıl, i = %8. AW(fayda) = $250,000, AW(disbenefit) = $30,000, AOC = $40,000. Modifiye B/C = ?</p>
+      <div class="practice-label">Soru 4 — Incremental ROR (Interpolasyonlu)</div>
+      <p>MARR=%12. A: P=$25,000, A=$7,000/yıl, n=6yıl. B: P=$40,000, A=$10,500/yıl, n=6yıl. Hangisi seçilmeli?</p>
       <details><summary>Çözümü Gör</summary>
         <div class="solution">
-          $CR = 2{,}000{,}000(A/P,8\%,20) - 100{,}000(A/F,8\%,20)$<br/>
-          $(A/P,8\%,20)=0.10185$; $(A/F,8\%,20)=0.02185$<br/>
-          $CR = 203{,}700 - 2{,}185 = \$201{,}515$<br/>
-          $\text{mod }B/C = \frac{250{,}000 - 30{,}000 - 40{,}000}{201{,}515} = \frac{180{,}000}{201{,}515} = 0.89 < 1$ → <strong>Reddedilir.</strong>
-        </div>
-      </details>
-    </div>
-
-    <div class="practice-q">
-      <div class="practice-label">Soru 5 — Incremental ROR</div>
-      <p>MARR = %15. İki alternatif:</p>
-      <table>
-        <thead><tr><th></th><th>Alt. A</th><th>Alt. B</th></tr></thead>
-        <tbody>
-          <tr><td>İlk maliyet</td><td>$30,000</td><td>$50,000</td></tr>
-          <tr><td>Yıllık gelir</td><td>$8,000</td><td>$12,500</td></tr>
-          <tr><td>Ömür</td><td>5 yıl</td><td>5 yıl</td></tr>
-        </tbody>
-      </table>
-      <p>Hangi alternatif seçilmeli?</p>
-      <details><summary>Çözümü Gör</summary>
-        <div class="solution">
-          Önce her birinin i*'ı kontrol et:<br/>
-          A: $0=-30000+8000(P/A,i^*,5)$ → $(P/A)=3.75$ → $i^*_A\approx10\%<15\%$ → A elenir!<br/>
-          B: $0=-50000+12500(P/A,i^*,5)$ → $(P/A)=4.0$ → $i^*_B\approx8\%<15\%$ → B de elenir!<br/>
-          Her iki alternatif de MARR altında → <strong>Do-Nothing seçilir.</strong>
+          <strong>A i* kontrolü:</strong> $(P/A)=25000/7000=3.571$<br/>
+          $(P/A,16\%,6)=3.6847$, $(P/A,18\%,6)=3.4976$<br/>
+          $i^*_A \approx 16 + 2\times(3.6847-3.571)/(3.6847-3.4976) = 16+2(0.607) = 17.2\% > 12\%$ → A kabul, defender<br/><br/>
+          <strong>B i* kontrolü:</strong> $(P/A)=40000/10500=3.810$<br/>
+          $(P/A,14\%,6)=3.8887$, $(P/A,16\%,6)=3.6847$<br/>
+          $i^*_B \approx 14+2\times(3.8887-3.810)/(3.8887-3.6847) = 14+2(0.386) = 14.8\% > 12\%$ → B de kabul<br/><br/>
+          <strong>ΔCF (B−A):</strong> $\Delta P = -15000$, $\Delta A = +3500/yıl$<br/>
+          $(P/A)=15000/3500=4.286$<br/>
+          $(P/A,10\%,6)=4.3553$, $(P/A,12\%,6)=4.1114$<br/>
+          $\Delta i^* \approx 10+2\times(4.3553-4.286)/(4.3553-4.1114) = 10+2(0.284) = 10.57\% < 12\%$<br/>
+          $\Delta i^* < MARR$ → ek yatırım değersiz → <strong>Makine A seçilir.</strong>
         </div>
       </details>
     </div>
