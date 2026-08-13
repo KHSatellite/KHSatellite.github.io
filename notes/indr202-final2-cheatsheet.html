@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 202 – Final Cheatsheet | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+  <style>
+    @media print {
+      .navbar,.footer,.toc,.theme-toggle,.note-meta,.note-intro,.note-divider,button{display:none!important;}
+      body{background:#fff!important;color:#000!important;}
+      .note-content{max-width:100%!important;padding:0!important;}
+      .page-break{break-before:page;page-break-before:always;}
+      .cs-page{border:2px solid #000;padding:12px;margin-bottom:0;page-break-inside:avoid;}
+      .cs-col{border:1px solid #555;}
+      h2{font-size:13pt!important;border-bottom:2px solid #000!important;color:#000!important;}
+      h3{font-size:10pt!important;color:#000!important;}
+      table{font-size:7.5pt!important;}
+      p,li,td,th{font-size:8pt!important;}
+      .katex{font-size:0.88em!important;}
+      .callout{background:#f5f5f5!important;border-left:3px solid #000!important;color:#000!important;}
+      .cs-badge{background:#000!important;color:#fff!important;}
+    }
+    .cs-page{
+      border:2px solid var(--border);
+      border-radius:10px;
+      padding:18px;
+      margin-bottom:24px;
+      background:var(--bg-card);
+    }
+    .cs-header{
+      display:flex;align-items:center;gap:10px;margin-bottom:12px;
+      border-bottom:2px solid var(--accent);padding-bottom:8px;
+    }
+    .cs-badge{
+      background:var(--accent);color:#fff;
+      padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:1px;
+    }
+    .cs-title{font-size:1.15rem;font-weight:800;color:var(--text);}
+    .cs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
+    .cs-col{
+      border:1px solid var(--border);border-radius:6px;padding:10px 12px;
+      background:rgba(255,255,255,0.02);
+    }
+    .cs-col h3{margin:0 0 6px;font-size:0.82rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;}
+    .cs-col p,.cs-col li{font-size:0.8rem;margin:2px 0;line-height:1.5;}
+    .cs-col ul{padding-left:14px;margin:4px 0;}
+    .formula-box{
+      background:rgba(var(--accent-rgb,99,110,251),0.07);
+      border:1px dashed var(--accent);border-radius:5px;
+      padding:6px 10px;margin:6px 0;font-size:0.82rem;text-align:center;
+    }
+    .warn{color:#e74c3c;font-weight:700;}
+    .ok{color:#27ae60;font-weight:700;}
+    .factor-mini{width:100%;border-collapse:collapse;font-size:0.73rem;margin-top:6px;}
+    .factor-mini th,.factor-mini td{border:1px solid var(--border);padding:2px 5px;text-align:center;}
+    .factor-mini th{background:rgba(var(--accent-rgb,99,110,251),0.12);}
+    .decision-box{
+      background:rgba(39,174,96,0.08);border:1px solid #27ae60;border-radius:6px;
+      padding:8px 12px;margin-top:8px;font-size:0.8rem;
+    }
+    .page-break{height:0;margin:0;}
+    .print-btn{
+      position:fixed;bottom:24px;right:24px;
+      background:var(--accent);color:#fff;border:none;border-radius:8px;
+      padding:10px 20px;cursor:pointer;font-weight:600;font-size:0.9rem;
+      box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:999;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#notes">← Notlar</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle">☀️🌙</button>
+  </div>
+</nav>
+<button class="print-btn" onclick="window.print()">🖨️ Yazdır (2 Sayfa)</button>
+
+<div class="note-layout" style="display:block;">
+<main class="note-content" style="max-width:900px;margin:0 auto;padding:2rem 1rem;">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 202</span>
+    <span class="note-week-label">Final Cheatsheet</span>
+  </div>
+  <h1 class="note-main-title">Final Sınavı El Notu — 2 Sayfa</h1>
+  <p class="note-intro">B/C Analizi · Breakeven Analizi · Replacement &amp; Retention · Temel Faktörler</p>
+  <div class="note-divider"></div>
+
+  <!-- ═══ SAYFA 1 ═══ -->
+  <div class="cs-page">
+    <div class="cs-header">
+      <span class="cs-badge">SAYFA 1</span>
+      <span class="cs-title">B/C Analizi (Benefit-Cost)</span>
+    </div>
+
+    <div class="cs-grid">
+      <div class="cs-col">
+        <h3>Temel Kavramlar</h3>
+        <ul>
+          <li><strong>B:</strong> Fayda (benefit) — kullanıcı/toplum kazancı</li>
+          <li><strong>D:</strong> Disbenefit — kullanıcı/toplum kaybı</li>
+          <li><strong>C:</strong> Maliyet (cost) — yatırımcı/kamu gideri</li>
+          <li><strong>M&amp;O:</strong> Bakım-işletme gideri (maliyet tarafı)</li>
+        </ul>
+        <div class="formula-box">
+          Konvansiyonel: $B/C = \dfrac{B - D}{C} \geq 1$ → Kabul
+        </div>
+        <div class="formula-box">
+          Değiştirilmiş: $B/C = \dfrac{B - D - M\&O}{CR} \geq 1$
+        </div>
+        <p>Her şeyi <strong>aynı bazda</strong> ifade et (AW veya PW). Aylık → yıllık: ×12</p>
+      </div>
+
+      <div class="cs-col">
+        <h3>Disbenefit vs. Maliyet Farkı</h3>
+        <ul>
+          <li>Disbenefit → <span class="warn">B'den çıkar</span> (paydan)</li>
+          <li>M&amp;O gideri → <span class="warn">C'ye ekle</span> (paydaya)</li>
+          <li>Yanlış sınıflandırma B/C değerini değiştirir ama kabul/red kararını değiştirmez</li>
+        </ul>
+        <div class="callout" style="font-size:0.8rem;margin-top:8px;">
+          <strong>Dönüşüm:</strong> $A/yıl \to PW$: $PW = A \cdot (P/A,i,n)$<br/>
+          $A/yıl \to FW$: $FW = A \cdot (F/A,i,n)$<br/>
+          $P \to AW$: $AW = P \cdot (A/P,i,n)$
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-grid" style="margin-top:10px;">
+      <div class="cs-col">
+        <h3>Bağımsız Projeler — Tekil B/C</h3>
+        <ul>
+          <li>Her proje ayrı ayrı: $B/C \geq 1$ ise kabul</li>
+          <li>Karşılaştırma <strong>yok</strong>, bütçe kısıtı yoksa hepsini değerlendir</li>
+        </ul>
+        <h3 style="margin-top:8px;">Birbirini Dışlayan (ME) Alternatifler</h3>
+        <ol style="font-size:0.8rem;padding-left:16px;margin:4px 0;">
+          <li>Artan maliyete göre sırala (en küçük C → büyük C)</li>
+          <li>"Do nothing" (DN) = başlangıç savunucu</li>
+          <li>İlk alternatifte tekil B/C hesapla: $B/C_1 \geq 1$ → aday yeni savunucu</li>
+          <li>Sonraki alternatifte <strong>artımsal</strong> hesap: $\Delta B/C = \Delta B / \Delta C$</li>
+          <li>$\Delta B/C \geq 1$ → büyük maliyet kazanır; $< 1$ → küçük maliyet kalır</li>
+          <li>Tüm alternatifleri bitirene kadar devam et → son savunucu = seçim</li>
+        </ol>
+      </div>
+      <div class="cs-col">
+        <h3>Artımsal B/C Tablosu Şablonu</h3>
+        <table class="factor-mini">
+          <thead><tr><th>Adım</th><th>Karşılaştırma</th><th>ΔC</th><th>ΔB</th><th>ΔB/C</th><th>Karar</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>DN vs A1</td><td>C₁</td><td>B₁</td><td>B₁/C₁</td><td>≥1 → A1 aday</td></tr>
+            <tr><td>2</td><td>A1 vs A2</td><td>C₂−C₁</td><td>B₂−B₁</td><td>ΔB/ΔC</td><td>≥1 → A2 aday</td></tr>
+            <tr><td>3</td><td>Aday vs A3</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+          </tbody>
+        </table>
+        <div class="decision-box">
+          <strong>Dikkat:</strong> AW bazında çalışıyorsan disbenefit ve benefit de AW olarak ifade edilmeli.<br/>
+          Per month verilen değerleri önce yıllığa çevir, sonra (P/A) veya (A/P) uygula.
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ═══ SAYFA 2 ═══ -->
+  <div class="page-break"></div>
+  <div class="cs-page" style="margin-top:24px;">
+    <div class="cs-header">
+      <span class="cs-badge">SAYFA 2</span>
+      <span class="cs-title">Breakeven &amp; Replacement/Retention</span>
+    </div>
+
+    <div class="cs-grid">
+      <div class="cs-col">
+        <h3>Breakeven — Tek Proje</h3>
+        <div class="formula-box">$Q_{BE} = \dfrac{FC}{r - v}$</div>
+        <ul>
+          <li>$FC$ = sabit maliyet (fixed cost)</li>
+          <li>$r$ = birim satış fiyatı (revenue)</li>
+          <li>$v$ = birim değişken maliyet (variable cost)</li>
+          <li>$(r-v)$ = birim katkı payı (contribution margin)</li>
+        </ul>
+        <div class="formula-box">Kâr: $\Pi = (r-v)Q - FC$</div>
+        <div class="formula-box">Ortalama birim maliyet: $C_u = \dfrac{FC}{Q} + v$</div>
+        <p>$Q_{BE}$'de: $C_u = r$ (kâr = 0). $Q > Q_{BE}$ → kâr.</p>
+      </div>
+
+      <div class="cs-col">
+        <h3>Breakeven — İki Alternatif (Makine)</h3>
+        <ol style="font-size:0.79rem;padding-left:15px;margin:4px 0;">
+          <li>Her alternatif için $AW(X)$ yaz:<br/>$AW_j = CR_j + AOC_j + v_j \cdot X$</li>
+          <li>$CR_j = (P_j - S_j)(A/P) + S_j \cdot i$</li>
+          <li>İşçilik: $v_j = \text{ücret} \times \frac{1}{\text{kapasite}}$ ($/ton)</li>
+          <li>$AW_1 = AW_2$ → çöz $X_{BE}$</li>
+          <li>$X_{BE}$'den büyük üretim → düşük $v$'li alternatif seçilir</li>
+        </ol>
+        <div class="callout" style="font-size:0.78rem;margin-top:6px;">
+          <strong>Ömür farkı varsa:</strong> AW yöntemi ömrü otomatik eşitler.<br/>
+          Farklı n'li alternatifleri AW ile karşılaştır.
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-grid" style="margin-top:10px;">
+      <div class="cs-col">
+        <h3>Replacement &amp; Retention — Altın Kurallar</h3>
+        <ul>
+          <li><span class="warn">Defender P = Mevcut Piyasa Değeri (MV)</span> — asla orijinal alış fiyatı değil</li>
+          <li><span class="warn">Batık maliyet (sunk cost)</span> = geçmiş yatırım → <strong>yoksay</strong></li>
+          <li>Defender için artık hurda değeri = bir sonraki yılki MV</li>
+          <li>Challenger = yeni makine; defender = mevcut makine</li>
+        </ul>
+        <div class="formula-box">$CR = (P-S)(A/P,i,n) + S \cdot i$</div>
+        <div class="formula-box">$AW = CR + AW_{AOC}$</div>
+        <div class="decision-box">
+          $AW_{defender} < AW_{challenger}$ → <span class="ok">Tut (Retain)</span><br/>
+          $AW_{challenger} < AW_{defender}$ → <span class="warn">Değiştir (Replace)</span>
+        </div>
+      </div>
+
+      <div class="cs-col">
+        <h3>ESL (Economic Service Life)</h3>
+        <ol style="font-size:0.79rem;padding-left:15px;margin:4px 0;">
+          <li>Her n için AW tablosu kur</li>
+          <li>$CR(n) = (P-S_n)(A/P,i,n) + S_n \cdot i$</li>
+          <li>$AW_{AOC}(n) = $ AOC serisi PW → AW'ye çevir</li>
+          <li>$AW_{toplam}(n) = CR(n) + AW_{AOC}(n)$</li>
+          <li>AW'yi minimum yapan $n$ = <strong>ESL</strong></li>
+        </ol>
+        <h3 style="margin-top:8px;">Faktör Tablosu (i = 10%)</h3>
+        <table class="factor-mini">
+          <thead><tr><th>n</th><th>(A/P)</th><th>(A/F)</th><th>(P/A)</th><th>(P/F)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>1.1000</td><td>1.0000</td><td>0.9091</td><td>0.9091</td></tr>
+            <tr><td>2</td><td>0.5762</td><td>0.4762</td><td>1.7355</td><td>0.8264</td></tr>
+            <tr><td>3</td><td>0.4021</td><td>0.3021</td><td>2.4869</td><td>0.7513</td></tr>
+            <tr><td>4</td><td>0.3155</td><td>0.2155</td><td>3.1699</td><td>0.6830</td></tr>
+            <tr><td>5</td><td>0.2638</td><td>0.1638</td><td>3.7908</td><td>0.6209</td></tr>
+            <tr><td>6</td><td>0.2296</td><td>0.1296</td><td>4.3553</td><td>0.5645</td></tr>
+            <tr><td>8</td><td>0.1874</td><td>0.0874</td><td>5.3349</td><td>0.4665</td></tr>
+            <tr><td>10</td><td>0.1627</td><td>0.0627</td><td>6.1446</td><td>0.3855</td></tr>
+            <tr><td>15</td><td>0.1315</td><td>0.0315</td><td>7.6061</td><td>0.2394</td></tr>
+            <tr><td>20</td><td>0.1175</td><td>0.0175</td><td>8.5136</td><td>0.1486</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="cs-grid" style="margin-top:10px;">
+      <div class="cs-col">
+        <h3>Sınav İpuçları — B/C</h3>
+        <ul>
+          <li>Büyük tablo gelirse: önce AW bazına getir</li>
+          <li>Aylık verilen benefit → ×12 → yıllık AW</li>
+          <li>İnşaat maliyeti → $P \to CR = P(A/P,i,n)$</li>
+          <li>Disbenefit'i B'den çıkar, M&amp;O'yu C'ye ekle</li>
+          <li>Alternatif sayısı ≥ 2 → artımsal B/C yap</li>
+        </ul>
+      </div>
+      <div class="cs-col">
+        <h3>Sınav İpuçları — Breakeven &amp; Replacement</h3>
+        <ul>
+          <li>İşçilik ton cinsinden → kapasite/saat'e böl</li>
+          <li>Farklı ömür → AW yöntemi (LCM hesaplama)</li>
+          <li>Defender'ın "ilk maliyeti" = bugünkü MV</li>
+          <li>ESL sorusunda AW tablosunu yıl yıl kur</li>
+          <li>"Neden alt X daha iyi?" → AW farkını hesapla, yorum yap</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

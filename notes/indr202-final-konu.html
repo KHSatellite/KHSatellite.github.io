@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 202 – Final Konu Anlatımı | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#notes">← Notlar</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle">☀️🌙</button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#bc-intro">1. B/C Analizi — Temel Mantık</a></li>
+    <li><a href="#bc-types">2. B/C Türleri</a></li>
+    <li><a href="#bc-incremental">3. ME Alternatifler: Artımsal B/C</a></li>
+    <li><a href="#bc-traps">4. Sık Yapılan Hatalar</a></li>
+    <li><a href="#breakeven-single">5. Breakeven — Tek Proje</a></li>
+    <li><a href="#breakeven-two">6. Breakeven — İki Alternatif</a></li>
+    <li><a href="#replacement-logic">7. Replacement — Temel Mantık</a></li>
+    <li><a href="#replacement-procedure">8. Replacement — Adım Adım</a></li>
+    <li><a href="#esl">9. ESL Analizi</a></li>
+    <li><a href="#sinav-ipucu">10. Sınav İpuçları</a></li>
+  </ul>
+</aside>
+
+<main class="note-content">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 202</span>
+    <span class="note-week-label">Final Konu Anlatımı</span>
+  </div>
+  <h1 class="note-main-title">Final Sınavı — Detaylı Konu Anlatımı</h1>
+  <p class="note-intro">B/C Analizi, Breakeven Analizi, Replacement &amp; Retention. Bu üç konuyu sıfırdan, neden-nasıl mantığıyla anlatan kapsamlı bir rehber. Formül ezberlemeden önce sezgiyi kur; sezgi varsa formül gelir.</p>
+  <div class="note-divider"></div>
+
+  <!-- 1 -->
+  <section id="bc-intro">
+    <h2>1. B/C Analizi — Neden Var, Ne Soruyor?</h2>
+    <p>Özel sektörde bir yatırımı değerlendirirken "bu bana para kazandırır mı?" diye sorarsın. Ama devlet bir köprü, kanal ya da yol yaparken kazancı sadece kendi cebinden değil, <strong>tüm toplumdan</strong> ölçmek zorundadır. İşte B/C (Benefit-Cost) analizi tam olarak bunu yapar: kamu yatırımının topluma sağladığı faydayı, topluma yüklediği maliyete böler.</p>
+    <p>Sezgi şu: Köprü inşa etmek pahalı. Ama köprü sayesinde insanlar saat yerine 10 dakikada geçiyor, yakıt tasarrufu oluyor, kaza azalıyor. Bu tasarruflar "fayda" (benefit). Köprü yapımı ve bakımı ise "maliyet". Eğer faydalar maliyetlere ağır basıyorsa proje değerlidir.</p>
+
+    <h3>Temel Kavramlar</h3>
+    <p>Bu analizde üç taraf var: <strong>Yatırımcı/devlet</strong> (parayı veren), <strong>kullanıcılar/toplum</strong> (faydayı alan), ve <strong>üçüncü taraflar</strong> (etkilenen ama ne yatırımcı ne kullanıcı olanlar — mesela köprü yapımından gürültü çeken mahalle).</p>
+    <ul>
+      <li><strong>B (Benefit / Fayda):</strong> Kullanıcıların ve toplumun kazancı. Zaman tasarrufu, kaza azalması, ürün kalitesi artışı, verimlilik kazancı.</li>
+      <li><strong>D (Disbenefit / Olumsuz Etki):</strong> Kullanıcıların ve toplumun katlandığı olumsuzluk. Gürültü, çevre kirliliği, erişim kısıtlaması. Fayda değil — faydanın tersi.</li>
+      <li><strong>C (Cost / Maliyet):</strong> Yatırımcının (devletin/kurumun) gideri. İnşaat, bakım, işletme.</li>
+      <li><strong>M&amp;O (Maintenance &amp; Operations):</strong> Yıllık bakım ve işletme gideri — maliyet tarafındadır.</li>
+    </ul>
+
+    <div class="callout callout--warn">
+      <strong>En sık karıştırılan şey:</strong> Disbenefit B'den mi çıkar, C'ye mi eklenir?<br/>
+      Cevap: <strong>B'den çıkar.</strong> Disbenefit topluma yönelik bir olumsuzluktur; "negatif fayda"dır. Maliyet tarafına yazmak yanlış sınıflandırmadır. Formülleri değiştirir ama kabul/red kararını değiştirmez — derste özellikle sorulur.
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="bc-types">
+    <h2>2. B/C Türleri — Konvansiyonel ve Değiştirilmiş</h2>
+    <p>İki farklı B/C formülü var. İkisi de aynı kararı verir; ama hesaplamaları farklıdır.</p>
+
+    <h3>Konvansiyonel (Geleneksel) B/C</h3>
+    $$B/C = \frac{B - D}{C} \geq 1 \Rightarrow \text{Kabul}$$
+    <p>Burada $C = CR + M\&O$ yani hem sermaye kurtarma hem de yıllık bakım gideri maliyetin içindedir.</p>
+
+    <h3>Değiştirilmiş (Modified) B/C</h3>
+    $$B/C = \frac{B - D - M\&O}{CR} \geq 1 \Rightarrow \text{Kabul}$$
+    <p>M&amp;O gideri payın içine alınır (net faydadan çıkarılır), payda sadece sermaye kurtarma olur. Bu yaklaşım "net operasyonel fayda per capita recovery" mantığıyla daha yorumlanabilir bir oran verir.</p>
+
+    <div class="callout">
+      <strong>Önemli:</strong> İki formül aynı kabul/red kararını verir ama farklı sayısal B/C oranları üretir. Sınavda hangi formülü kullandığını belirt.
+    </div>
+
+    <h3>Her Şeyi Aynı Baza Getir</h3>
+    <p>Verilerin bir kısmı "inşaat maliyeti" ($P$), bir kısmı "yıllık fayda", bir kısmı "aylık bakım gideri" olarak gelir. Bunları karıştıramazsın. <strong>Hepsini ya AW (yıllık eşdeğer) ya da PW (bugünkü değer) bazında ifade et.</strong></p>
+    <p>Tipik dönüşümler:</p>
+    <ul>
+      <li>İnşaat maliyeti $P$ → AW: $CR = P(A/P,i,n) - S(A/F,i,n)$</li>
+      <li>Aylık fayda → yıllık: $\times 12$</li>
+      <li>Yıllık fayda → PW: $\times (P/A,i,n)$</li>
+    </ul>
+  </section>
+
+  <!-- 3 -->
+  <section id="bc-incremental">
+    <h2>3. Birbirini Dışlayan (ME) Alternatifler: Artımsal B/C</h2>
+    <p>Bu, B/C analizinin en önemli ve en çok sorulan kısmı. Birden fazla alternatif varsa ve sadece birini seçmek zorundaysan "tekil B/C en yüksek olanı seç" gibi bir kural yok. Artımsal (incremental) analiz yapman gerekir.</p>
+
+    <div class="callout">
+      <strong>Sezgi:</strong> Neden en yüksek tekil B/C doğru seçim değil? Çünkü daha pahalı bir alternatif, extra maliyeti karşılayacak kadar extra fayda sağlıyorsa tercih edilmelidir. "Her ekstra harcanan dolar bana 1 dolardan fazla fayda getiriyor mu?" sorusunu soruyoruz.
+    </div>
+
+    <h3>Artımsal B/C Prosedürü (Adım Adım)</h3>
+    <ol>
+      <li><strong>Hepsini aynı baza getir</strong> (AW veya PW). Aylık değerleri yıllığa çevir.</li>
+      <li><strong>Alternatifleri artan maliyete göre sırala</strong> (C en düşükten en yükseğe).</li>
+      <li><strong>"Do Nothing" (DN) = başlangıç savunucusu.</strong> Hiçbir şey yapmamak bir seçenektir.</li>
+      <li><strong>İlk alternatifte tekil B/C hesapla:</strong> $B/C_1 = (B_1-D_1)/C_1$. Eğer $\geq 1$ → bu aday savunucu olur. Eğer $< 1$ → direkt elenr, bir sonrakine geç.</li>
+      <li><strong>Sıradaki alternatifle artımsal hesap:</strong> $\Delta B/C = (B_2-D_2-B_1+D_1)/(C_2-C_1)$. Eğer $\geq 1$ → daha pahalı alternatif savunucu olur. $< 1$ → eski savunucu kalır.</li>
+      <li>Tüm alternatifleri bitirene kadar devam et. Son kalan savunucu = seçilen alternatif.</li>
+    </ol>
+
+    <div class="example">
+      <div class="example-label">Neden Sıralama Önemli?</div>
+      <p>Sıralamadan $\Delta C$ negatif çıkabilir (büyük maliyetliden küçük maliyetliye gidersen). $\Delta C$ negatifse artımsal B/C anlamsızlaşır. Her zaman <strong>küçükten büyüğe</strong> git.</p>
+    </div>
+
+    <h3>Özel Durum: Bağımsız Projeler</h3>
+    <p>Eğer projeler birbirini dışlamıyorsa (mesela bütçe kısıtı olmadan istediğin kadar seçebilirsin), her proje için tekil $B/C \geq 1$ mi diye bak. Artımsal karşılaştırma gerekmez.</p>
+  </section>
+
+  <!-- 4 -->
+  <section id="bc-traps">
+    <h2>4. Sık Yapılan Hatalar — B/C Analizi</h2>
+
+    <div class="callout callout--warn">
+      <strong>Hata 1 — Aylık değeri yıllık olarak yazmak:</strong><br/>
+      Aylık $\$5{,}000$ bakım giderini tabloya "$5{,}000$/yıl" diye yazmak. → Doğrusu: $5{,}000 \times 12 = \$60{,}000$/yıl.
+    </div>
+
+    <div class="callout callout--warn">
+      <strong>Hata 2 — Disbenefit'i C'ye yazmak:</strong><br/>
+      Gürültü maliyetini ($20k/yıl) paydaya eklemek. → B'den çıkar: $(B - D)/C$.
+    </div>
+
+    <div class="callout callout--warn">
+      <strong>Hata 3 — Tekil B/C ile ME karşılaştırmak:</strong><br/>
+      Alt A B/C=1.5, Alt B B/C=1.2 → "A seçilir" demek. → Yanlış. Artımsal $\Delta B/C$ hesapla.
+    </div>
+
+    <div class="callout callout--warn">
+      <strong>Hata 4 — Maliyet bazını karıştırmak:</strong><br/>
+      Bir değeri PW, diğerini AW bazında tutarak bölmek. → Hepsini önce tek baza çek.
+    </div>
+
+    <div class="callout callout--warn">
+      <strong>Hata 5 — B/C &lt; 1 olan alternatifleri artımsal karşılaştırmaya sokmak:</strong><br/>
+      Tekil B/C &lt; 1 olan alternatif, en başta elenmelidir. Elenmiş bir alternatifle $\Delta B/C$ hesaplamaya gerek yok.
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section id="breakeven-single">
+    <h2>5. Breakeven Analizi — Tek Proje</h2>
+    <p>Sezgi: Bir ürün üretiyorsun. Her ürün için hem sabit giderleri (kira, amortisman, maaş) hem değişken giderleri (malzeme, enerji) karşılayacak kadar satman gerekiyor. Hiç kâr etmediğin, zararın da sıfır olduğu noktaya "başabaş" diyoruz.</p>
+
+    <h3>Temel Modeller</h3>
+    <p>Toplam maliyet: $TC = FC + v \cdot Q$</p>
+    <p>Toplam gelir: $R = r \cdot Q$</p>
+    <p>Kâr: $\Pi = R - TC = (r - v)Q - FC$</p>
+    $$Q_{BE} = \frac{FC}{r - v}$$
+
+    <p>$(r - v)$ terimi çok önemlidir: "birim katkı payı" (contribution margin). Her üretilen birimin, sabit maliyetleri karşılamaya kattığı miktar. $Q_{BE}$ azaltmak için ya FC'yi düşür ya $(r-v)$'yi artır.</p>
+
+    <h3>Ortalama Birim Maliyet</h3>
+    $$C_u = \frac{TC}{Q} = \frac{FC}{Q} + v$$
+    <p>$C_u$ üretim arttıkça azalır. Bu "ölçek ekonomisi" efektinin matematiksel ifadesidir. $Q_{BE}$'de $C_u = r$ (satış fiyatına eşit — ne kâr ne zarar). $Q > Q_{BE}$'de $C_u < r$ → kârlı bölge.</p>
+
+    <div class="example">
+      <div class="example-label">Sezgi: Neden $Q_{BE}$'de $C_u = r$?</div>
+      <p>$Q_{BE}$'de kâr = 0 → $R = TC$ → $r \cdot Q_{BE} = TC$ → $r = TC/Q_{BE} = C_u$. Gayet mantıklı: satış fiyatı tam maliyete eşit, kâr yok.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section id="breakeven-two">
+    <h2>6. Breakeven Analizi — İki Alternatif</h2>
+    <p>Sezgi: Sana iki makine teklif ediliyor. Biri pahalı ama otomasyonu yüksek (az işçi). Diğeri ucuz ama çok işçi istiyor. Az üretimde ucuz makine avantajlı (yüksek sabit maliyet karşılamamış olur). Çok üretimde otomasyonlu makine kazanır (az işçi maliyeti ölçekle avantajlı). Bu ikisinin "eşitlendiği" üretim miktarı = breakeven.</p>
+
+    <h3>Yöntem</h3>
+    <p>Her alternatif için yıllık eşdeğer maliyet (AW), üretim miktarı $X$'in fonksiyonu olarak yazılır:</p>
+    $$AW_j(X) = CR_j + AOC_j + v_j \cdot X$$
+    <p>$v_j$ = birim değişken maliyet ($/ton, $/parça vs.)</p>
+    <p>Eğer farklı kapasiteli makineler varsa (ton/saat), işçilik maliyetini ton cinsinden hesapla:</p>
+    $$v_j = \frac{\text{ücret ($/saat)}}{\text{kapasite (ton/saat)}} = \frac{\$}{\text{ton}}$$
+
+    <h3>Breakeven Noktası</h3>
+    $$AW_1(X) = AW_2(X) \Rightarrow X_{BE} = \frac{\text{Sabit AW}_2 - \text{Sabit AW}_1}{v_1 - v_2}$$
+
+    <div class="callout callout--warn">
+      <strong>Dikkat — Payda işareti:</strong> Eğer Alt 1 hem sabit hem değişken maliyette yüksekse (her açıdan kötü), $X_{BE}$ negatif çıkar — bu Alt 2'nin her zaman daha iyi olduğu anlamına gelir (hiçbir zaman Alt 1 seçilmez). Eğer $v_1 - v_2 < 0$, Alt 1'in değişken maliyeti düşük demektir — formülü düzenle.
+    </div>
+
+    <h3>Farklı Ömürler Sorunu</h3>
+    <p>Makinelerin ömrü farklıysa ($n_1 \neq n_2$), AW yöntemi bunu otomatik çözer. Her alternatif için kendi CR'ını kendi $n$'iyle hesapla. PW yöntemini kullanırsan LCM (en küçük ortak kat) süresine kadar uzatman gerekir.</p>
+
+    <div class="example">
+      <div class="example-label">İşçilik Maliyetini Ton Cinsinden Nasıl Çevirirsin?</div>
+      <p>Makine 8 ton/saat üretir. Bir işçi $12$/saat alıyor. $X$ ton/yılı üretmek için kaç saat gerekir?</p>
+      <p>Süre = $X/8$ saat/yıl. İşçilik maliyeti = $12 \times (X/8) = 1.5X$ dolar/yıl.</p>
+      <p>Yani birim değişken maliyet $v = 1.5$ $/ton. Her ton üretimi $1.50$ dolar işçilik yaratır.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section id="replacement-logic">
+    <h2>7. Replacement &amp; Retention — Temel Mantık</h2>
+    <p>Sezgi: Elinde 5 yaşında bir makinen var. Yeni bir makine piyasada var. "Eskiyi tutsam mı, yenisini alsa mıydım?" Bu soruyu cevaplamak replacement analizinin işidir.</p>
+    <p>Bu analizin <strong>en kritik kavramsal noktası</strong> şu: Geçmişte ne kadar harcadığın artık önemli değil. Önemli olan bugünden itibaren ne ödeyeceğin. "3 yıl önce $\$100{,}000$'a aldım, çok para harcadım" düşüncesi <strong>ekonomik karar vermeyi mahveder.</strong></p>
+
+    <h3>Batık Maliyet (Sunk Cost)</h3>
+    <p>Batık maliyet = geçmişte yapılmış ve geri alınamaz harcama. Bugünkü kararı etkilemez, etkilememeli. Makineni $\$100{,}000$'a aldıysan ve bugün $\$40{,}000$'a satabiliyorsan, bu makinenin "ilk maliyeti" analizde <strong>$\$40{,}000$</strong>'dır. $\$60{,}000$'lık fark? Batmış, gitmiş.</p>
+
+    <div class="callout callout--warn">
+      <strong>Altın Kural — Defender'ın "P" değeri:</strong><br/>
+      Defender'ın ilk maliyeti analizde = <strong>mevcut piyasa değeri (MV)</strong><br/>
+      Asla: orijinal alış fiyatı, defter değeri, ya da amortisman sonrası değer kullanma.
+    </div>
+
+    <h3>Neden MV Kullanıyoruz?</h3>
+    <p>Makineyi bugün $\$40{,}000$'a satabilirsin. Eğer satmazsan, bu $\$40{,}000$'ı "makineye yatırılmış sermaye" olarak tutuyorsun demektir. Bu para, alternatif bir yatırımda faiz kazanabilirdi. Dolayısıyla $\$40{,}000$'ı tutmanın fırsat maliyeti vardır. İşte bu yüzden defender'ın "P"si = bugünkü MV.</p>
+  </section>
+
+  <!-- 8 -->
+  <section id="replacement-procedure">
+    <h2>8. Replacement Analizi — Adım Adım Prosedür</h2>
+    <ol>
+      <li><strong>Defender ve Challenger'ı belirle.</strong> Defender = elindeki makine. Challenger = potansiyel yeni makine.</li>
+      <li><strong>Defender'ın P'sini belirle:</strong> Bugünkü piyasa değeri (MV). Orijinal maliyet değil.</li>
+      <li><strong>Defender için AW hesapla.</strong> Genellikle "1 yıl daha kullan" senaryosu üzerinden: $AW_D = (P_D - S_D)(A/P,i,1) + S_D \cdot i + AOC_D$. Burada $S_D$ = 1 yıl sonraki MV.</li>
+      <li><strong>Challenger için AW hesapla:</strong> $AW_C = CR_C + AOC_C$.</li>
+      <li><strong>Karşılaştır:</strong> $AW_D < AW_C$ → Defender'ı tut. $AW_C < AW_D$ → Challenger'ı al.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>1 yıllık ufuk neden?</strong> Defender'ın ne kadar kullanılacağını bilmiyoruz. "Yıl yıl" karşılaştırma yapmak yerine, bir yıl daha tutmanın maliyetini bulup challenger'ın yıllık maliyetiyle kıyaslıyoruz. Bu, en az varsayım gerektiren ve en savunulabilir yaklaşımdır.
+    </div>
+
+    <h3>Defender için 1 Yıllık AW Açılımı</h3>
+    $$AW_D = \underbrace{(MV_0 - MV_1)(A/P,i,1)}_{\text{değer kaybı}} + \underbrace{MV_0 \cdot i}_{\text{fırsat maliyeti}} + AOC$$
+    <p>$(A/P,i,1) = (1+i)$ olduğundan bu basitleşir:</p>
+    $$AW_D = (MV_0 - MV_1)(1+i) + MV_0 \cdot i + AOC$$
+    <p>Ayrıca $CR(1) = MV_0 \cdot i + (MV_0 - MV_1)$ şeklinde de yazılabilir (önceki haftalardaki CR formülüyle tutarlı).</p>
+  </section>
+
+  <!-- 9 -->
+  <section id="esl">
+    <h2>9. ESL (Economic Service Life) — En Ekonomik Kullanım Ömrü</h2>
+    <p>Sezgi: Bir makineyi ne kadar kullanmalısın? Az kullanırsan sermaye maliyeti yüksek kalır (pahalı makineyi çok kısa kullandın). Çok kullanırsan AOC gittikçe artar (yaşlı makine çok bakım ister). Bu iki kuvveti dengeleyen $n$ = ESL.</p>
+
+    <h3>ESL Tablosu Nasıl Kurulur?</h3>
+    <p>Her olası $n$ için toplam yıllık eşdeğer maliyeti ($AW$) hesapla. En düşük $AW$'yi veren $n$ = ESL.</p>
+
+    <table>
+      <thead><tr><th>Yıl $n$</th><th>Hurda ($S_n$)</th><th>CR(n)</th><th>$AW_{AOC}(n)$</th><th>$AW_{toplam}(n)$</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>$S_1$</td><td>$(P-S_1)(A/P,i,1)+S_1 \cdot i$</td><td>$AOC_1$</td><td>$CR + AW_{AOC}$</td></tr>
+        <tr><td>2</td><td>$S_2$</td><td>$(P-S_2)(A/P,i,2)+S_2 \cdot i$</td><td>AW of $AOC_1, AOC_2$</td><td>$CR + AW_{AOC}$</td></tr>
+        <tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+        <tr><td>n*</td><td>$S_{n*}$</td><td>…</td><td>…</td><td><strong>Minimum → ESL = n*</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>AOC Serisi için AW Hesabı</h3>
+    <p>$AW_{AOC}(n)$'yi bulmak için AOC'lerin PW'sini hesapla, sonra $(A/P,i,n)$ ile AW'ye çevir:</p>
+    $$AW_{AOC}(n) = \left[\sum_{t=1}^{n} AOC_t (P/F,i,t)\right] (A/P,i,n)$$
+
+    <div class="example">
+      <div class="example-label">Sezgi: ESL ve CR'nın Tersine Giden AOC</div>
+      <p>CR(n) = kullanım süresi uzadıkça genellikle <em>azalır</em> (büyük yatırımı daha fazla yıla bölersin).</p>
+      <p>AW_AOC(n) = kullanım süresi uzadıkça genellikle <em>artar</em> (yaşlanan makine daha fazla bakım ister).</p>
+      <p>Bunların toplamı U şeklinde bir eğri yapar. U'nun dibi = ESL.</p>
+    </div>
+
+    <h3>ESL ile Replacement İlişkisi</h3>
+    <p>ESL'nin önemi: Bir makineyi ESL'den önce değiştirmek, henüz ödenmiş sermayeyi çöpe atmak gibidir. ESL'den sonra tutmak ise artan bakım maliyetiyle boğuşmak demektir. Replacement analizinde challenger'ın ESL'indeki AW değerini kullanmak en doğru yaklaşımdır.</p>
+  </section>
+
+  <!-- 10 -->
+  <section id="sinav-ipucu">
+    <h2>10. Final Sınavı İçin Pratik İpuçları</h2>
+
+    <h3>B/C Sorusu Gelince (Q1 — 15 dk)</h3>
+    <ol>
+      <li>Tüm değerleri AW bazına çek. Aylık × 12 = yıllık.</li>
+      <li>$CR = P(A/P,i,n) - S(A/F,i,n)$ ile sermaye maliyetini bul.</li>
+      <li>$C = CR + M\&O$ (maliyet tarafı)</li>
+      <li>$B_{net} = B - D$ (fayda tarafı)</li>
+      <li>Alternatif sayısı ≥ 2 ise artımsal B/C tablosu kur.</li>
+      <li>Elenen alternatifleri tabloya bile alma — zaman kaybı.</li>
+    </ol>
+
+    <h3>Q_BE / Makine Sorusu Gelince (Q2)</h3>
+    <ol>
+      <li>Her alternatif için CR hesapla — dikkat: farklı $n$ olabilir, farklı faktörler kullan.</li>
+      <li>İşçilik maliyetini ton/yıl cinsinden yaz: $v = \text{ücret}/\text{kapasite}$.</li>
+      <li>$AW(X) = CR + AOC + v \cdot X$ yaz.</li>
+      <li>$AW_1 = AW_2$ denklemini çöz.</li>
+      <li>Kararı yaz: "$X > X_{BE}$ ise Alt X seçilir çünkü..." — yorumsuz bırakma.</li>
+    </ol>
+
+    <h3>Replacement Sorusu Gelince (Q3)</h3>
+    <ol>
+      <li><strong>İlk adım:</strong> Defender'ın P'si = MV. Sunk cost'u yoksay. Bunu açıkça yaz.</li>
+      <li>Defender'ı 1 yıllık ufukta değerlendir.</li>
+      <li>Challenger için ESL'deki AW'yi kullan (ya da verilen n ile).</li>
+      <li>Küçük AW = daha iyi alternatif.</li>
+    </ol>
+
+    <h3>Q5 Tipi — "Neden Alternatif X Daha İyi?" Sorusu</h3>
+    <p>Bu soru yazılı yorum ister. Şablon cevap:</p>
+    <div class="callout" style="font-style:italic;">
+      "Alt [X] seçilir çünkü yıllık eşdeğer maliyeti $AW_X = \$...$, Alt [Y]'nin $AW_Y = \$...$'ından daha düşüktür. Bu, [n] yıllık proje ömrü boyunca $[AW_Y - AW_X]$/yıl tasarruf sağlar. Bugünkü değer bazında bu tasarruf $(P/A,i,n)$ faktörüyle $\$...$ değerindedir. AW yöntemi farklı ömürlü alternatifleri de otomatik olarak eşit temelde karşılaştırır."
+    </div>
+
+    <h3>Q6 — Ders İyileştirme Önerisi</h3>
+    <p>Bu soruya içten, kısa ve somut bir cevap ver. "Daha fazla örnek çözüm yapılabilir, Excel ile hesap uygulamaları artırılabilir, haftalık kısa quiz eklenebilir" gibi. Sınav sorusu ama kolay puan.</p>
+
+    <div class="callout callout--warn">
+      <strong>Sınav Taktikleri:</strong>
+      <ul style="margin-top:6px;">
+        <li>15 dakikalık B/C sorusunu 15 dakikada bitir — uzatma.</li>
+        <li>Faiz tablosunu kullanırken doğru $n$ ve $i$'ye bak — en sık hata buradan gelir.</li>
+        <li>Hesap makinesinde sayıları girmeden önce formülü kâğıda yaz — hatalı hesaplamada kısmi puan alırsın.</li>
+        <li>Karar cümlesini her zaman yaz: sadece sayı verme.</li>
+        <li>Zaman baskısında önce kolay soruları çöz, 20 puanlık Q4'e son ver.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>
