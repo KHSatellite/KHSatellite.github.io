@@ -119,8 +119,10 @@
     </table>
 
     <div class="callout callout--warn">
-      <strong>Sunk Cost (Tahtadan):</strong> Geçmişte ödenmiş, geri alınamaz maliyetler. Replacement analizinde kullanılmaz — yalnızca bugünkü ve gelecekteki maliyetler geçerlidir.<br/>
-      Defender'ın ilk maliyeti = güncel <strong>piyasa değeri (MV)</strong>, orijinal alım fiyatı değil.
+      <strong>Sunk Cost (Batık Maliyet) — En Kritik Kavram:</strong><br/>
+      3 yıl önce $120,000'a makine aldın. Bugün $40,000'a satabilirsin. Replacement analizine bu makineyi başlatırken "ilk maliyet" olarak ne yazarsın?<br/>
+      <strong>$40,000 (bugünkü MV).</strong> $120,000'ı unutuyorsun — o para gitti, geri gelmiyor. Karar şu an ve gelecek için verilir, geçmiş için değil.<br/><br/>
+      Sunk cost tuzağına düşen mühendisler "çok para harcadım, şimdi atamam" diye kötü makineleri tutmaya devam eder → ekonomik kayıp büyür.
     </div>
 
     <h3>Neden Değiştirme Kararı Gerekir? (Tahtadan)</h3>
@@ -149,9 +151,10 @@
     <p>ESL, bir varlığın toplam yıllık maliyetini (AW) <strong>minimum</strong> yapan yıl sayısıdır. Tahmini ömür bilinmiyorsa ESL kullanılır.</p>
 
     <h3>Formüller</h3>
-    $$AW_{\text{toplam}} = -CR - AW_{\text{AOC}}$$
+    $$AW_{\text{toplam}} = CR + AW_{\text{AOC}}$$
     $$CR = P(A/P,\,i,\,n) - S(A/F,\,i,\,n)$$
     $$AW_{\text{AOC}} = \left[\sum_{k=1}^{n} AOC_k \cdot (P/F,\,i,\,k)\right](A/P,\,i,\,n)$$
+    <p>İki terimi topla, toplamı en küçük yapan $n$ değeri = ESL. Her iki terimin zıt yönde hareket ettiğini fark edersin: CR azalır (büyük maliyet daha çok yıla yayılır), AW_AOC artar (yaşlı makine daha çok bakım ister). İşte bu U eğrisinin dibi ESL'dir.</p>
 
     <div class="callout">
       <strong>Marginal Cost (MC) Yöntemi (Tahtadan):</strong><br/>
@@ -368,15 +371,15 @@
       <details><summary>Çözümü Gör</summary>
         <div class="solution">
           <strong>n=1:</strong> $CR = 80{,}000(A/P,10\%,1) = 80{,}000(1.10) = 88{,}000$<br/>
-          $AW_1 = -88{,}000 - 15{,}000 = -\$103{,}000$<br/><br/>
+          $AW_1 = 88{,}000 + 15{,}000 = \mathbf{\$103{,}000}$<br/><br/>
           <strong>n=2:</strong> $CR = 80{,}000(0.5762) = 46{,}096$<br/>
           $AW_{\text{AOC}} = [15{,}000(P/F,10\%,1)+18{,}000(P/F,10\%,2)](A/P,10\%,2)$<br/>
           $= [13{,}636+14{,}876](0.5762) = 16{,}405$<br/>
-          $AW_2 = -46{,}096 - 16{,}405 = -\$62{,}501$<br/><br/>
+          $AW_2 = 46{,}096 + 16{,}405 = \mathbf{\$62{,}501}$<br/><br/>
           <strong>n=3:</strong> $CR = 80{,}000(0.4021) = 32{,}168$<br/>
-          $AW_{\text{AOC}} ≈ [13{,}636+14{,}876+16{,}529](0.4021) = 18{,}162$<br/>
-          $AW_3 = -32{,}168 - 18{,}162 = -\$50{,}330$<br/><br/>
-          AW 3. yılda hâlâ düşüyorsa ESL &gt; 3 yıl. AOC artışı CR azalmasını geçtiği noktada ESL belirlenir.
+          $AW_{\text{AOC}} = [13{,}636+14{,}876+22{,}000(0.7513)](0.4021) = [13{,}636+14{,}876+16{,}529](0.4021) = 18{,}162$<br/>
+          $AW_3 = 32{,}168 + 18{,}162 = \mathbf{\$50{,}330}$<br/><br/>
+          AW değerleri: n=1 → $103k, n=2 → $62.5k, n=3 → $50.3k → hâlâ düşüyor. ESL &gt; 3 yıl — AOC artışı CR azalmasını geçtiğinde minimum bulunur.
         </div>
       </details>
     </div>

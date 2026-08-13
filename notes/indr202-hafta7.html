@@ -118,24 +118,20 @@
   <!-- 3 -->
   <section id="two-alt">
     <h2>3. İki Alternatif Arasında Breakeven — Genel Çerçeve</h2>
-    <p>Alternatifler hem sabit hem de değişken maliyetlere sahipken hangisinin daha iyi olduğu <strong>üretim miktarına (Q) göre değişir</strong>. Eşitlenme noktası $Q_{BE}$ her iki alternatifte eşit toplam maliyeti verir.</p>
+    <p>Sezgi: İki makine var. Biri pahalı ama az işçiyle çalışıyor. Diğeri ucuz ama çok işçi istiyor. Az üretimde ucuz makine daha iyi (yüksek sabit maliyet ödemeye değmez). Çok üretimde pahalı makine daha iyi (işçilik avantajı ölçekle kazanır). İkisinin maliyet eğrilerinin kesiştiği nokta = $Q_{BE}$.</p>
 
-    <h3>İki Makine / Proses Karşılaştırması</h3>
-    <p>Her alternatif için <strong>yıllık eşdeğer maliyet (AW)</strong> $Q$'nun fonksiyonu olarak ifade edilir:</p>
-    $$AW_1 = \text{Sabit AW}_1 + v_1 \cdot Q$$
-    $$AW_2 = \text{Sabit AW}_2 + v_2 \cdot Q$$
-    <p>Burada:</p>
-    <p>Sabit AW = CR + AOC &nbsp;(Q'dan bağımsız gider)</p>
-    <p>$v \cdot Q$ = yıllık değişken gider (işçilik, enerji, malzeme)</p>
+    <h3>Formül</h3>
+    <p>Her alternatif için yıllık toplam maliyet = Sabit kısım + Değişken kısım:</p>
+    $$AW_j = \underbrace{CR_j + AOC_j}_{\text{sabit (Q'dan bağımsız)}} + \underbrace{v_j \cdot Q}_{\text{değişken (Q ile artar)}}$$
+    <p>$v_j$ = birim değişken maliyet. Eğer işçilik ton cinsinden veriliyorsa:</p>
+    $$v_j = \frac{\text{ücret (\$/saat)}}{\text{kapasite (ton/saat)}} \quad \Rightarrow \quad \text{birim başına işçilik (\$/ton)}$$
 
-    <p>$AW_1 = AW_2$ noktası breakeven:</p>
-    $$\text{Sabit AW}_1 + v_1 Q = \text{Sabit AW}_2 + v_2 Q$$
-    $$Q_{BE} = \frac{\text{Sabit AW}_2 - \text{Sabit AW}_1}{v_1 - v_2}$$
+    <p>Eşitle → çöz:</p>
+    $$AW_1 = AW_2 \quad \Rightarrow \quad Q_{BE} = \frac{(CR_2 + AOC_2) - (CR_1 + AOC_1)}{v_1 - v_2}$$
 
     <div class="callout callout--warn">
-      <strong>Dikkat: Payda işareti</strong><br/>
-      Alt. 1 yüksek sabit + düşük değişken maliyet ise: $v_1 < v_2$ → $v_1 - v_2 < 0$<br/>
-      Paydanın negatif olması durumunda kesirleri çevir. Veya her zaman $|AW_1-AW_2|$ eşitliğini kur.
+      <strong>Paydayı kontrol et:</strong> Alt. 1 daha az değişken maliyetli ise $v_1 < v_2$ → payda pozitif. Alt. 1 hem sabit hem değişken maliyette yüksekse hiçbir zaman seçilmez (X_BE anlamsız).<br/>
+      En güvenlisi: denklem kurup doğrudan çöz, formülü ezberle değil.
     </div>
   </section>
 
@@ -269,95 +265,42 @@ Yıl   Net CF ($)
 
   <!-- 6 -->
   <section id="python-tools">
-    <h2>6. Python / Pandas / Jupyter ile CF Analizi (Tahtadan)</h2>
-    <p>Tahtadan not: "Python → Pandas → Jupyter Notebook → CF output $64"</p>
-    <p>Python, mühendislik ekonomisi hesaplarını hızlandırabilir. Özellikle çok sayıda alternatif veya senaryo analizi gerektiğinde Excel'den üstündür.</p>
-
-    <h3>Temel Kurulum</h3>
-    <div class="code-pre">pip install numpy numpy-financial pandas jupyter
-
-# numpy-financial: IRR, NPV, PMT fonksiyonları için
-import numpy as np
-import numpy_financial as npf
-import pandas as pd</div>
-
-    <h3>IRR ve NPV Hesabı</h3>
-    <div class="code-pre">import numpy_financial as npf
-
-# Nakit akışları (t=0'dan başlar)
-cf = [-50000, 9000, 9000, 9000, 9000, 9000, 9000, 9000, 14000]
-#                                                             ^-- son yıl: 9000+5000 hurda
-
-# IRR (iç getiri oranı)
-irr = npf.irr(cf)
-print(f"IRR = {irr:.4%}")      # → IRR = 10.1868%
-
-# NPV @ MARR=%12
-marr = 0.12
-npv = npf.npv(marr, cf)
-print(f"NPV = ${npv:,.2f}")    # → NPV = -$6,044.66  → reddet (NPV < 0)</div>
-
-    <h3>AW, PMT, Faktörler</h3>
-    <div class="code-pre">i, n = 0.12, 8
-P, A, S = 50000, 9000, 5000
-
-# (A/P) faktörü
-ap = npf.pmt(i, n, -1)      # = 0.2013  ← 1 birim PV için yıllık ödeme
-cr = npf.pmt(i, n, -P, S)   # Capital Recovery = $11,500/yıl (örn.)
-
-# PW hesabı
-pw = npf.npv(i, cf)          # = PV tüm CF
-
-# Faktör tablosu — pandas ile
-years = range(1, 9)
-df = pd.DataFrame({
-    "Yıl": years,
-    "P/F": [(1+i)**-k for k in years],
-    "P/A": [npf.pv(i, k, -1) for k in years],
-    "A/P": [npf.pmt(i, k, -1) for k in years],
-})
-print(df)</div>
-
-    <h3>ESL — Tüm Yıllar için AW Tablosu</h3>
-    <div class="code-pre">P, S0, ds, aoc0, daoc = 25000, 22000, 3000, 4000, 1500
-i, n_max = 0.12, 8
-
-rows = []
-for n in range(1, n_max+1):
-    S = S0 - ds*(n-1)          # hurda değeri
-    ap = npf.pmt(i, n, -1)     # (A/P,i,n)
-    af = npf.pmt(i, n, 0, -1)  # (A/F,i,n)
-    cr = P*ap - S*af            # capital recovery
-    
-    # AW(AOC): AOC'lerin bugünkü değerini bul, sonra AW'ye çevir
-    aoc_pv = sum((aoc0 + daoc*k) * (1+i)**-(k+1) for k in range(n))
-    aw_aoc = aoc_pv * ap
-    
-    total_aw = cr + aw_aoc
-    rows.append({"n": n, "CR": cr, "AW_AOC": aw_aoc, "Total AW": total_aw})
-
-df = pd.DataFrame(rows)
-esl = df.loc[df["Total AW"].idxmin(), "n"]
-print(df.to_string(index=False))
-print(f"\nESL = {esl} yıl")</div>
-
-    <h3>Jupyter Notebook'ta CF Grafiği</h3>
-    <div class="code-pre">import matplotlib.pyplot as plt
-
-plt.figure(figsize=(10,4))
-years = range(len(cf))
-colors = ['red' if c < 0 else 'green' for c in cf]
-plt.bar(years, cf, color=colors, edgecolor='black')
-plt.axhline(0, color='black', linewidth=0.8)
-plt.xlabel('Yıl'); plt.ylabel('Net CF ($)')
-plt.title('Nakit Akışı Diyagramı')
-plt.xticks(list(years))
-plt.tight_layout(); plt.show()</div>
+    <h2>6. Python ile CF Analizi (Tahtadan)</h2>
+    <p>Tahtada Python → Pandas → Jupyter Notebook zincirinden bahsedildi. Final sınavında bilgisayar kullanıyorsan Excel yeterli, ama Python'u da bilmek avantaj. İşte en temel kullanım:</p>
 
     <div class="callout">
-      <strong>numpy_financial vs Excel:</strong><br/>
-      <code>npf.irr(cf)</code> → <code>=IRR()</code> &nbsp;|&nbsp; <code>npf.npv(i, cf)</code> → <code>=NPV()</code> + CF0<br/>
-      <code>npf.pmt(i,n,-P,S)</code> → <code>=PMT(i,n,-P,S)</code> &nbsp;|&nbsp; <code>npf.mirr(cf, f, r)</code> → <code>=MIRR()</code>
+      <strong>Kurulum (bir kez yeterli):</strong><br/>
+      <code>pip install numpy-financial pandas</code><br/>
+      <code>numpy_financial</code> kütüphanesi Excel'in IRR, NPV, PMT, MIRR fonksiyonlarının Python karşılığını sağlar.
+    </div>
+
+    <h3>IRR ve NPV — En Sık Kullanılan</h3>
+    <div class="code-pre">import numpy_financial as npf
+
+# Nakit akışları: t=0'dan başla, para çıkışları negatif
+cf = [-50000, 9000, 9000, 9000, 9000, 9000, 9000, 9000, 14000]
+#      ^yatırım                                              ^son yıl: 9000+5000 hurda
+
+irr = npf.irr(cf)
+print(f"IRR = {irr:.2%}")   # → IRR = 10.19%
+
+# MARR=%12'de PW (Excel'deki NPV tuzağına dikkat: burada t=0 dahil)
+pw = npf.npv(0.12, cf)
+print(f"PW = ${pw:,.0f}")   # → PW = -$6,045 → reddet</div>
+
+    <h3>Capital Recovery ve AW</h3>
+    <div class="code-pre">P, S, n, i = 50000, 5000, 8, 0.12
+
+cr = npf.pmt(i, n, -P, S)   # CR = yıllık eşdeğer sermaye maliyeti
+print(f"CR = ${cr:,.0f}/yıl")  # → CR = $11,522/yıl
+
+# Excel eşdeğeri: =PMT(0.12, 8, -50000, 5000)</div>
+
+    <div class="callout">
+      <strong>Python ↔ Excel karşılığı:</strong><br/>
+      <code>npf.irr(cf)</code> = <code>=IRR()</code> &nbsp;|&nbsp;
+      <code>npf.npv(i, cf)</code> = <code>=NPV()+CF0</code> &nbsp;|&nbsp;
+      <code>npf.pmt(i,n,-P,S)</code> = <code>=PMT(i,n,-P,S)</code>
     </div>
   </section>
 

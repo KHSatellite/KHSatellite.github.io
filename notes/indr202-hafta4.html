@@ -61,40 +61,42 @@
   <section id="ror-intro">
     <h2>1. Rate of Return (ROR) Nedir?</h2>
     <p>ROR (Rate of Return), bir yatırımın sağladığı <strong>gerçek getiri oranıdır</strong>. IRR (Internal Rate of Return) veya $i^*$ ile gösterilir.</p>
+    <div class="callout">
+      <strong>Sezgi — ROR neden önemli?</strong><br/>
+      MARR (kabul edebileceğimiz minimum getiri) var elimizde. Bir proje bize ne kadar getiriyor bilmek istiyoruz. İşte bu "gerçek getiri oranı" = ROR.<br/>
+      Mantık basit: <em>projenin bize kazandırdığı oran MARR'ı geçiyor mu?</em>
+    </div>
     <div class="factor-grid">
       <div class="factor-card">
         <div class="factor-name">IRR</div>
         <div class="factor-label">Internal Rate of Return</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">En yaygın isim. Projenin iç getiri oranı. Nakit akışlarının NPV'sini sıfır yapan oran.</p>
-      </div>
-      <div class="factor-card">
-        <div class="factor-name">ROI</div>
-        <div class="factor-label">Return on Investment</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">Yatırım getirisi. Özellikle finans sektöründe kullanılır.</p>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Projenin iç getiri oranı. Nakit akışlarının PW'sini sıfır yapan oran. Finans dünyasında en yaygın kullanılan isim.</p>
       </div>
       <div class="factor-card">
         <div class="factor-name">i*</div>
         <div class="factor-label">i-star</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">Mühendislik ekonomisinde standart gösterim. PW = 0 denkleminin çözümü.</p>
+        <p style="font-size:0.82rem;color:var(--text-muted)">Mühendislik ekonomisinde standart gösterim. IRR ile aynı şey. PW = 0 denkleminin çözümü.</p>
       </div>
     </div>
     <div class="callout">
-      <strong>Karar kuralı:</strong> $i^* \geq MARR$ → yatırımı kabul et. $i^* < MARR$ → reddet.
+      <strong>Karar kuralı:</strong> $i^* \geq MARR$ → yatırımı kabul et &nbsp;|&nbsp; $i^* < MARR$ → reddet.
     </div>
-    <p>Matematiksel ifade: IRR, tüm nakit akışlarının bugünkü değerini <strong>sıfır</strong> yapan $i^*$ oranıdır:</p>
-    $$0 = \sum_{t=0}^{n} C_t \cdot (1+i^*)^{-t} = -PW_{\text{maliyet}} + PW_{\text{gelir}}$$
-    <p>Bu denklem çoğu zaman <strong>kapalı form çözümü yok</strong> — dolayısıyla deneme-yanılma, interpolasyon veya Excel gerektirir.</p>
+    <p>Matematiksel ifade: $i^*$, tüm nakit akışlarının bugünkü değerini tam olarak <strong>sıfır</strong> yapan faiz oranıdır:</p>
+    $$0 = \sum_{t=0}^{n} C_t \cdot (1+i^*)^{-t} = PW_{\text{gelirler}} - PW_{\text{maliyetler}}$$
+    <p>Yani: <em>"Bu oran hangi değerde olsaydı, bugün yaptığım yatırım ile gelecekte elde edeceğim kazançlar tam olarak eşit olurdu?"</em> — işte bu soru i*'ı tanımlar.</p>
+    <p>Bu denklemin kapalı form çözümü çoğu zaman yoktur — dolayısıyla <strong>deneme-yanılma, interpolasyon veya Excel</strong> gerektirir.</p>
   </section>
 
   <!-- 2 -->
   <section id="ror-def">
     <h2>2. IRR'ın İki Tanımı (Tahtadan)</h2>
+    <p>Hoca IRR'ı iki farklı bakış açısından tanımlıyor. İkisi de aynı şeyi söylüyor, sadece kim baktığına göre çerçeveleme değişiyor.</p>
     <h3>Borçlunun Bakış Açısından</h3>
-    <p>IRR, <strong>"unpaid balance" (ödenmemiş bakiye)</strong> üzerine uygulanır; öyle ki toplam borç ve faizin tamamı son ödemeyle tam olarak kapanır.</p>
-    <h3>Borç Verenin Bakış Açısından</h3>
-    <p>IRR, <strong>"unrecovered balance" (kurtarılmamış bakiye)</strong> üzerine ödenen orandır; bir ödeme veya gelir bu bakiyeyi tam olarak <strong>sıfıra</strong> getirir.</p>
+    <p>Bankadan kredi çektin. Her yıl belirli bir faizle borçlanıyorsun, ödeme yapınca bakiye azalıyor. IRR, <strong>ödenmemiş bakiye (unpaid balance)</strong> üzerine uygulanan orandır; son ödemeyle bakiye tam olarak <strong>sıfıra</strong> iner. Sıfıra inmezse o faiz oranı IRR değildir.</p>
+    <h3>Borç Verenin (Yatırımcının) Bakış Açısından</h3>
+    <p>Bir projeye para yatırdın. Her dönem gelir aldıkça "kurtarılmamış bakiye (unrecovered balance)" azalıyor. IRR, tam olarak son gelirle bu bakiyeyi <strong>sıfıra</strong> düşüren orandır. Bu oran MARR'ı geçiyorsa proje karlı.</p>
     <div class="callout">
-      <strong>Temel fikir:</strong> Her iki tanım da aynı noktada buluşur — IRR, projenin "kendi kendini finanse ettiği" orandır.
+      <strong>İki tanım neden aynı?</strong> Borçlunun borcu sıfırlayan oran = yatırımcının yatırımını tam kurtaran oran. IRR bunların ikisini birden sağlayan özgün faiz oranıdır.
     </div>
     <div class="example">
       <div class="example-label">Somut Örnek — Ödenmemiş Bakiye Takibi</div>
@@ -281,12 +283,23 @@ reinvest_rate  → yeniden yatırım oranı    (F_{t-1} > 0 iken kullanılan ora
   <!-- 6 -->
   <section id="crr">
     <h2>6. Composite Rate of Return (CRR / MIRR)</h2>
-    <p>CRR (veya MIRR), multiple $i^*$ problemini çözmek için geliştirilmiştir. Fikir: pozitif CF'ler projenin dışında <strong>$c$ oranıyla</strong> yeniden yatırılır. Böylece tekil, benzersiz bir oran $i'$ elde edilir.</p>
+    <p>CRR (veya MIRR), multiple $i^*$ problemini çözmek için geliştirilmiştir.</p>
+
+    <div class="callout">
+      <strong>Neden CRR gerekiyor?</strong><br/>
+      Standart IRR, tüm pozitif gelirlerin yine <em>i* oranıyla</em> yeniden yatırıldığını varsayar. Bu gerçekçi değil — özellikle i* yüksekse. CRR bu varsayımı kırar: pozitif CF'leri proje dışında gerçekçi bir <strong>c oranıyla</strong> büyütür, projeye yapılan "net yatırım" üzerinde ise <strong>i'</strong> uygulanır. Sonuçta tek ve benzersiz bir oran çıkar.
+    </div>
 
     <h3>F_t Prosedürü — Adım Adım</h3>
-    <p>$F_t$ = $t$ anındaki <em>Net Yatırım Değeri</em>. Her dönem için:</p>
-    $$F_t = F_{t-1}(1+\lambda) + C_t \qquad \lambda = \begin{cases} c & F_{t-1} > 0 \text{ (yatırım elde → dışarıda } c \text{ ile büyüt)} \\ i' & F_{t-1} < 0 \text{ (proje hâlâ borçlu → } i' \text{ uygula)} \end{cases}$$
-    <p>$n$. adımda $F_n = 0$ olacak şekilde $i'$ çöz.</p>
+    <p>$F_t$ = $t$ anındaki <strong>Net Yatırım Değeri</strong> (proje hâlâ ne kadar "borçlu" ya da "alacaklı"). Her dönem için:</p>
+    $$F_t = F_{t-1}(1+\lambda) + C_t \qquad \lambda = \begin{cases} c & F_{t-1} > 0 \text{ (elde para var → dışarıda } c \text{ ile büyür)} \\ i' & F_{t-1} < 0 \text{ (proje borçlu → } i' \text{ faiz işler)} \end{cases}$$
+    <p>Son adımda $F_n = 0$ koşulunu koy ve $i'$'yi çöz. $F_n = 0$ demek: proje tam olarak kendi borcunu ödeyip kapandı demektir.</p>
+    <div class="callout callout--warn">
+      <strong>Hangi λ kullanacağını nasıl anlarsın?</strong><br/>
+      $F_{t-1}$'in işaretine bak. Pozitifse ($F > 0$): proje "alacaklı" — dışarıda c oranıyla büyüyor.<br/>
+      Negatifse ($F < 0$): proje "borçlu" — i' oranıyla faiz işliyor.<br/>
+      Her adımda işareti kontrol et, gerekirse λ değişir.
+    </div>
 
     <div class="example">
       <div class="example-label">Tam F_t Tablosu ile Çözümlü Örnek — c = %10</div>
@@ -348,9 +361,12 @@ reinvest_rate  → yeniden yatırım oranı    (F_{t-1} > 0 iken kullanılan ora
   <!-- 7 -->
   <section id="incremental">
     <h2>7. Incremental ROR — Çoklu Alternatifler</h2>
-    <p>ME alternatiflerde en yüksek bireysel $i^*$, en iyi alternatifte olmak zorunda değildir. <strong>Artışsal (incremental) analiz</strong> şarttır.</p>
+    <p>Birden fazla ME (birbirini dışlayan) alternatif varsa bireysel $i^*$ değerlerini karşılaştırarak karar veremezsin. <strong>Artışsal (incremental) analiz</strong> şarttır.</p>
     <div class="callout callout--warn">
-      <strong>Neden bireysel i* yeterli değil?</strong> $i^*$ oranı, <em>yatırım büyüklüğünü</em> dikkate almaz. Küçük yatırımda yüksek $i^*$, büyük yatırımda daha düşük $i^*$ daha fazla katkı sağlayabilir.
+      <strong>Neden bireysel i* yeterliği değil?</strong><br/>
+      Düşün: %50 getirili bir $1,000 yatırım mı iyidir, %20 getirili bir $100,000 yatırım mı?<br/>
+      İlki $500 kazanç, ikincisi $20,000 kazanç → ikincisi açıkça daha değerli, ama i* oranı küçük.<br/>
+      Yani <strong>i* oranı tek başına yatırım büyüklüğünü yansıtmaz.</strong> Incremental analiz "fazladan harcanan para karşılığını veriyor mu?" sorusunu sorar.
     </div>
     <h3>Prosedür</h3>
     <p>1. Alternatifleri başlangıç maliyetine göre küçükten büyüğe sırala.<br/>
@@ -402,32 +418,29 @@ reinvest_rate  → yeniden yatırım oranı    (F_{t-1} > 0 iken kullanılan ora
   <!-- 8 -->
   <section id="bc-intro">
     <h2>8. Benefit/Cost (B/C) Oranı</h2>
-    <p>B/C analizi, özellikle <strong>kamu sektörü projelerinde</strong> kullanılan değerlendirme yöntemidir. Amacı, fayda ve maliyetleri aynı para birimine indirgeleyerek nesnel karar vermektir.</p>
+    <p>B/C analizi, özellikle <strong>kamu sektörü projelerinde</strong> kullanılan değerlendirme yöntemidir. Özel sektörde "bu bana para kazandırır mı?" diye sorarsın. Devlet ise "topluma fayda sağlıyor mu?" diye sorar — işte B/C bunu ölçer.</p>
+
+    <div class="callout">
+      <strong>Sezgi:</strong> Bir köprü inşa edeceksin. Köprü pahalı, ama insanlar günde 30 dakika zaman kazanıyor, yakıt tasarrufu oluyor. Bu tasarrufların yıllık değeri > inşaat maliyetinin yıllık eşdeğeri ise B/C ≥ 1 → proje kabul.
+    </div>
+
     <div class="callout">
       <strong>Temel formül:</strong>
-      $$B/C = \frac{PW_{\text{fayda}}}{PW_{\text{maliyet}}} = \frac{AW_{\text{fayda}}}{AW_{\text{maliyet}}} = \frac{FW_{\text{fayda}}}{FW_{\text{maliyet}}}$$
-      Tüm CF'ler aynı para birimine çevrilmeli (PW, AW veya FW — aynı kararı verir).
+      $$B/C = \frac{PW_{\text{fayda}}}{PW_{\text{maliyet}}} = \frac{AW_{\text{fayda}}}{AW_{\text{maliyet}}}$$
+      Tüm değerleri aynı bazda ifade et (PW veya AW — her ikisi de aynı kararı verir).
     </div>
+
     <h3>Kamu Sektörü Terimleri</h3>
     <table>
       <thead><tr><th>Terim</th><th>Tanım</th><th>Örnekler</th></tr></thead>
       <tbody>
-        <tr><td><strong>Benefit (B)</strong></td><td>Kamuya sağlanan yararlar</td><td>Zaman tasarrufu, güvenlik artışı</td></tr>
-        <tr><td><strong>Disbenefit (D)</strong></td><td>Kamuya getirilen olumsuzluklar</td><td>Trafik aksaklığı, çevresel etki</td></tr>
-        <tr><td><strong>Cost (C)</strong></td><td>Devletin üstlendiği harcamalar</td><td>İnşaat, bakım, işletme</td></tr>
+        <tr><td><strong>Benefit (B)</strong></td><td>Kullanıcıların/toplumun kazancı</td><td>Zaman tasarrufu, kaza azalması, ürün kalitesi</td></tr>
+        <tr><td><strong>Disbenefit (D)</strong></td><td>Kullanıcıların/toplumun olumsuz etkilenmesi</td><td>Gürültü, trafik aksaklığı, çevre kirliliği</td></tr>
+        <tr><td><strong>Cost (C)</strong></td><td>Devletin/kurumun harcaması</td><td>İnşaat, yıllık bakım ve işletme</td></tr>
       </tbody>
     </table>
-    <div class="factor-grid">
-      <div class="factor-card">
-        <div class="factor-name">BOT</div>
-        <div class="factor-label">Build-Operate-Transfer</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">Özel sektör inşa eder, işletir; sonra devlete devreder</p>
-      </div>
-      <div class="factor-card">
-        <div class="factor-name">BOO</div>
-        <div class="factor-label">Build-Operate-Own</div>
-        <p style="font-size:0.82rem;color:var(--text-muted)">Özel sektör inşa eder, işletir ve sahip olmaya devam eder</p>
-      </div>
+    <div class="callout callout--warn">
+      <strong>Disbenefit nereye yazılır?</strong> B'den çıkarılır (paya), C'ye eklenmez (paydaya). Disbenefit "negatif fayda"dır — maliyet değil.
     </div>
   </section>
 
