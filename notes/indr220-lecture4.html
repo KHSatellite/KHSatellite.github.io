@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 220 – Lecture 4 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes220.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Problem</a></li>
+    <li><a href="#s2">2. Modeli kuralım</a></li>
+    <li><a href="#s3">3. Matris formuna çevirelim (N = 2, M = 3)</a></li>
+    <li><a href="#s4">4. Bu dersin en önemli dersi: Modelleme → Matris çeviri tarifi</a></li>
+    <li><a href="#s5">Özet</a></li>
+    <li><a href="#s6">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-220">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 220</span>
+    <span class="note-week-label">Lecture 4</span>
+  </div>
+  <h1 class="note-main-title">Warehouse Location Problem</h1>
+  <p class="note-intro">Bu derste gerçekçi, <strong>tam bir modelleme</strong> örneği yapıyoruz: depo yeri seçimi. Önce Σ'lı modeli kuruyor, sonra onu adım adım <code>A·x (=, &lt;=) b</code> matrislerine çeviriyoruz. Lecture 02'deki binary değişkenlerle Lecture 03'teki matris dilini birleştiriyoruz.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Problem</h2>
+<p>Bir şirket müşterilerine ürün gönderiyor. Şehirde birkaç <strong>aday depo konumu</strong> var (şekilde W1, W2, W3) ve müşteriler (C1..C6) farklı yerlerde. Soru: <strong>Hangi depoları açmalıyım ve her müşteriye hangi depodan ne kadar ürün göndermeliyim ki toplam maliyet minimum olsun?</strong></p>
+<p>İki tür maliyet var ve birbiriyle çelişiyor:
+- Depo açmak pahalı (kira, işletme) → az depo açmak isterim.
+- Müşteriye uzak depodan göndermek pahalı (taşıma) → çok depo açıp müşteriye yaklaşmak isterim.</p>
+<p>Optimization bu dengeyi bizim yerimize kurar.</p>
+<h3>Notasyon (parametreler, yani <strong>input</strong>)</h3>
+<table>
+<thead>
+<tr>
+<th>Sembol</th>
+<th>Anlam</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N</td>
+<td>aday depo sayısı</td>
+</tr>
+<tr>
+<td>M</td>
+<td>müşteri sayısı</td>
+</tr>
+<tr>
+<td>dj</td>
+<td>müşteri j'nin talebi (demand)</td>
+</tr>
+<tr>
+<td>fi</td>
+<td>depo i'nin sabit / işletme maliyeti (açılırsa ödenir)</td>
+</tr>
+<tr>
+<td>cij</td>
+<td>j. müşteriye i. depodan <strong>bir birim</strong> göndermenin maliyeti (genelde depo–müşteri mesafesiyle orantılı: cij ∝ distance)</td>
+</tr>
+</tbody>
+</table>
+<h3>Karar değişkenleri (<strong>output</strong>)</h3>
+<p>Burada iki farklı türde karar var, bu yüzden iki değişken ailesi:</p>
+<div class="code-pre">yi  = 1   eğer depo i açılırsa            (binary, evet/hayır)
+      0   aksi halde
+
+xij = depo i'den müşteri j'ye gönderilen ürün miktarı     (continuous, ≥ 0)</div>
+<div class="callout callout--warn"><strong>Dikkat:</strong> <code>yi</code> binary, <code>xij</code> sürekli. Yani bu problem bir <strong>MILP</strong>'tir (Lecture 02'deki "mixed" sınıf).</div>
+  </section>
+
+  <section id="s2">
+    <h2>2. Modeli kuralım</h2>
+<h3>Objective</h3>
+<div class="code-pre">minimize   Σ(i=1..N) fi · yi   +   Σ(i=1..N) Σ(j=1..M) cij · xij
+           └ total investment ┘     └──── total transportation cost ────┘
+           (toplam yatırım maliyeti)  (toplam taşıma maliyeti)</div>
+<ul>
+<li>İlk toplam: yalnızca <strong>açılan</strong> depoların (yi = 1) sabit maliyeti ödenir; kapalı depo (yi = 0) için <code>fi·0 = 0</code>.</li>
+<li>İkinci toplam: gönderilen miktar × birim maliyet.</li>
+</ul>
+<h3>Constraint 1 — Her müşterinin talebi tam karşılanmalı</h3>
+<div class="code-pre">Σ(i=1..N) xij = dj        j = 1, 2, ..., M      (her müşteri için)</div>
+<p>Müşteri j'ye <em>tüm depolardan</em> gelen miktarların toplamı = onun talebi. (M tane constraint.)</p>
+<h3>Constraint 2 — Kapalı depo ürün gönderemez</h3>
+<p>Bunu ifade etmek zor ve zeki bir numara. Şöyle yazılıyor:</p>
+<div class="code-pre">Σ(j=1..M) xij  −  ( Σ(j=1..M) dj ) · yi  &lt;=  0        i = 1, 2, ..., N      (her depo için)</div>
+<p>Anlamı: <code>TD = Σ dj</code> (total demand, toplam talep) diyelim. Bu constraint'i <code>Σ xij &lt;= TD · yi</code> diye de okuyabilirsiniz. İki durum:</p>
+<ul>
+<li><strong>yi = 0 (depo kapalı):</strong> <code>Σ xij &lt;= 0</code>. Ve xij ≥ 0 olduğundan → hepsi 0. Kapalı depo hiçbir şey gönderemez. ✔</li>
+<li><strong>yi = 1 (depo açık):</strong> <code>Σ xij &lt;= TD</code>. Depo, <strong>toplam talebe kadar</strong> gönderebilir; pratikte hiçbir kısıt yok. ✔</li>
+</ul>
+<p>Yani <code>yi</code>, "bu depo çalışıyor mu?" şalteri gibi bir kapı görevi görüyor. (Bu hileye ileride birçok problemde rastlayacağız: binary değişkenle sürekli değişkeni bağlamak.) Sağdaki sabit (TD) "yeterince büyük" olmalı; burada toplam talep zaten doğal bir üst sınır.</p>
+<h3>Bound'lar / değişken tipleri</h3>
+<div class="code-pre">yi ∈ {0, 1}          i = 1, ..., N
+xij &gt;= 0             i = 1, ..., N ;  j = 1, ..., M</div>
+<h3>Sayılarla boyut kontrolü</h3>
+<div class="code-pre"># decision variables = N + N·M      (N tane yi  +  N·M tane xij)
+# constraints        = M + N        (M talep constraint'i + N kapasite constraint'i)</div>
+  </section>
+
+  <section id="s3">
+    <h2>3. Matris formuna çevirelim (N = 2, M = 3)</h2>
+<p>Genel N, M ile yazmak göz karıştırır. Küçük örnekle bakalım: <strong>2 depo, 3 müşteri.</strong>
+Değişken sayısı: 2 + 2·3 = <strong>8</strong>. Constraint sayısı: 3 + 2 = <strong>5</strong>.</p>
+<h3>Adım 1: Karar değişkenlerini tek bir vektöre diz</h3>
+<p>Solver tek bir <code>x</code> vektörü ister. Bu yüzden xij'leri (matris gibi düşünebileceğimiz 2×3 yapıyı) ve y'leri <strong>alt alta</strong> dizeriz. Sıra:</p>
+<div class="code-pre">x = [ x11 x12 x13   x21 x22 x23   y1 y2 ]^T          boyut: (NM + N) x 1 = 8 x 1
+      └─ depo 1 ──┘ └─ depo 2 ──┘ └ y'ler ┘</div>
+<p>(Önce 1. deponun müşterilere gönderdikleri, sonra 2. depo, en sonda y'ler.)</p>
+<h3>Adım 2: Objective → c</h3>
+<p>Katsayıları da <strong>aynı sırayla</strong> dizeriz:</p>
+<div class="code-pre">c^T = [ c11 c12 c13   c21 c22 c23   f1 f2 ]          boyut: 1 x 8
+
+minimize  c^T · x = c11·x11 + c12·x12 + ... + c23·x23 + f1·y1 + f2·y2</div>
+<div class="callout"><strong>Kural:</strong> x'in sırası neyse, c, A'nın sütunları ve l, u aynı sırayı izlemeli. Sıra karışırsa model yanlış olur.</div>
+<h3>Adım 3: Talep constraint'leri → A1 · x = b1</h3>
+<p>Yazılışı:</p>
+<div class="code-pre">x11 + x21 = d1       (1. müşteri)
+x12 + x22 = d2       (2. müşteri)
+x13 + x23 = d3       (3. müşteri)</div>
+<p>Her satırı <strong>8 değişkenin hepsi</strong> için yazalım (olmayanların katsayısı 0):</p>
+<div class="code-pre">1·x11 + 0·x12 + 0·x13 + 1·x21 + 0·x22 + 0·x23 + 0·y1 + 0·y2 = d1
+0·x11 + 1·x12 + 0·x13 + 0·x21 + 1·x22 + 0·x23 + 0·y1 + 0·y2 = d2
+0·x11 + 0·x12 + 1·x13 + 0·x21 + 0·x22 + 1·x23 + 0·y1 + 0·y2 = d3</div>
+<p>Katsayıları matrise yazarsak:</p>
+<div class="code-pre">        x11 x12 x13 | x21 x22 x23 | y1 y2
+      [  1   0   0  |  1   0   0  |  0  0 ]       [d1]
+A1 =  [  0   1   0  |  0   1   0  |  0  0 ]  b1 = [d2]
+      [  0   0   1  |  0   0   1  |  0  0 ]       [d3]
+        └─ I (MxM) ─┘ └─ I (MxM) ─┘ └ 0 (MxN)┘</div>
+<p>Güzel bir yapı: iki tane <strong>birim matris (identity, M×M)</strong> yan yana, sonra sıfırlar. Boyut: <strong>A1: M × (NM + N)</strong>, b1: M × 1.</p>
+<p>Neden birim matris? Çünkü her depo bloğunda "j. müşteri → j. satır" eşleşmesi var.</p>
+<h3>Adım 4: Depo constraint'leri → A2 · x &lt;= b2</h3>
+<div class="code-pre">x11 + x12 + x13 − TD·y1 &lt;= 0      (1. depo)
+x21 + x22 + x23 − TD·y2 &lt;= 0      (2. depo)</div>
+<p>Matris:</p>
+<div class="code-pre">        x11 x12 x13 | x21 x22 x23 |   y1    y2
+      [  1   1   1  |  0   0   0  |  -TD    0  ]       [0]
+A2 =  [  0   0   0  |  1   1   1  |   0    -TD ]  b2 = [0]
+        └─ N x M ──┘ └─ N x M ──┘ └── N x N ─┘</div>
+<p>Boyut: <strong>A2: N × (NM + N)</strong>, b2: N × 1.</p>
+<h3>Adım 5: A1 ve A2'yi tek matriste topla</h3>
+<p>İki ayrı constraint grubumuz var, biri eşitlik, biri eşitsizlik:</p>
+<div class="code-pre">A1 · x  =  b1        (eşitlik)
+A2 · x &lt;=  b2        (eşitsizlik)</div>
+<p>Alt alta dizilmiş hali:</p>
+<div class="code-pre">[ A1 ]       [ =  ]  [ b1 ]
+[ A2 ] · x   [ &lt;= ]  [ b2 ]</div>
+<p>Yani artık solver'a: c, A1, b1, A2, b2 ve bound'ları (yi ∈ [0,1] ve integer, xij ≥ 0) vereceğiz.</p>
+<div class="callout"><strong>Not:</strong> Lecture 03'te LP'yi sadece <code>A x &lt;= b</code> ile yazmıştık. Gerçek problemlerde eşitlikler de çok çıkar, bu yüzden pratikte solver'lar iki matris ister (eşitlik için ayrı, eşitsizlik için ayrı). Bu fikir buradaki <code>A1 x = b1</code> ve <code>A2 x &lt;= b2</code> ayrımıdır. <em>(Ek not, derste yazılmadı: bir eşitlik, iki eşitsizlikle — <code>&lt;=</code> ve <code>&gt;=</code> — de ifade edilebilir; bu yüzden teorik olarak sadece <code>&lt;=</code> yeterlidir.)</em></div>
+  </section>
+
+  <section id="s4">
+    <h2>4. Bu dersin en önemli dersi: Modelleme → Matris çeviri tarifi</h2>
+<p>Bir problemi bilgisayara vermek için sırayla:</p>
+<ol>
+<li><strong>Değişkenleri tanımla</strong> (hangi indisler, hangi tipler: binary / continuous).</li>
+<li><strong>Tek vektörde sırala</strong> (x = [...]). Sırayı bir kere seç, sonra değiştirme.</li>
+<li><strong>c vektörünü</strong> aynı sırayla doldur.</li>
+<li><strong>Her constraint ailesi için</strong> ayrı bir blok matris (A1, A2, ...) ve sağ taraf vektörü (b1, b2, ...) yaz. Olmayan değişkenlere 0 koy.</li>
+<li>Blokları alt alta dizerek A ve b'yi elde et.</li>
+<li>l ve u'yu (bound'lar) doldur. Binary değişken ise <code>[0,1]</code> bound + integer işareti.</li>
+</ol>
+<p>Bu işi elle yapmak sıkıcı (ve hata yapmaya açık). Bu yüzden önümüzdeki derslerde <strong>NumPy</strong> gibi kütüphanelerle matris kurmayı öğreniyoruz. (Lecture 05'te başlıyoruz.)</p>
+  </section>
+
+  <section id="s5">
+    <h2>Özet</h2>
+<ul>
+<li>Warehouse Location: hangi depolar açılsın (binary <code>yi</code>) ve kim kimden ne kadar alsın (sürekli <code>xij</code>)?</li>
+<li>Objective = sabit maliyetler + taşıma maliyetleri.</li>
+<li>Talep constraint'i: her müşteri için <code>Σi xij = dj</code>.</li>
+<li>"Kapalı depo gönderemez" constraint'i: <code>Σj xij − (Σj dj)·yi &lt;= 0</code> (binary ile sürekliyi bağlama hilesi).</li>
+<li>Değişken sayısı N + NM, constraint sayısı M + N.</li>
+<li>Matrise çevirmek: tüm değişkenleri tek vektöre diz, c / A1 / A2 / b1 / b2'yi aynı sırayla kur.</li>
+<li>Bu bir <strong>MILP</strong>'tir.</li>
+</ul>
+  </section>
+
+  <section id="s6">
+    <h2>Kendini test et</h2>
+<ol>
+<li>N = 3 depo, M = 5 müşteri için kaç değişken ve kaç constraint var?</li>
+<li>Constraint 2'de <code>yi = 1</code> iken kısıt "bir şey kısıtlamıyor" gibi duruyor. Peki depoya bir <strong>kapasite</strong> (örn. en fazla Ki birim) koymak istesek ne yazardık?</li>
+<li>x vektöründe sıralamayı değiştirip y'leri başa alsak neler değişir?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>Değişken: N + NM = 3 + 15 = 18. Constraint: M + N = 5 + 3 = 8.</li>
+<li><code>Σj xij &lt;= Ki · yi</code> yazardık. (TD yerine kapasite Ki gelir.) yi = 0 ise yine 0 gönderir, yi = 1 ise en fazla Ki gönderir. <em>(Mantık sorusu; derste işlenmedi.)</em></li>
+<li>Modelin kendisi değişmez; ama c, A1, A2 ve l, u'nun <strong>sütun sırası</strong> da aynı şekilde değişmek zorundadır. Hepsi aynı sıralamayı izlemezse model bozulur.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="indr220-lecture3.html">← Lecture 3</a> · <a href="indr220-lecture5.html">Lecture 5 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

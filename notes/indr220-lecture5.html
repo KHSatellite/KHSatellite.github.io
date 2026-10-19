@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 220 – Lecture 5 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes220.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">0. Neden NumPy?</a></li>
+    <li><a href="#s2">1. Vektör oluşturmak</a></li>
+    <li><a href="#s3">2. Matris oluşturmak</a></li>
+    <li><a href="#s4">3. Sparse (seyrek) matris</a></li>
+    <li><a href="#s5">4. Eleman seçmek (indexing ve slicing)</a></li>
+    <li><a href="#s6">5. Minimum / maksimum</a></li>
+    <li><a href="#s7">6. Ortalama, varyans, standart sapma</a></li>
+    <li><a href="#s8">7. Şekil değiştirmek (reshape)</a></li>
+    <li><a href="#s9">8. Transpoz</a></li>
+    <li><a href="#s10">9. Düzleştirmek (flatten)</a></li>
+    <li><a href="#s11">Özet</a></li>
+    <li><a href="#s12">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-220">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 220</span>
+    <span class="note-week-label">Lecture 5</span>
+  </div>
+  <h1 class="note-main-title">NumPy ile Lineer Cebir: Temeller</h1>
+  <p class="note-intro">Önceki derslerde modelleri <code>c, A, b, l, u</code> gibi vektör ve matrislerle yazdık. Şimdi bunları <strong>Python'da</strong> nasıl tutacağımızı öğreniyoruz. Bunun için kullanacağımız kütüphane <strong>NumPy</strong>.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>0. Neden NumPy?</h2>
+<p>Python'un kendi listeleri (<code>[1, 2, 3]</code>) matematiksel işlemler için yavaştır ve "matris" kavramı yoktur. <strong>NumPy</strong>, Python'da bilimsel hesaplamanın çekirdek kütüphanesidir: hızlı, çok boyutlu bir <strong>array</strong> nesnesi ve bu array'lerle çalışan araçlar sağlar.</p>
+<p>Hatırlayın: LP'nin bütün bilgisi <code>A, b, c, l, u</code> idi. Bunların hepsi NumPy array'i olarak tutulacak.</p>
+<div class="code-pre">import numpy as np
+import scipy.sparse as sp</div>
+<p>(<code>as np</code> bir kısaltmadır; her yerde <code>numpy</code> yazmak yerine <code>np</code> yazarız.)</p>
+<p>Bir array'in üç temel özelliği vardır; her örnekte bunlara bakacağız:</p>
+<table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.shape</code></td>
+<td>Boyutlar, örn. <code>(3, 2)</code> = 3 satır, 2 sütun</td>
+</tr>
+<tr>
+<td><code>.size</code></td>
+<td>Toplam eleman sayısı</td>
+</tr>
+<tr>
+<td><code>.ndim</code></td>
+<td>Kaç boyutlu (1 = düz liste gibi, 2 = tablo gibi)</td>
+</tr>
+</tbody>
+</table>
+  </section>
+
+  <section id="s2">
+    <h2>1. Vektör oluşturmak</h2>
+<h3>1D vektör</h3>
+<div class="code-pre">vector = np.array([1, 2, 3])
+print(vector)          # [1 2 3]
+print(vector.shape)    # (3,)
+print(vector.size)     # 3
+print(vector.ndim)     # 1</div>
+<p><code>shape = (3,)</code>: tek boyutlu, 3 elemanlı. <strong>Ne satır ne sütun</strong>, sadece "düz bir dizi".</p>
+<h3>Satır vektörü (row vector)</h3>
+<div class="code-pre">row_vector = np.array([[1, 2, 3]])      # iki köşeli parantez!
+# shape (1, 3), ndim 2</div>
+<h3>Sütun vektörü (column vector)</h3>
+<div class="code-pre">column_vector = np.array([[1], [2], [3]])
+# shape (3, 1), ndim 2</div>
+<div class="callout callout--warn"><strong>Çok önemli ayrım:</strong> <code>(3,)</code>, <code>(1, 3)</code> ve <code>(3, 1)</code> NumPy için <strong>üç farklı şeydir</strong>. Matematikte sütun vektörü <code>x</code> (N×1) ve satır vektörü <code>x^T</code> (1×N) arasındaki farkı hatırlayın; matris çarpımlarında bu fark belirleyici olacak. 1D vektörün (3,) yönü yoktur; satır/sütun olarak davranmasını istiyorsak 2D yazmalıyız.</div>
+  </section>
+
+  <section id="s3">
+    <h2>2. Matris oluşturmak</h2>
+<p>İç içe listelerle:</p>
+<div class="code-pre">matrix = np.array([[1, 2],
+                   [3, 4],
+                   [5, 6]])
+print(matrix.shape)    # (3, 2)  → 3 satır, 2 sütun
+print(matrix.size)     # 6
+print(matrix.ndim)     # 2</div>
+<p><strong>Boyut sırası hep (satır, sütun).</strong> A matrisimiz M×N idiyse NumPy'da <code>shape = (M, N)</code>.</p>
+  </section>
+
+  <section id="s4">
+    <h2>3. Sparse (seyrek) matris</h2>
+<p>Birçok gerçek optimization probleminde A matrisinin neredeyse tamamı <strong>sıfırdır</strong>. Warehouse örneğinde A1 ve A2'ye bakın: çok fazla 0. Bütün sıfırları bellekte saklamak israf.</p>
+<div class="code-pre">matrix = np.array([[0, 0],
+                   [0, 4],
+                   [5, 0]])
+print(matrix.size)                  # 6  (sıfırlar dahil hepsi)
+
+sparse_matrix = sp.csr_matrix(matrix)
+print(sparse_matrix)
+#   (1, 1)  4
+#   (2, 0)  5
+print(sparse_matrix.shape)          # (3, 2)
+print(sparse_matrix.size)           # 2   ← sadece sıfır olmayanlar</div>
+<p>Çıktıyı okuyalım: <code>(1, 1) 4</code> = "1. satır, 1. sütunda değer 4" (indisler <strong>0'dan</strong> başlar!). Yani sadece sıfır olmayan elemanların yeri ve değeri saklanıyor.</p>
+<p><strong>Dikkat:</strong> sparse matriste <code>.size</code> sıfır olmayan eleman sayısını verir (burada 2), normal array'de toplam eleman sayısını (6).</p>
+<p>Boş bir sparse matris:</p>
+<div class="code-pre">empty = sp.csr_matrix((4, 5))       # 4x5, hepsi sıfır
+print(empty.size)                   # 0</div>
+<p>(Sparse matrisleri Lecture 06'da detaylı göreceğiz.)</p>
+  </section>
+
+  <section id="s5">
+    <h2>4. Eleman seçmek (indexing ve slicing)</h2>
+<div class="callout"><strong>Altın kural:</strong> Python'da indis <strong>0'dan başlar</strong>. İlk eleman <code>[0]</code>, üçüncü eleman <code>[2]</code>.</div>
+<div class="code-pre">vector = np.array([1, 2, 3, 4, 5, 6])
+matrix = np.array([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 8, 9]])</div>
+<table>
+<thead>
+<tr>
+<th>Kod</th>
+<th>Sonuç</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vector[2]</code></td>
+<td><code>3</code></td>
+<td>üçüncü eleman</td>
+</tr>
+<tr>
+<td><code>matrix[1, 2]</code></td>
+<td><code>6</code></td>
+<td>2. satır, 3. sütun</td>
+</tr>
+<tr>
+<td><code>vector[:]</code></td>
+<td><code>[1 2 3 4 5 6]</code></td>
+<td>hepsi</td>
+</tr>
+<tr>
+<td><code>vector[:3]</code></td>
+<td><code>[1 2 3]</code></td>
+<td>baştan 3. elemana kadar (3. dahil; yani ilk 3 eleman)</td>
+</tr>
+<tr>
+<td><code>vector[3:]</code></td>
+<td><code>[4 5 6]</code></td>
+<td>3. indisten sonuna</td>
+</tr>
+<tr>
+<td><code>vector[-1]</code></td>
+<td><code>6</code></td>
+<td><strong>son</strong> eleman (negatif indis sondan sayar)</td>
+</tr>
+<tr>
+<td><code>matrix[:2, :]</code></td>
+<td><code>[[1 2 3],[4 5 6]]</code></td>
+<td>ilk iki satır, tüm sütunlar</td>
+</tr>
+<tr>
+<td><code>matrix[:, 1]</code></td>
+<td><code>[2 5 8]</code></td>
+<td>tüm satırlar, 2. sütun (<strong>1D</strong> olarak döner)</td>
+</tr>
+<tr>
+<td><code>matrix[:, 1:2]</code></td>
+<td><code>[[2],[5],[8]]</code></td>
+<td>aynı sütun ama <strong>2D sütun vektörü</strong> olarak</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Slicing kuralı:</strong> <code>a:b</code> "a'dan başla, b'ye <strong>kadar</strong> git ama b'yi dahil etme." Virgül satır/sütun ayırır: <code>[satır, sütun]</code>. Tek <code>:</code> "hepsi" demek.</p>
+<p>Son iki satırdaki fark kritik: <code>matrix[:, 1]</code> → shape <code>(3,)</code>, <code>matrix[:, 1:2]</code> → shape <code>(3, 1)</code>. Yukarıdaki (3,) vs (3,1) farkının pratik karşılığı budur.</p>
+  </section>
+
+  <section id="s6">
+    <h2>5. Minimum / maksimum</h2>
+<div class="code-pre">matrix = np.array([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 8, 9]])
+
+np.max(matrix)            # 9    (bütün matrisin en büyüğü)
+np.min(matrix)            # 1
+np.max(matrix, axis=0)    # [7 8 9]   her SÜTUNun max'ı
+np.min(matrix, axis=1)    # [1 4 7]   her SATIRın min'i</div>
+<h3><code>axis</code> nedir? (herkesin karıştırdığı yer)</h3>
+<p><code>axis</code> "hangi yönde çökerteceğim (özetleyeceğim)?" demektir.</p>
+<ul>
+<li><strong><code>axis=0</code></strong> → satırlar boyunca <strong>aşağı doğru</strong> işlem yap, her <strong>sütun</strong> için bir sonuç çıkar.</li>
+<li><strong><code>axis=1</code></strong> → sütunlar boyunca <strong>yana doğru</strong> işlem yap, her <strong>satır</strong> için bir sonuç çıkar.</li>
+</ul>
+<p>Ezber ipucu: Çıktı hangi boyutu <strong>kaybeder?</strong> <code>axis=0</code> satır boyutunu yok eder (3×3 → 3 sütun sonucu).</p>
+  </section>
+
+  <section id="s7">
+    <h2>6. Ortalama, varyans, standart sapma</h2>
+<div class="code-pre">np.mean(matrix)            # 5.0
+np.var(matrix)             # 6.666...
+np.std(matrix)             # 2.5819...
+np.mean(matrix, axis=0)    # [4. 5. 6.]   her sütunun ortalaması</div>
+<ul>
+<li><strong>mean (ortalama):</strong> toplam / eleman sayısı. (1+2+…+9)/9 = 5.</li>
+<li><strong>var (varyans):</strong> değerlerin ortalamadan ne kadar saçıldığının ölçüsü (ortalamadan farkların karelerinin ortalaması).</li>
+<li><strong>std (standart sapma):</strong> varyansın kare kökü; verinin kendi birimine döner.</li>
+</ul>
+<p>(Not: NumPy <code>var</code>'ı varsayılan olarak N'e bölerek hesaplar; yani "popülasyon varyansı". Bu 1..9 örneğinde 60/9 = 6.67 çıkar.)</p>
+  </section>
+
+  <section id="s8">
+    <h2>7. Şekil değiştirmek (reshape)</h2>
+<p>Aynı elemanları, <strong>farklı bir satır/sütun düzenine</strong> dizmek:</p>
+<div class="code-pre">matrix = np.array([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 8, 9],
+                   [10, 11, 12]])        # 4x3 = 12 eleman
+
+matrix.reshape((2, 6))
+# [[ 1  2  3  4  5  6]
+#  [ 7  8  9 10 11 12]]
+
+matrix.reshape((1, -1))      # 1 satır, sütun sayısını sen bul
+# [[ 1  2  3 ... 12]]
+
+matrix.reshape(12)           # düz 1D vektör</div>
+<p>Kurallar:
+- Toplam eleman sayısı <strong>değişmemeli</strong>: 4×3 = 12 = 2×6 = 1×12.
+- Elemanlar <strong>satır satır</strong> (soldan sağa, yukarıdan aşağı) okunup yeni şekle dizilir.
+- <strong><code>-1</code> = "bunu sen hesapla."</strong> <code>(1, -1)</code> → 1 satır, gerisi kaç sütun gerekiyorsa o.</p>
+  </section>
+
+  <section id="s9">
+    <h2>8. Transpoz</h2>
+<p>Satırları sütuna, sütunları satıra çevirmek. Matematikte <code>A^T</code>, NumPy'da <code>.transpose()</code> (veya <code>.T</code>).</p>
+<div class="code-pre">matrix = np.array([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 8, 9]])
+matrix.transpose()
+# [[1 4 7]
+#  [2 5 8]
+#  [3 6 9]]</div>
+<p>Şimdi vektörlerin transpozu — <strong>bir tuzak</strong> var:</p>
+<table>
+<thead>
+<tr>
+<th>Başlangıç</th>
+<th>Transpoz sonucu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1D vektör <code>[1 2 3 4 5 6]</code>, shape <code>(6,)</code></td>
+<td><strong>Hiçbir şey değişmez</strong> <code>[1 2 3 4 5 6]</code></td>
+</tr>
+<tr>
+<td>Satır vektörü <code>[[1 2 3 4 5 6]]</code>, shape <code>(1,6)</code></td>
+<td>Sütun vektörü <code>(6,1)</code></td>
+</tr>
+<tr>
+<td>Sütun vektörü <code>[[1],[2],...]</code>, shape <code>(6,1)</code></td>
+<td>Satır vektörü <code>(1,6)</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Neden 1D'nin transpozu bir şey yapmıyor?</strong> Çünkü 1D array'in sadece tek bir ekseni var, "satır mı sütun mu" bilgisi yok; çevirecek bir şey yok. Gerçek bir <code>c^T</code> istiyorsan vektörü 2D tanımlamalısın. Bu, kafa karıştıran ama önemli bir NumPy özelliği.</p>
+  </section>
+
+  <section id="s10">
+    <h2>9. Düzleştirmek (flatten)</h2>
+<p>Matrisi tek bir 1D vektöre çevirmek:</p>
+<div class="code-pre">matrix = np.array([[1, 2, 3],
+                   [4, 5, 6],
+                   [7, 8, 9]])
+matrix.flatten()     # [1 2 3 4 5 6 7 8 9]
+matrix.reshape(-1)   # aynı sonuç</div>
+<p>Bunu Lecture 04'ten hatırlayın: x11, x12, x13, x21, ... diye bir matrisi tek sütuna dizmiştik (satır satır). <code>flatten()</code> tam olarak bu işi yapar. Yani warehouse'taki <code>xij</code> matrisi → <code>x</code> vektörü dönüşümü NumPy'da <code>X.flatten()</code> / <code>reshape(-1)</code>'dir.</p>
+  </section>
+
+  <section id="s11">
+    <h2>Özet</h2>
+<ul>
+<li>NumPy = Python'da hızlı array/matris kütüphanesi; <code>np.array(...)</code> ile oluşturulur.</li>
+<li><code>shape</code>, <code>size</code>, <code>ndim</code>: array'in kimlik kartı. <code>(3,)</code>, <code>(1,3)</code>, <code>(3,1)</code> üçü farklı.</li>
+<li>İndis 0'dan başlar; slicing <code>a:b</code> → b dahil değil; negatif indis sondan sayar.</li>
+<li><code>axis=0</code> sütun bazlı, <code>axis=1</code> satır bazlı özetleme.</li>
+<li><code>reshape</code> eleman sayısını koruyarak şekli değiştirir, <code>-1</code> otomatik hesaplar.</li>
+<li>1D vektörün transpozu etkisizdir; yönlü vektör istiyorsan 2D tanımla.</li>
+<li>Sparse matris: sadece sıfır olmayanları saklar (<code>sp.csr_matrix</code>).</li>
+</ul>
+  </section>
+
+  <section id="s12">
+    <h2>Kendini test et</h2>
+<ol>
+<li><code>np.array([[1, 2, 3], [4, 5, 6]])</code> için shape, size, ndim nedir?</li>
+<li>Aynı matris için <code>m[:, 2]</code>, <code>m[1, :]</code>, <code>m[:, 0:2]</code> ne verir?</li>
+<li><code>np.mean(m, axis=1)</code> ne hesaplar?</li>
+<li>6 elemanlı bir 1D vektörü 3×2'lik matrise nasıl çevirirsin?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>shape <code>(2, 3)</code>, size 6, ndim 2.</li>
+<li><code>m[:, 2]</code> → <code>[3 6]</code> (3. sütun); <code>m[1, :]</code> → <code>[4 5 6]</code> (2. satır); <code>m[:, 0:2]</code> → <code>[[1 2],[4 5]]</code> (ilk iki sütun).</li>
+<li>Her <strong>satırın</strong> ortalamasını: <code>[2. 5.]</code>.</li>
+<li><code>v.reshape((3, 2))</code>.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="indr220-lecture4.html">← Lecture 4</a> · <a href="indr220-lecture6.html">Lecture 6 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

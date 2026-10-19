@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 220 – Lecture 2 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes220.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Σ (toplam) notasyonuyla yazım</a></li>
+    <li><a href="#s2">2. Binary (ikili) karar değişkenleri</a></li>
+    <li><a href="#s3">3. Integer (tam sayı) karar değişkenleri</a></li>
+    <li><a href="#s4">4. Problem sınıfları (isimleri bilmek önemli)</a></li>
+    <li><a href="#s5">Özet</a></li>
+    <li><a href="#s6">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-220">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 220</span>
+    <span class="note-week-label">Lecture 2</span>
+  </div>
+  <h1 class="note-main-title">Formulating Optimization Models (devam)</h1>
+  <p class="note-intro">Geçen ders LP'nin genel şeklini gördük. Bu derste üç şey var: (1) toplam sembolü (Σ) ile yazım ve parametre/değişken ayrımı, (2) <strong>binary</strong> karar değişkenleriyle atama problemi, (3) problem <strong>sınıflarının</strong> isimleri (LP, ILP, MILP, NLP, QP, QCQP).</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Σ (toplam) notasyonuyla yazım</h2>
+<p>Geçen ders <code>c1·x1 + c2·x2 + ... + cN·xN</code> diye uzun uzun yazıyorduk. N = 1000 olsa bunu yazamayız. Bunun kısası <strong>toplam sembolü</strong>:</p>
+<div class="code-pre">minimize     z = Σ (i=1..N) ci · xi
+
+subject to:  Σ (i=1..N) aji · xi &lt;= bj          her j in J için
+             li &lt;= xi &lt;= ui                      her i in I için</div>
+<p>Burada:</p>
+<ul>
+<li><strong>Σ (i=1..N)</strong>: "i'yi 1'den N'e kadar değiştirerek hepsini topla" demek.</li>
+<li><strong>∀ ("for all", her … için)</strong>: kuralın <em>her bir</em> elemanda ayrı ayrı geçerli olduğunu söyler. <code>∀ j ∈ J</code>, "J kümesindeki her j için" demek; yani M tane ayrı constraint yazıyoruz.</li>
+<li><strong>Index set (indis kümesi):</strong> <code>I = {1, 2, ..., N}</code> değişkenlerin numaraları, <code>J = {1, 2, ..., M}</code> constraint'lerin numaraları.</li>
+<li><strong>z</strong>: amaç fonksiyonunun değeri (objective value).</li>
+</ul>
+<h3>Karar değişkeni mi, parametre mi?</h3>
+<p>Bu ayrımı çok iyi oturtun, ileride kodda her şey buna dayanacak.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Karar değişkenleri (<strong>output</strong>)</th>
+<th>Model parametreleri (<strong>input</strong>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kim belirler?</td>
+<td><strong>Solver</strong> bulur</td>
+<td><strong>Biz</strong> veririz (veri)</td>
+</tr>
+<tr>
+<td>Neler?</td>
+<td>x1, ..., xN ve z (objective value)</td>
+<td>c, A, b, l, u</td>
+</tr>
+</tbody>
+</table>
+<p>Parametrelerin boyutları (şekilleri):</p>
+<div class="code-pre">c : N x 1      (cost coefficients, maliyet katsayıları)
+A : M x N      (constraint katsayı matrisi)
+b : M x 1      (sağ taraf)
+l : N x 1      (alt sınırlar)
+u : N x 1      (üst sınırlar)</div>
+<p>Bir modeli bir <strong>fonksiyona</strong> benzetebilirsiniz: input olarak (c, A, b, l, u) girer, output olarak x çıkar.</p>
+  </section>
+
+  <section id="s2">
+    <h2>2. Binary (ikili) karar değişkenleri</h2>
+<p>Şimdiye kadar x değişkenleri herhangi bir gerçek sayı olabilirdi (örneğin 2.5 adet ürün). Ama bazı kararlar <strong>evet/hayır</strong> türündendir: "Bu şirkete bu projeyi vereyim mi?" Bunlar için değişkeni sadece 0 ya da 1 olabilen <strong>binary decision variable</strong> yaparız:</p>
+<div class="code-pre">xi ∈ {0, 1}</div>
+<p>(∈ "elemanıdır" demek.) 1 = evet, 0 = hayır.</p>
+<h3>Örnek: Atama problemi (Assignment Problem)</h3>
+<p>4 şirket (C1..C4) ve 4 proje (P1..P4) var. Her şirketin her projeyi bitirme maliyeti farklı:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>P1</th>
+<th>P2</th>
+<th>P3</th>
+<th>P4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>358</td>
+<td>400</td>
+<td>512</td>
+<td>282</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>192</td>
+<td>500</td>
+<td>488</td>
+<td>189</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>298</td>
+<td>480</td>
+<td>464</td>
+<td>242</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>412</td>
+<td>360</td>
+<td>521</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Kurallar:</strong>
+1. Her şirket <strong>tek bir</strong> projeyi almalı.
+2. Her proje <strong>bir</strong> şirkete atanmalı.</p>
+<p><strong>Amaç:</strong> Toplam tamamlama maliyetini (total completion cost) minimize etmek.</p>
+<h3>Değişkenleri tanımla</h3>
+<p>Her (şirket, proje) çifti için bir "evet/hayır" değişkeni:</p>
+<div class="code-pre">xij = 1   eğer şirket i, proje j'ye atanırsa
+      0   aksi halde</div>
+<p>4 şirket × 4 proje = <strong>16 değişken</strong> (x11, x12, ..., x44).</p>
+<h3>Objective</h3>
+<p>Yalnızca seçilen (xij = 1 olan) atamaların maliyeti toplama girer, 0 olanlar sıfırla çarpılıp kaybolur:</p>
+<div class="code-pre">minimize  Σ(i=1..4) Σ(j=1..4) cij · xij
+        = 358·x11 + 400·x12 + 512·x13 + 282·x14
+        + 192·x21 + 500·x22 + 488·x23 + 189·x24
+        + 298·x31 + 480·x32 + 464·x33 + 242·x34
+        + 412·x41 + 360·x42 + 521·x43 + 300·x44</div>
+<p>Vektör formunda: <strong>c^T</strong> boyutu 1×16 (maliyetlerin tek satıra dizilmiş hali), <strong>x</strong> boyutu 16×1 (xij'lerin tek sütuna dizilmiş hali).</p>
+<h3>Constraint'ler</h3>
+<p><strong>Kural 1 — "Her şirket tek proje alsın":</strong> Bir şirketin bütün projelerdeki xij'lerini topla, 1 etsin:</p>
+<div class="code-pre">Σ(j=1..4) xij = 1       i = 1, 2, 3, 4
+
+x11 + x12 + x13 + x14 = 1      (şirket 1)
+x21 + x22 + x23 + x24 = 1      (şirket 2)
+x31 + x32 + x33 + x34 = 1      (şirket 3)
+x41 + x42 + x43 + x44 = 1      (şirket 4)</div>
+<p><strong>Kural 2 — "Her proje bir şirkete verilsin":</strong> Bir projenin bütün şirketlerdeki xij'lerini topla, 1 etsin:</p>
+<div class="code-pre">Σ(i=1..4) xij = 1       j = 1, 2, 3, 4
+
+x11 + x21 + x31 + x41 = 1      (proje 1)
+x12 + x22 + x32 + x42 = 1      (proje 2)
+x13 + x23 + x33 + x43 = 1      (proje 3)
+x14 + x24 + x34 + x44 = 1      (proje 4)</div>
+<p><strong>Binary kısıt:</strong></p>
+<div class="code-pre">xij ∈ {0, 1}     ∀ (i, j)</div>
+<p><strong>Neden <code>= 1</code> çalışıyor?</strong> Değişkenler 0/1 olduğu için toplamın 1 olması, "tam olarak bir tanesi 1, diğerleri 0" demektir. Yani tam olarak bir atama yapılır.</p>
+<p>Toplam: 16 değişken, 8 constraint (4 + 4).</p>
+<h3>Başka bir örnek: Makine kiralama (boyut büyüyünce Σ'nın gücü)</h3>
+<p>50 makine (M1..M50) ve 1000 müşteri (C1..C1000) olsun. <code>x(i,j)</code> müşteri j ile makine i arasındaki ilişkiyi (makineyi o müşteriye vermek gibi) temsil etsin. Kural: <strong>"Her müşteri en fazla 5 makine kiralayabilir."</strong></p>
+<p>Tek bir müşteri (örn. C2) için, o müşterinin sütunundaki değişkenlerin toplamı ≤ 5:</p>
+<div class="code-pre">x(1,2) + x(2,2) + ... + x(50,2) &lt;= 5</div>
+<p>1000 müşteri için tek tek yazmak yerine Σ ve ∀ kullanırız:</p>
+<div class="code-pre">Σ(i=1..50) x(i,j) &lt;= 5        j = 1, 2, ..., 1000</div>
+<p>Bu bir cümle ile 1000 constraint demek. İşte Σ ve ∀'nin gücü bu.</p>
+<div class="callout"><strong>Not:</strong> Defterde bu örnekte x'in tam olarak ne anlama geldiği yazılı değil, yalnızca constraint var; yukarıdaki yorum notlardaki "M" (makine) satırları ve "C" (customer) sütunlarından çıkarıldı.</div>
+  </section>
+
+  <section id="s3">
+    <h2>3. Integer (tam sayı) karar değişkenleri</h2>
+<div class="code-pre">xi ∈ { ..., -2, -1, 0, 1, 2, ... }</div>
+<div class="callout callout--warn"><strong>UYARI:</strong> Binary değişkenler de integer değişkenlerdir! Çünkü {0,1} kümesi tam sayıların içinde. Nitekim bir integer değişkene <code>0 &lt;= xi &lt;= 1</code> bound'u koyarsan, o değişken binary olur.</div>
+  </section>
+
+  <section id="s4">
+    <h2>4. Problem sınıfları (isimleri bilmek önemli)</h2>
+<p>Bir problemin hangi sınıfa girdiğini bilmek önemlidir; çünkü her sınıf için ayrı çözüm algoritmaları vardır ve kimi sınıflar çok daha zor çözülür.</p>
+<h3>Sınıflandırmanın iki ekseni</h3>
+<ul>
+<li><strong>Fonksiyonlar nasıl?</strong> (f ve g'ler doğrusal mı, kuadratik mi, başka mı?)</li>
+<li><strong>Değişkenler nasıl?</strong> (sürekli, tam sayı, binary?)</li>
+</ul>
+<h3>LP — Linear Programming</h3>
+<p>f doğrusal, tüm g'ler doğrusal, x'ler sürekli (gerçek sayı). (Geçen derste gördüğümüz.)</p>
+<h3>ILP — Integer Linear Programming</h3>
+<p>f doğrusal, tüm g'ler doğrusal, <strong>tüm x'ler</strong> tam sayı (binary ya da integer). Atama problemi bir ILP'dir.</p>
+<h3>MILP — Mixed Integer Linear Programming</h3>
+<p>f doğrusal, tüm g'ler doğrusal. x'ler <strong>karışık</strong>: en az bir tanesi binary/integer, <strong>en az bir tanesi de continuous</strong>. ("Mixed" = karışık.)</p>
+<h3>NLP — Nonlinear Programming</h3>
+<p>f veya g'lerden <strong>en az biri doğrusal değil</strong>.</p>
+<h3>QP — Quadratic Programming</h3>
+<p>f <strong>kuadratik</strong>, tüm g'ler <strong>doğrusal</strong>:</p>
+<div class="code-pre">minimize  Σ(i=1..N) Σ(j=1..N) qij · xi · xj   +   Σ(i=1..N) ci · xi
+          └────── quadratic terms ──────┘       └── linear terms ──┘</div>
+<p>(Kuadratik = değişkenlerin <em>çarpımları</em> ya da kareleri: x1², x1·x2 gibi.)</p>
+<h3>QCQP — Quadratically Constrained Quadratic Programming</h3>
+<p>f kuadratik (ya da doğrusal), g'lerden <strong>en az biri kuadratik</strong> olabilir.</p>
+<h3>Hızlı özet tablosu</h3>
+<table>
+<thead>
+<tr>
+<th>Sınıf</th>
+<th>f (amaç)</th>
+<th>g'ler (kısıtlar)</th>
+<th>x'ler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LP</td>
+<td>doğrusal</td>
+<td>doğrusal</td>
+<td>sürekli</td>
+</tr>
+<tr>
+<td>ILP</td>
+<td>doğrusal</td>
+<td>doğrusal</td>
+<td>hepsi integer/binary</td>
+</tr>
+<tr>
+<td>MILP</td>
+<td>doğrusal</td>
+<td>doğrusal</td>
+<td>integer/binary + continuous karışık</td>
+</tr>
+<tr>
+<td>QP</td>
+<td>kuadratik</td>
+<td>doğrusal</td>
+<td>sürekli</td>
+</tr>
+<tr>
+<td>QCQP</td>
+<td>kuadratik/doğrusal</td>
+<td>en az biri kuadratik</td>
+<td>sürekli</td>
+</tr>
+<tr>
+<td>NLP</td>
+<td>doğrusal olmayabilir</td>
+<td>doğrusal olmayabilir</td>
+<td>— (en az bir nonlinear fonksiyon)</td>
+</tr>
+</tbody>
+</table>
+  </section>
+
+  <section id="s5">
+    <h2>Özet</h2>
+<ul>
+<li>Σ ve ∀ ile binlerce terim/constraint tek satırda yazılır.</li>
+<li>Karar değişkenleri output (solver bulur), model parametreleri (c, A, b, l, u) input (biz veririz).</li>
+<li>Evet/hayır kararları → binary değişken <code>xij ∈ {0,1}</code>.</li>
+<li>Atama problemi: satır toplamları = 1 ve sütun toplamları = 1 constraint'leri.</li>
+<li>Problem sınıfları: LP, ILP, MILP, NLP, QP, QCQP.</li>
+</ul>
+  </section>
+
+  <section id="s6">
+    <h2>Kendini test et</h2>
+<ol>
+<li>Atama probleminde 5 şirket ve 5 proje olsaydı kaç değişken, kaç constraint olurdu?</li>
+<li>Şirket sayısı proje sayısından çok olsa (5 şirket, 4 proje) ve "her şirket en fazla bir proje alsın" dersek kural 1 nasıl değişir?</li>
+<li>Bir problemde bazı değişkenler binary, bazıları gerçek sayı, hepsi doğrusal. Hangi sınıf?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>25 değişken; 5 + 5 = 10 constraint.</li>
+<li>Şirket tarafı <code>Σ(j) xij = 1</code> yerine <code>Σ(j) xij &lt;= 1</code> olur (bir şirket proje almayabilir). Proje tarafı <code>= 1</code> kalır, çünkü her proje mutlaka atanmalı. <em>(Bu soru derste işlenmedi, mantık yürütme sorusu: düşünmeye çalış, sonra cevaba bak.)</em></li>
+<li>MILP.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="indr220-lecture1.html">← Lecture 1</a> · <a href="indr220-lecture3.html">Lecture 3 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

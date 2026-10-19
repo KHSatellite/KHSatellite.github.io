@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 220 – Lecture 3 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes220.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. LP&#x27;nin matris yazımı</a></li>
+    <li><a href="#s2">2. Fabrika örneğini matrislere dökelim</a></li>
+    <li><a href="#s3">3. Bir LP&#x27;nin üç olası sonucu</a></li>
+    <li><a href="#s4">4. Quadratic Programming&#x27;in matris yazımı</a></li>
+    <li><a href="#s5">Özet</a></li>
+    <li><a href="#s6">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-220">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 220</span>
+    <span class="note-week-label">Lecture 3</span>
+  </div>
+  <h1 class="note-main-title">Algebraic Representation of Optimization Models</h1>
+  <p class="note-intro">Bu derste modelleri bilgisayarın anlayacağı <strong>matris/vektör (algebraic)</strong> dile çeviriyoruz. Amaç: herhangi bir LP'yi beş nesneye indirgemek: <strong>A, b, c, l, u</strong>. Sonra çözümün üç olası sonucunu (optimal, infeasible, unbounded) ve quadratic problemlerin matris yazımını göreceğiz.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. LP&#x27;nin matris yazımı</h2>
+<p>Geçen derslerden LP:</p>
+<div class="code-pre">minimize     z = c1·x1 + c2·x2 + ... + cN·xN                    (I)
+
+subject to:  a11·x1 + a12·x2 + ... + a1N·xN &lt;= b1               (II)
+             a21·x1 + a22·x2 + ... + a2N·xN &lt;= b2
+             ...
+             aM1·x1 + aM2·x2 + ... + aMN·xN &lt;= bM
+
+             l1 &lt;= x1 &lt;= u1                                      (III)
+             ...
+             lN &lt;= xN &lt;= uN</div>
+<p>Üç blok var: (I) amaç, (II) kısıtlar, (III) bound'lar. Her birini matris diliyle ifade edeceğiz.</p>
+<h3>(I) Objective: z = c^T · x</h3>
+<p><code>c1·x1 + c2·x2 + ... + cN·xN</code> aslında iki vektörün <strong>iç çarpımı (dot product)</strong>:</p>
+<div class="code-pre">c^T · x = [c1 c2 ... cN] · [x1]
+                           [x2]   = c1·x1 + c2·x2 + ... + cN·xN
+                           [..]
+                           [xN]</div>
+<p><code>c^T</code> ("c transpoz") bir <strong>satır vektörü</strong>: 1×N. <code>x</code> bir <strong>sütun vektörü</strong>: N×1. Çarpım 1×1, yani tek bir sayı. İstediğimiz de tam olarak o: z tek bir sayı.</p>
+<div class="callout"><strong>Transpoz nedir?</strong> Sütunu satıra (satırı sütuna) çevirmek. <code>c</code> sütun vektör ise <code>c^T</code> aynı sayıların satır halidir.</div>
+<h3>(II) Constraint'ler: A · x &lt;= b</h3>
+<p>Önce <strong>tek bir</strong> constraint'e bakalım:</p>
+<div class="code-pre">a11·x1 + a12·x2 + ... + a1N·xN &lt;= b1</div>
+<p>Bu, A'nın birinci satırı ile x'in iç çarpımı:</p>
+<div class="code-pre">[a11 a12 ... a1N] · [x1; x2; ...; xN]  &lt;=  b1        →    a1^T · x &lt;= b1</div>
+<p>Her constraint için aynısını yaparsak M tane eşitsizlik elde ederiz:</p>
+<div class="code-pre">a1^T · x &lt;= b1
+a2^T · x &lt;= b2
+...
+aM^T · x &lt;= bM</div>
+<p>Bu satırları alt alta dizip tek matris yaparsak:</p>
+<div class="code-pre">      [ a1^T ]                           [ b1 ]
+A =   [ a2^T ]     (M x N)         b =   [ b2 ]     (M x 1)
+      [ ...  ]                           [ .. ]
+      [ aM^T ]                           [ bM ]</div>
+<p>ve hepsi birden:  <strong>A · x &lt;= b</strong></p>
+<p>Boyutlara dikkat: <code>A (M×N) · x (N×1)</code> = <code>(M×1)</code> bir vektör, ve bu <code>b (M×1)</code> ile karşılaştırılıyor. (Vektör eşitsizliği: her satır ayrı ayrı kontrol edilir.)</p>
+<h3>(III) Bound'lar: l &lt;= x &lt;= u</h3>
+<div class="code-pre">[l1]     [x1]     [u1]
+[l2]  &lt;= [x2]  &lt;= [u2]       →   l &lt;= x &lt;= u
+[..]     [..]     [..]
+[lN]     [xN]     [uN]</div>
+<p>Hepsi N×1 vektör.</p>
+<h3>Sonuç: LP'nin kompakt hali</h3>
+<div class="code-pre">minimize     z = c^T · x
+subject to:  A · x &lt;= b
+             l &lt;= x &lt;= u</div>
+<p><strong>Çıktı (output):</strong> <code>x ∈ R^N</code> (karar değişkenleri)
+<strong>Girdiler (model parameters):</strong> <code>c ∈ R^N</code>, <code>A ∈ R^(M×N)</code>, <code>b ∈ R^M</code>, <code>l ∈ R^N</code>, <code>u ∈ R^N</code></p>
+<p>Bunu bir fonksiyon gibi düşünebilirsiniz:</p>
+<div class="code-pre">def LP_solve(A, b, c, l, u):
+    ...
+    return x</div>
+<p>Bu fonksiyonun içini (yani LP'yi gerçekten çözen algoritmayı) birkaç hafta sonra kendimiz yazacağız. Şimdilik "kara kutu" olarak kullanıyoruz.</p>
+  </section>
+
+  <section id="s2">
+    <h2>2. Fabrika örneğini matrislere dökelim</h2>
+<p>Lecture 01'deki problem:</p>
+<div class="code-pre">maximize     3·x1 + 5·x2
+subject to:  1·x1 + 0·x2 &lt;= 4
+             0·x1 + 2·x2 &lt;= 12
+             3·x1 + 2·x2 &lt;= 18
+             0 &lt;= x1,  0 &lt;= x2</div>
+<p><strong>Adım 1 — Minimize'a çevir</strong> (çünkü şablonumuz minimize): <code>minimize -3·x1 - 5·x2</code></p>
+<p><strong>Adım 2 — Sayıları oku:</strong></p>
+<ul>
+<li>N = 2 (iki değişken), M = 3 (üç constraint)</li>
+<li>Bound'lar: <code>0 &lt;= x1 &lt;= +∞</code>, <code>0 &lt;= x2 &lt;= +∞</code></li>
+</ul>
+<div class="code-pre">      [-3]         [1 0]         [ 4]         [0]         [+inf]
+c =   [-5]    A =  [0 2]    b =  [12]    l =  [0]    u =  [+inf]
+                   [3 2]         [18]
+
+     (2x1)        (3x2)         (3x1)        (2x1)        (2x1)</div>
+<div class="callout"><strong>Sağ taraf (r.h.s.) = right-hand side</strong>: b vektörü.</div>
+<p><strong>Soru: <code>+∞</code>'yi bilgisayara nasıl yazarız?</strong> Bilgisayar sonsuzu "gerçek" bir sayı olarak tutmaz. Pratik çözüm: çok büyük bir sayı kullanmak, örneğin <code>+∞ ≈ 10^20</code> ve <code>-∞ ≈ -10^20</code>.</p>
+<p><strong>Hepsini yan yana:</strong></p>
+<div class="code-pre">minimize   z = [-3 -5] · [x1]
+                         [x2]
+
+subject to: [1 0]   [x1]     [ 4]
+            [0 2] · [x2]  &lt;= [12]
+            [3 2]            [18]
+
+            [0]    [x1]    [+inf]
+            [0] &lt;= [x2] &lt;= [+inf]</div>
+<p>Bu 5 nesne <code>(A, b, c, l, u)</code> problemin <strong>tamamı</strong>. Başka hiçbir şeye gerek yok.</p>
+<h3>Problem instance ve solution</h3>
+<div class="code-pre">Problem Instance = { A, b, c, l, u }     ⟹     Solution = { x }</div>
+<p>"Instance" = belli sayılarla doldurulmuş <strong>bir somut problem</strong>. Örneğin fabrika problemi bir instance'dır; farklı sayılarla başka bir fabrika problemi başka bir instance'dır.</p>
+  </section>
+
+  <section id="s3">
+    <h2>3. Bir LP&#x27;nin üç olası sonucu</h2>
+<p>Her LP çözülünce üç sonuçtan biri çıkar: <strong>optimal, infeasible, unbounded.</strong></p>
+<h3>a) Optimal</h3>
+<p>Bir en iyi çözüm bulundu. (Fabrika örneği: x = (2, 6).)</p>
+<h3>b) Infeasible (uygun çözüm yok)</h3>
+<p>Constraint'ler birbiriyle <strong>çelişir</strong>; hiçbir nokta hepsini birden sağlayamaz. Örnek:</p>
+<div class="code-pre">minimize     3·x1 + 4·x2
+subject to:  (A)  x1 + x2 &lt;= 4
+             (B) -x1 - x2 &lt;= -5</div>
+<p>(B) eşitsizliğini −1 ile çarpıp yönünü çevirirsek: <code>x1 + x2 &gt;= 5</code>. Yani hem toplam <strong>en fazla 4</strong> hem <strong>en az 5</strong> olsun diyoruz. Böyle bir sayı yok! Grafikte (A)'nın taralı bölgesi ile (B)'nin taralı bölgesi <strong>hiç kesişmiyor</strong>: feasible region boş.</p>
+<div class="callout"><strong>Gerçek hayattan benzetme:</strong> "Sınavdan hem en fazla 40 hem en az 50 almak istiyorum." Mümkün değil.</div>
+<h3>c) Unbounded (sınırsız)</h3>
+<p>Feasible region var ama amaç fonksiyonunu <strong>sonsuza kadar</strong> iyileştirebilirsin. Örnek:</p>
+<div class="code-pre">minimize     -3·x1 - 4·x2
+subject to:  (A)  -x1 - x2 &lt;= -5       (yani x1 + x2 &gt;= 5)</div>
+<p>Bölge, doğrunun üst-sağ tarafındaki sonsuz bir alan. x1 ve x2'yi büyüttükçe <code>-3x1 - 4x2</code> sınırsız küçülür (−∞'a gider). "En küçük" diye bir değer yok.</p>
+<div class="callout callout--warn"><strong>Uyarı:</strong> Unbounded sonuç genelde <strong>modelleme hatasının</strong> işaretidir. Gerçek hayatta kâr sonsuz olamaz; bir constraint'i unutmuş olabilirsin.</div>
+  </section>
+
+  <section id="s4">
+    <h2>4. Quadratic Programming&#x27;in matris yazımı</h2>
+<p>Geçen ders QP'nin amacını Σ ile yazmıştık:</p>
+<div class="code-pre">minimize   Σ(i=1..N) Σ(j=1..N) qij · xi · xj  +  Σ(i=1..N) ci · xi
+           └──────── quadratic terms ────────┘    └─── linear terms ──┘</div>
+<p>Matris dilinde:</p>
+<div class="code-pre">minimize   x^T · Q · x  +  c^T · x
+           (1xN)(NxN)(Nx1)   (1xN)(Nx1)</div>
+<ul>
+<li><strong>Q</strong> : N×N katsayı matrisi (qij'leri içerir)</li>
+<li><code>x^T Q x</code> boyut olarak 1×1 yani tek sayı ✔.</li>
+</ul>
+<h3>Küçük bir not</h3>
+<p><code>a^T · b = a^T · I · b</code> yazabiliriz (I = birim matris, identity). Yani çarpımın ortasındaki I hiçbir şeyi değiştirmiyor; Q'yu "ortaya konan matris" olarak düşünebilirsin: Q=I ise sıradan iç çarpım.</p>
+<h3>Örnek: (x1 + x2)² ifadesinin Q matrisi</h3>
+<p>Önce açalım:</p>
+<div class="code-pre">(x1 + x2)² = (x1 + x2)(x1 + x2)
+           = 1·x1² + 1·x1·x2 + 1·x2·x1 + 1·x2²
+           = q11·x1² + q12·x1·x2 + q21·x2·x1 + q22·x2²</div>
+<p>Katsayıları yan yana okuyunca <code>q11 = q12 = q21 = q22 = 1</code>:</p>
+<div class="code-pre">Q = [1 1]
+    [1 1]</div>
+<p>Kontrol (çarpalım):</p>
+<div class="code-pre">[x1 x2] · [1 1] · [x1]  =  [x1 x2] · [x1 + x2]  =  x1·(x1+x2) + x2·(x1+x2)
+          [1 1]   [x2]               [x1 + x2]
+                                                =  x1² + x1·x2 + x2·x1 + x2²   ✔</div>
+<h3>Q tek değildir! (Önemli gözlem)</h3>
+<p>Tahtada aynı ifade için başka matrisler de denendi:</p>
+<div class="code-pre">Q = [1 2]   →  x1² + 2·x1·x2 + x2²
+    [0 1]
+
+Q = [ 1 4]  →  x1² + 4·x1·x2 − 2·x1·x2 + x2²  =  x1² + 2·x1·x2 + x2²
+    [-2 1]</div>
+<p>Üçü de <strong>aynı</strong> fonksiyonu veriyor! Çünkü fonksiyonda <code>x1·x2</code> ile <code>x2·x1</code> aynı terimdir; önemli olan sadece <strong>q12 + q21</strong> toplamı (burada 2). Bu toplam aynı kaldıkça Q'nun kendisi farklı olabilir. Yani bir kuadratik fonksiyonu temsil eden birden fazla Q var.</p>
+<h3>Faydalı kısayollar</h3>
+<div class="code-pre">Σ(i=1..N) xi    = [1 1 ... 1] · x  = 1^T · x       (1 = hepsi bir olan vektör)
+Σ(i=1..N) xi²   = [x1 ... xN] · x  = x^T · x</div>
+<p>Yani <code>x^T · x</code> = xi²'lerin toplamı (vektörün kendisiyle iç çarpımı).</p>
+<h3>Örnek: iki nokta arasındaki mesafeyi minimize etmek</h3>
+<p>İki nokta: (x1, y1) ve (x2, y2). Mesafe (Pisagor):</p>
+<div class="code-pre">distance = sqrt( (x1 - x2)² + (y1 - y2)² )</div>
+<p>Kare kök bir doğrusal olmayan fonksiyon, işi zorlaştırır. Ama <strong>mesafeyi minimize etmek ile mesafenin karesini minimize etmek aynı noktada biter</strong> (çünkü mesafe ≥ 0 iken kare alma işlemi sıralamayı bozmaz: küçük olan hâlâ küçük kalır). O yüzden:</p>
+<div class="code-pre">minimize distance  ⟺  minimize distance²
+                   ⟺  minimize (x1 - x2)² + (y1 - y2)²
+                   =   x1² − 2·x1·x2 + x2²  +  y1² − 2·y1·y2 + y2²</div>
+<p>Bu, değişken vektörü <code>[x1 x2 y1 y2]^T</code> için bir kuadratik fonksiyon, ve Q şu:</p>
+<div class="code-pre">Q = [ 1 -1  0  0]
+    [-1  1  0  0]
+    [ 0  0  1 -1]
+    [ 0  0 -1  1]</div>
+<p>Kendin kontrol et: <code>x^T Q x</code>'i açarsan yukarıdaki ifade çıkıyor.</p>
+<div class="callout"><strong>Çıkarım:</strong> Bir şeyin doğrusal olmayan hâlini (kare kök) onunla aynı yerde minimum yapan daha kolay bir hâliyle (kare) değiştirmek, modellemede sık kullanılan bir hiledir.</div>
+  </section>
+
+  <section id="s5">
+    <h2>Özet</h2>
+<ul>
+<li>Her LP, 5 nesneyle tanımlanır: <strong>c, A, b, l, u</strong>. Problem instance = {A, b, c, l, u}; solution = {x}.</li>
+<li>Objective: <code>c^T x</code>. Constraint'ler: <code>A x &lt;= b</code>. Bound'lar: <code>l &lt;= x &lt;= u</code>.</li>
+<li>Maximize → önce −1 ile çarp, minimize yap. <code>±∞</code> yerine <code>±10^20</code>.</li>
+<li>Üç olası sonuç: <strong>optimal</strong>, <strong>infeasible</strong>, <strong>unbounded</strong>.</li>
+<li>QP objective: <code>x^T Q x + c^T x</code>. Q tek değil; sadece qij + qji toplamları önemli.</li>
+</ul>
+  </section>
+
+  <section id="s6">
+    <h2>Kendini test et</h2>
+<ol>
+<li><code>minimize 2x1 + 3x2, subject to x1 + x2 &lt;= 10, x1 &gt;= 0, x2 &gt;= 0</code> problemini (c, A, b, l, u) olarak yaz. Çözüm ne olurdu, tahmin et.</li>
+<li><code>x1 &gt;= 3</code> kısıtını <code>A x &lt;= b</code> biçimine nasıl çevirirsin?</li>
+<li><code>x1² + 6·x1·x2 + 4·x2²</code> için bir Q matrisi bul.</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>c = [2, 3]^T, A = [[1, 1]], b = [10], l = [0, 0]^T, u = [+inf, +inf]^T. Maliyeti küçültmek istiyoruz ve alt sınır 0 olduğu için x = (0, 0) optimal (z = 0).</li>
+<li>İki tarafı −1 ile çarp, yön değişir: <code>-x1 &lt;= -3</code>. (A'ya satır olarak [-1, 0], b'ye −3 eklenir.) Ya da bound olarak yaz: <code>3 &lt;= x1</code>.</li>
+<li>Örneğin Q = [[1, 3],[3, 4]] (q12 + q21 = 6) ya da Q = [[1, 6],[0, 4]]. İkisi de olur.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="indr220-lecture2.html">← Lecture 2</a> · <a href="indr220-lecture4.html">Lecture 4 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

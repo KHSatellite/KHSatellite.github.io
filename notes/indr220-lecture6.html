@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 220 – Lecture 6 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes220.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1"></a></li>
+    <li><a href="#s2">1. Array&#x27;leri birleştirmek</a></li>
+    <li><a href="#s3">2. Dosyaya yazmak ve dosyadan okumak</a></li>
+    <li><a href="#s4">3. Matris işlemleri</a></li>
+    <li><a href="#s5">4. Lineer sistemleri çözmek (Ax = b)</a></li>
+    <li><a href="#s6">5. Sparse matrisler</a></li>
+    <li><a href="#s7">Büyük Resim: Bu iki ders ne işe yarıyor?</a></li>
+    <li><a href="#s8">Özet</a></li>
+    <li><a href="#s9">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-220">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 220</span>
+    <span class="note-week-label">Lecture 6</span>
+  </div>
+  <h1 class="note-main-title">Matris İşlemleri, Lineer Sistemler ve Sparse Matrisler</h1>
+  <p class="note-intro">Geçen ders array'leri oluşturmayı ve dilimlemeyi öğrendik. Bu derste onlarla <strong>matematik</strong> yapıyoruz: birleştirme, dosyaya yazma/okuma, matris çarpımı, ters, determinant, <strong>lineer sistem çözme</strong> ve <strong>sparse matrisler</strong>.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2></h2>
+<div class="code-pre">import matplotlib.pyplot as plt
+import numpy as np
+import numpy.linalg as nla
+import scipy.linalg as sla
+import scipy.sparse as sp</div>
+<ul>
+<li><strong>NumPy</strong>: array'ler ve temel işlemler.</li>
+<li><strong>SciPy</strong> (<code>scipy.linalg</code>, <code>scipy.sparse</code>): NumPy'ın üstüne kurulu, lineer cebir ve sparse matris araçları.</li>
+<li><strong>matplotlib</strong>: grafik çizme.</li>
+</ul>
+  </section>
+
+  <section id="s2">
+    <h2>1. Array&#x27;leri birleştirmek</h2>
+<div class="code-pre">v1 = np.array([1, 2, 3, 4])
+v2 = np.array([5, 6, 7, 8, 9])
+np.concatenate((v1, v2))          # [1 2 3 4 5 6 7 8 9]</div>
+<p>Matrisler için yönü seçeriz:</p>
+<div class="code-pre">m1 = np.array([[1, 2, 3],
+               [4, 5, 6],
+               [7, 8, 9]])
+m2 = np.array([[2, 4, 6],
+               [8, 10, 12],
+               [14, 16, 18]])
+
+np.hstack((m1, m2))    # yan yana (horizontal): 3x6
+np.vstack((m1, m2))    # alt alta (vertical):   6x3</div>
+<div class="callout"><strong>Bağlantı:</strong> Lecture 04'te <code>A1</code> ve <code>A2</code>'yi alt alta dizerek tek bir <code>A</code> yapmıştık: bu tam olarak <code>np.vstack((A1, A2))</code>. Yan yana koyduğumuz <code>[I I 0]</code> blokları da <code>np.hstack</code>.</div>
+<p>Kural: <code>hstack</code> için <strong>satır sayıları</strong>, <code>vstack</code> için <strong>sütun sayıları</strong> eşit olmalı.</p>
+  </section>
+
+  <section id="s3">
+    <h2>2. Dosyaya yazmak ve dosyadan okumak</h2>
+<div class="code-pre">written = np.array([[1, 2, 3],
+                    [4, 5, 6],
+                    [7, 8, 9]])
+np.savetxt(&quot;matrix.csv&quot;, written, delimiter=&quot;,&quot;)      # yaz
+
+read = np.loadtxt(&quot;matrix.csv&quot;, delimiter=&quot;,&quot;)        # oku
+# [[1. 2. 3.]
+#  [4. 5. 6.]
+#  [7. 8. 9.]]</div>
+<ul>
+<li>CSV = virgülle ayrılmış metin dosyası; Excel'de de açılır.</li>
+<li>Okuyunca sayılar <code>1.</code> gibi <strong>ondalıklı (float)</strong> gelir; çünkü <code>loadtxt</code> varsayılan olarak float okur.</li>
+</ul>
+  </section>
+
+  <section id="s4">
+    <h2>3. Matris işlemleri</h2>
+<h3>3.1 Elemanlarla çarpma ≠ matris çarpımı (<strong>en sık yapılan hata</strong>)</h3>
+<div class="code-pre">M = np.array([[3, 4],
+              [-1, 5]])
+
+M * M
+# [[ 9 16]
+#  [ 1 25]]       ← her eleman kendi karesi</div>
+<p><code>+  -  *  /  **</code> operatörleri NumPy'da <strong>elemanlar arasında (elementwise)</strong> çalışır. Yani <code>M * M</code> matris çarpımı <strong>değildir</strong>; iki matrisin aynı konumdaki elemanları çarpılır.</p>
+<p><strong>Gerçek matris çarpımı</strong> için <code>np.matmul</code> ya da <code>@</code> operatörü:</p>
+<div class="code-pre">np.matmul(M, M)      # veya M @ M
+# [[ 5 32]
+#  [-8 21]]</div>
+<p>Elle kontrol (1. satır × 1. sütun): <code>3·3 + 4·(−1) = 9 − 4 = 5</code> ✔.</p>
+<p>Matris çarpımı hatırlatma: <code>(a×b) @ (b×c) = (a×c)</code>; <strong>ortadaki boyutlar eşit olmalı.</strong> Ve genelde <code>AB ≠ BA</code>.</p>
+<h3>Uygulama: R = 2I + 3A − AB</h3>
+<div class="code-pre">A = np.array([[1, 3],
+              [-1, 7]])
+B = np.array([[5, 2],
+              [1, 2]])
+I = np.eye(2)                       # 2x2 birim matris (identity)
+
+R = 2 * I + 3 * A - np.matmul(A, B)
+# [[-3.  1.]
+#  [-5. 11.]]</div>
+<ul>
+<li><code>np.eye(n)</code> → n×n <strong>birim matris</strong>: köşegeni 1, kalanı 0 (matris dünyasının "1 sayısı").</li>
+<li>Sayı ile matris çarpmak (<code>2 * I</code>, <code>3 * A</code>) elementwise'dır, bu yüzden doğru. Matris-matris çarpımı için ise <code>matmul</code>/<code>@</code> kullandık.</li>
+</ul>
+<p>Elle kontrol: <code>AB = [[8, 8],[2, 12]]</code>, <code>3A = [[3,9],[−3,21]]</code>, <code>2I = [[2,0],[0,2]]</code>. Toplam: <code>[[5,9],[−3,23]] − [[8,8],[2,12]] = [[−3,1],[−5,11]]</code> ✔.</p>
+<h3>3.2 Matris kuvveti</h3>
+<p><code>**</code> elementwise olduğu için matris kuvvetini ayrı bir fonksiyon verir:</p>
+<div class="code-pre">nla.matrix_power(M, 2)      # = M @ M
+nla.matrix_power(M, 5)      # = M @ M @ M @ M @ M
+# [[-1525  3236]
+#  [ -809    93]]</div>
+<h3>3.3 Transpoz</h3>
+<div class="code-pre">M.T
+# [[ 3 -1]
+#  [ 4  5]]</div>
+<p>Bir matrisi kendi transpozu ile çarpmak <strong>simetrik</strong> bir matris verir:</p>
+<div class="code-pre">M @ M.T
+# [[25 17]
+#  [17 26]]       ← köşegene göre ayna simetrik</div>
+<p>(Simetrik matris: <code>S = S^T</code>. Yani <code>s12 = s21</code>. Yukarıda 17 = 17.)</p>
+<h3>3.4 Ters matris (inverse)</h3>
+<p><code>A⁻¹</code>, <code>A · A⁻¹ = I</code> olacak şekildeki matristir (sayılardaki <code>1/a</code> gibi).</p>
+<div class="code-pre">A = np.array([[1, 2],
+              [3, 4]])
+sla.inv(A)
+# [[-2.   1. ]
+#  [ 1.5 -0.5]]
+
+A @ sla.inv(A)
+# [[1.0000000e+00 0.0000000e+00]
+#  [8.8817842e-16 1.0000000e+00]]</div>
+<p>Sonuç neredeyse <code>I</code>. Ama köşede <code>8.88e-16</code> gibi garip bir sayı var: bu <strong>sayısal yuvarlama hatasıdır (floating point error)</strong>. Bilgisayar ondalık sayıları sonsuz hassasiyetle tutamaz. <code>e-16</code> demek <code>0.0000000000000008</code>. Bunu pratikte 0 saymak gerekir.</p>
+<h3>3.5 İz (trace) ve determinant</h3>
+<div class="code-pre">np.trace(A)       # 5     → köşegen elemanların toplamı: 1 + 4
+sla.det(A)        # -2.0  → determinant: 1·4 − 2·3</div>
+<ul>
+<li><strong>Trace</strong> = köşegendeki elemanların toplamı.</li>
+<li><strong>Determinant</strong> 2×2 için <code>ad − bc</code>. Önemli sezgi: <strong>det ≠ 0 ise matrisin tersi vardır</strong> (matris "invertible"). det = 0 ise tersi yoktur.</li>
+</ul>
+  </section>
+
+  <section id="s5">
+    <h2>4. Lineer sistemleri çözmek (Ax = b)</h2>
+<p>Lise matematiğindeki denklem takımları:</p>
+<div class="code-pre">2x + y = 1
+ x + y = 1</div>
+<p>Matris dilinde <code>A x = b</code>:</p>
+<div class="code-pre">A = [2 1]     x = [x]     b = [1]
+    [1 1]         [y]         [1]</div>
+<p><strong>Ne zaman tek bir çözüm vardır?</strong> <code>A</code> <strong>kare</strong> matrisse (M = N: denklem sayısı = bilinmeyen sayısı) ve <code>det(A) ≠ 0</code> ise.</p>
+<p><code>scipy.linalg.solve</code> ile çözüm:</p>
+<div class="code-pre">x = sla.solve(A, b)
+# [[0.]
+#  [1.]]       →  x = 0, y = 1</div>
+<p>Kontrol: <code>2·0 + 1 = 1</code> ✔, <code>0 + 1 = 1</code> ✔.</p>
+<p><strong>Çıktı şekli girdiye uyar:</strong> <code>b</code> 1D verirsen <code>x</code> 1D, 2D (sütun) verirsen <code>x</code> 2D gelir.</p>
+<div class="code-pre">sla.solve(A, np.array([2, 0]))          # [1. 1.]       (1D)
+sla.solve(A, np.array([[2], [0]]))      # [[1.] [1.]]   (2D)</div>
+<h3>Ters matrisle de çözülür, ama yapma!</h3>
+<p>Matematiksel olarak <code>Ax = b</code> → <code>x = A⁻¹ b</code>. Kodda:</p>
+<div class="code-pre">Ainv = sla.inv(A)
+x = np.matmul(Ainv, b)        # aynı sonuç [[0.] [1.]]</div>
+<p>Küçük problemde ikisi de tamam. Ama:</p>
+<div class="callout"><strong>Büyük <code>A</code> için <code>inv</code> ile çözmek kötü fikirdir: çok pahalıdır.</strong></div>
+<p>Deney: 1000×1000 rastgele matris ve vektör.</p>
+<div class="code-pre">N = 1000
+A = np.random.rand(N, N)
+b = np.random.rand(N, 1)
+
+%%timeit
+x = sla.solve(A, b)                  # ≈ 19.2 ms
+
+%%timeit
+x = np.matmul(sla.inv(A), b)         # ≈ 317 ms</div>
+<p><code>solve</code> yaklaşık <strong>16 kat daha hızlı</strong>. (Sebep: ters matrisin tamamını hesaplamak, sadece tek bir <code>x</code> bulmaktan çok daha fazla iş. <code>solve</code> doğrudan <code>x</code>'e gider.) Ayrıca <code>solve</code> sayısal olarak da daha dengelidir.</p>
+<p><strong>Kural:</strong> <code>Ax = b</code> çözmek istiyorsan <strong><code>solve</code> kullan</strong>, <code>inv</code> kullanma. <code>inv</code>'i sadece tersin kendisine gerçekten ihtiyaç duyarsan çağır.</p>
+  </section>
+
+  <section id="s6">
+    <h2>5. Sparse matrisler</h2>
+<h3>Neden gerekli?</h3>
+<p>Normal (dense) matris: her eleman için bellek ayrılır, sıfır da olsa. n×n matris için bellek <strong>n²</strong> ile büyür. Double precision (sayı başına 8 byte) ile:</p>
+<div class="code-pre">bellek (MB) = 8 · n² / 10^6</div>
+<p>n = 1000 → 8 MB (sorun değil). n = 100.000 → <strong>80.000 MB = 80 GB</strong>. Bu bir bilgisayara sığmaz. Ders defterinde bunun bir grafiği vardı: n büyüdükçe bellek parabol gibi fırlıyor.</p>
+<p>Ama gerçek problemlerdeki matrislerin çoğu <strong>neredeyse boştur</strong> (Lecture 04'teki <code>A1</code>, <code>A2</code>'de olduğu gibi: bir sürü sıfır).</p>
+<h3>Fikir: <strong>Sıfırları saklama, sadece sıfır olmayanları sakla</strong> (sıkıştırma gibi)</h3>
+<ul>
+<li><strong>Artı:</strong> Muazzam bellek tasarrufu.</li>
+<li><strong>Eksi:</strong> Erişim ve işlem hızı, seçilen <strong>saklama biçimine (storage scheme)</strong> göre değişir.</li>
+</ul>
+<p>Yani "sparse matrix" iki şey demektir: matematiksel olarak "çoğu sıfır olan matris" ve pratikte "onu sıkıştırarak saklayan veri yapısı".</p>
+<h3><code>scipy.sparse</code>'in yedi saklama biçimi</h3>
+<table>
+<thead>
+<tr>
+<th>Kısaltma</th>
+<th>Adı</th>
+<th>Not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>csr_matrix</code></td>
+<td>Compressed Sparse <strong>Row</strong></td>
+<td>satır odaklı, en çok kullanılan</td>
+</tr>
+<tr>
+<td><code>csc_matrix</code></td>
+<td>Compressed Sparse <strong>Column</strong></td>
+<td>sütun odaklı</td>
+</tr>
+<tr>
+<td><code>bsr_matrix</code></td>
+<td>Block Sparse Row</td>
+<td>bloklu</td>
+</tr>
+<tr>
+<td><code>lil_matrix</code></td>
+<td>List of Lists</td>
+<td></td>
+</tr>
+<tr>
+<td><code>dok_matrix</code></td>
+<td>Dictionary of Keys</td>
+<td></td>
+</tr>
+<tr>
+<td><code>coo_matrix</code></td>
+<td>COOrdinate (IJV / triplet)</td>
+<td>(satır, sütun, değer) üçlüleri</td>
+</tr>
+<tr>
+<td><code>dia_matrix</code></td>
+<td>DIAgonal</td>
+<td>köşegen odaklı</td>
+</tr>
+</tbody>
+</table>
+<p>Her biri bazı işler için uygundur; biz <strong>CSR</strong>'a odaklandık.</p>
+<h3>Ortak özellikler</h3>
+<ul>
+<li>Hepsi <code>spmatrix</code>'ten türer. Aritmetik işlemlerde varsayılan olarak <strong>CSR'a çevirip</strong> işlem yapar.</li>
+<li><code>.shape</code> (satır, sütun), <code>.size</code> (sıfır olmayan eleman sayısı), <code>.T</code> (transpoz).</li>
+<li>Dense'e çevirmek: <code>.toarray()</code> ya da <code>.todense()</code>.</li>
+</ul>
+<h3>CSR (Compressed Sparse Row) nasıl çalışır?</h3>
+<p>Üç NumPy array'i ile saklar:</p>
+<table>
+<thead>
+<tr>
+<th>Array</th>
+<th>Ne tutar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td>sıfır olmayan değerler (satır satır)</td>
+</tr>
+<tr>
+<td><code>indices</code></td>
+<td>bu değerlerin <strong>sütun</strong> numaraları</td>
+</tr>
+<tr>
+<td><code>indptr</code></td>
+<td>her satırın <code>data</code>/<code>indices</code> içinde <strong>nereden başladığı</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Örnek matris:</p>
+<div class="code-pre">[[1 0 2]
+ [0 0 3]
+ [4 5 6]]</div>
+<p>CSR gösterimi:</p>
+<div class="code-pre">data    = [1 2 3 4 5 6]
+indices = [0 2 2 0 1 2]
+indptr  = [0 2 3 6]</div>
+<p><strong>Nasıl okunur?</strong> <code>i</code>. satırın elemanları <code>data[indptr[i] : indptr[i+1]]</code>:</p>
+<ul>
+<li>Satır 0: <code>indptr[0]=0</code>, <code>indptr[1]=2</code> → <code>data[0:2] = [1, 2]</code>, sütunları <code>indices[0:2] = [0, 2]</code> → satır 0'da (sütun 0 = 1), (sütun 2 = 2) ✔</li>
+<li>Satır 1: <code>indptr[1]=2</code>, <code>indptr[2]=3</code> → <code>data[2:3] = [3]</code>, sütun <code>[2]</code> ✔</li>
+<li>Satır 2: <code>indptr[2]=3</code>, <code>indptr[3]=6</code> → <code>data[3:6] = [4,5,6]</code>, sütunlar <code>[0,1,2]</code> ✔</li>
+</ul>
+<p>Yani <code>indptr</code>, "hangi satır, <code>data</code> dizisinin hangi aralığına denk gelir" cetveli. Son eleman (6) toplam sıfır olmayan sayısı. Sıfır içermeyen satır (ör. tamamen boş satır) olsaydı ardışık iki <code>indptr</code> değeri aynı olurdu.</p>
+<p><strong>Üç farklı yolla oluşturulabilir:</strong></p>
+<div class="code-pre"># 1) boş matris
+mtx = sp.csr_matrix((3, 4), dtype=np.int8)
+
+# 2) (data, (satır, sütun)) ile
+row  = np.array([0, 0, 1, 2, 2, 2])
+col  = np.array([0, 2, 2, 0, 1, 2])
+data = np.array([1, 2, 3, 4, 5, 6])
+mtx = sp.csr_matrix((data, (row, col)), shape=(3, 3))
+
+# 3) (data, indices, indptr) ile
+mtx = sp.csr_matrix((data, indices, indptr), shape=(3, 3))</div>
+<p>(2. ve 3. yöntem aynı matrisi verir.) Ayrıca dense array ya da başka bir sparse matris de doğrudan verilebilir.</p>
+<p><strong>CSR'ın güçlü/zayıf yönleri:</strong>
+- ✔ Satır dilimleme (row slicing) ve satır odaklı işlemler hızlı.
+- ✔ Matris–vektör çarpımı hızlı.
+- ✘ Sütun dilimleme yavaş.
+- ✘ Matrise yeni sıfır-olmayan eleman eklemek (yapıyı değiştirmek) pahalı.</p>
+<h3>Sparse matrisi görselleştirmek: <code>spy</code></h3>
+<div class="code-pre">plt.figure(figsize=(8, 8))
+plt.spy(mtx, marker=&quot;o&quot;)
+plt.show()</div>
+<p><code>spy</code> sıfır olmayan hücreleri nokta olarak gösterir. Örnek: büyük bir blok-köşegen matris:</p>
+<div class="code-pre">A = np.ones((100, 100))
+B = np.eye(100, 100)
+C = np.ones((100, 100))
+mtx = sp.block_diag((A, B, C))     # köşegen boyunca A, B, C blokları
+plt.spy(mtx, marker=&quot;.&quot;)</div>
+<p>Çıktıda iki dolu kare (A ve C), ortada köşegen çizgi (B = birim matris) görürsün; geri kalan boşluk sıfır. Sparse yapının "yapısını" bir bakışta görmenin yolu.</p>
+  </section>
+
+  <section id="s7">
+    <h2>Büyük Resim: Bu iki ders ne işe yarıyor?</h2>
+<div class="code-pre">Lecture 03-04:  problemi (c, A, b, l, u) matrislerine dök
+Lecture 05-06:  bu matrisleri Python'da kur (np.array, hstack/vstack, sparse),
+                işle (matmul, solve) ve sakla
+Sonraki adım:   LP_solve(A, b, c, l, u) fonksiyonunun içini yaz</div>
+<p>Özellikle <code>Ax = b</code> çözmek (<code>solve</code>) ve sparse matrisler, LP çözücülerin içinde sürekli kullanılan temel yapı taşlarıdır.</p>
+  </section>
+
+  <section id="s8">
+    <h2>Özet</h2>
+<ul>
+<li><code>hstack</code> / <code>vstack</code> yan yana / alt alta birleştirir; <code>savetxt</code> / <code>loadtxt</code> dosya yazar/okur.</li>
+<li><code>*</code> elementwise, matris çarpımı <strong><code>@</code></strong> (<code>np.matmul</code>). <code>matrix_power</code>, <code>.T</code>, <code>sla.inv</code>, <code>np.trace</code>, <code>sla.det</code>.</li>
+<li><code>inv</code>'de çıkan <code>1e-16</code> gibi sayılar yuvarlama hatasıdır.</li>
+<li><code>Ax = b</code> için kare ve det ≠ 0 olmalı; <strong><code>sla.solve</code> kullan, <code>inv</code> kullanma</strong> (1000×1000'de 19 ms vs 317 ms).</li>
+<li>Dense matris bellek maliyeti n² ile büyür; sparse sadece sıfır olmayanları saklar.</li>
+<li>CSR: <code>data</code>, <code>indices</code>, <code>indptr</code>. İ. satır = <code>data[indptr[i]:indptr[i+1]]</code>.</li>
+</ul>
+  </section>
+
+  <section id="s9">
+    <h2>Kendini test et</h2>
+<ol>
+<li><code>A = [[1,2],[3,4]]</code>, <code>B = [[0,1],[1,0]]</code> için <code>A * B</code> ile <code>A @ B</code> aynı mı? Hesapla.</li>
+<li><code>det(A) = 0</code> ise <code>Ax = b</code> hakkında ne söyleyebiliriz?</li>
+<li>CSR'da <code>indptr = [0, 1, 1, 3]</code> ise matris kaç satırlıdır ve hangi satır boştur?</li>
+<li>Neden <code>Ax = b</code>'yi <code>inv(A) @ b</code> ile çözmek yerine <code>solve</code> kullanıyoruz?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>Farklı. <code>A * B = [[0,2],[3,0]]</code> (elementwise). <code>A @ B = [[2,1],[4,3]]</code> (matris çarpımı: sütunlar yer değiştirir).</li>
+<li>Tersi yoktur; sistemin tek bir çözümü olmaz (ya hiç çözüm yok ya da sonsuz çözüm var). <code>solve</code> hata verir/uyarır.</li>
+<li><code>indptr</code> uzunluğu satır sayısı + 1 = 4 → <strong>3 satır</strong>. Satır 1'in başlangıcı ve bitişi aynı (1 ve 1) → <strong>satır 1 boştur</strong> (tamamen sıfır).</li>
+<li><code>solve</code> doğrudan çözüme gider, <code>inv</code> ise tüm ters matrisi hesaplar; bu çok daha pahalı (örnekte ~16 kat) ve sayısal olarak da daha az dengelidir.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="indr220-lecture5.html">← Lecture 5</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

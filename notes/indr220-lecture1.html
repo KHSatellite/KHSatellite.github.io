@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INDR 220 – Lecture 1 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes220.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../img.png" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Optimization nedir?</a></li>
+    <li><a href="#s2">2. Genel (general) formülasyon</a></li>
+    <li><a href="#s3">3. İlk örnek: Fabrika problemi</a></li>
+    <li><a href="#s4">4. Maximize&#x27;ı minimize&#x27;a çevirmek</a></li>
+    <li><a href="#s5">5. Grafikle çözmek (2 değişken olduğu için mümkün)</a></li>
+    <li><a href="#s6">6. Linear Programming (LP) problemleri</a></li>
+    <li><a href="#s7">Özet</a></li>
+    <li><a href="#s8">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-220">
+  <div class="note-meta">
+    <span class="note-course-badge">INDR 220</span>
+    <span class="note-week-label">Lecture 1</span>
+  </div>
+  <h1 class="note-main-title">Formulating Optimization Models</h1>
+  <p class="note-intro">Bu dersin amacı: "En iyisini bul" cümlesini matematiğin diline çevirmeyi öğrenmek. Henüz çözmeyi değil, <strong>modellemeyi</strong> konuşuyoruz.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Optimization nedir?</h2>
+<p>Hayatta sürekli optimization yaparsınız: "Sınava hazırlanırken sınırlı zamanımı hangi konulara nasıl dağıtayım ki toplam notum en yüksek olsun?" Bu bir optimization problemidir. Bir şeyi <strong>en iyi</strong> (en küçük ya da en büyük) yapmak istiyorsunuz, ama bunu yaparken <strong>kısıtlarınız</strong> var (zaman, para, kapasite).</p>
+<p>Bir optimization problemi üç parçadan oluşur:</p>
+<table>
+<thead>
+<tr>
+<th>Parça</th>
+<th>Türkçesi</th>
+<th>Sorduğu soru</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Decision variables</strong></td>
+<td>Karar değişkenleri</td>
+<td>Ben neyi seçebiliyorum?</td>
+</tr>
+<tr>
+<td><strong>Objective function</strong></td>
+<td>Amaç fonksiyonu</td>
+<td>Neyi en iyi yapmak istiyorum?</td>
+</tr>
+<tr>
+<td><strong>Constraints</strong></td>
+<td>Kısıtlar</td>
+<td>Hangi sınırların içinde kalmalıyım?</td>
+</tr>
+</tbody>
+</table>
+  </section>
+
+  <section id="s2">
+    <h2>2. Genel (general) formülasyon</h2>
+<p>Tahtadaki genel yazım şöyle:</p>
+<div class="code-pre">minimize     f(x1, x2, ..., xN)
+
+subject to:  g1(x1, x2, ..., xN) &lt;= b1
+             g2(x1, x2, ..., xN) &lt;= b2
+             ...
+             gM(x1, x2, ..., xN) &lt;= bM
+
+             l1 &lt;= x1 &lt;= u1
+             l2 &lt;= x2 &lt;= u2
+             ...
+             lN &lt;= xN &lt;= uN</div>
+<p>Hepsini tek tek okuyalım:</p>
+<ul>
+<li><strong>x1, ..., xN → decision variables.</strong> Bunlar bizim "düğmelerimiz". Çözüm olarak bulmak istediğimiz sayılar. <strong>N = decision variable sayısı.</strong></li>
+<li><strong>f → objective function.</strong> N tane sayı alır, <strong>tek bir sayı</strong> verir. Yazılışı <code>f : R^N → R</code>. Yani N boyutlu uzaydan gerçek sayıya giden bir fonksiyon. Bu sayı "maliyet" ya da "kâr" gibi bir şey olur; biz de onu küçültmeye (ya da büyütmeye) çalışırız.</li>
+<li><strong>g1, ..., gM → constraint functions.</strong> Her biri yine <code>R^N → R</code>. Her biri bir sınır koyar: "g1 değeri b1'i geçmesin." <strong>M = constraint sayısı.</strong></li>
+<li><strong>b1, ..., bM → right-hand side (r.h.s.), sağ taraf sabitleri.</strong></li>
+<li><strong>l ve u → bounds (boundary constraints).</strong> Her değişkenin alabileceği en küçük (l = <em>lower</em>) ve en büyük (u = <em>upper</em>) değer. Mesela "ürün adedi negatif olamaz" demek <code>0 &lt;= x</code>.</li>
+</ul>
+<div class="callout"><strong>Kafa karışıklığı uyarısı:</strong> Constraint (g'ler) ile bound (l ≤ x ≤ u) aslında aynı türden sınırlardır. Ayırmamızın sebebi, bound'ların her değişkene tek tek konan <strong>basit</strong> sınırlar olması; bilgisayar bunları özel olarak, daha verimli işleyebilir. Bunu ilerideki lecture'larda ve solver tarafında göreceksiniz.</div>
+  </section>
+
+  <section id="s3">
+    <h2>3. İlk örnek: Fabrika problemi</h2>
+<p>Bir fabrikada 2 ürün ve 3 makine var. Tabloya bakın:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Product #1</th>
+<th>Product #2</th>
+<th>Availability (makine müsaitliği)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Machine #1</td>
+<td>1 saat</td>
+<td>0 saat</td>
+<td>4 saat</td>
+</tr>
+<tr>
+<td>Machine #2</td>
+<td>0 saat</td>
+<td>2 saat</td>
+<td>12 saat</td>
+</tr>
+<tr>
+<td>Machine #3</td>
+<td>3 saat</td>
+<td>2 saat</td>
+<td>18 saat</td>
+</tr>
+<tr>
+<td><strong>Profit</strong></td>
+<td><strong>$3 / adet</strong></td>
+<td><strong>$5 / adet</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Okuma: 1 adet Product #1 üretmek Machine #1'de 1 saat, Machine #3'te 3 saat harcıyor, Machine #2'ye hiç uğramıyor. Her makinenin toplam çalışma süresi sınırlı.</p>
+<p><strong>Amaç:</strong> Toplam kârı maksimize etmek, makine müsaitlikleri <strong>sınırı içinde</strong> kalarak.</p>
+<h3>Adım 1 — Decision variable'ları tanımla</h3>
+<p>Her zaman ilk iş budur. "Ben ne karar veriyorum?"</p>
+<div class="code-pre">x1 = üreteceğimiz Product 1 adedi
+x2 = üreteceğimiz Product 2 adedi</div>
+<h3>Adım 2 — Objective function'ı yaz</h3>
+<p>Kâr = 3 · (Product 1 adedi) + 5 · (Product 2 adedi):</p>
+<div class="code-pre">maximize  3·x1 + 5·x2</div>
+<h3>Adım 3 — Her makine için bir constraint yaz</h3>
+<p>Machine #1: 1 saat/adet × x1 en fazla 4 saat olabilir → <code>1·x1 + 0·x2 &lt;= 4</code>.
+Machine #2: <code>0·x1 + 2·x2 &lt;= 12</code>.
+Machine #3: <code>3·x1 + 2·x2 &lt;= 18</code>.</p>
+<h3>Adım 4 — Bound'ları yaz</h3>
+<p>Negatif adet üretemeyiz:</p>
+<div class="code-pre">0 &lt;= x1
+0 &lt;= x2</div>
+<h3>Tam model</h3>
+<div class="code-pre">maximize     3·x1 + 5·x2
+
+subject to:  1·x1 + 0·x2 &lt;= 4
+             0·x1 + 2·x2 &lt;= 12
+             3·x1 + 2·x2 &lt;= 18
+             0 &lt;= x1
+             0 &lt;= x2</div>
+  </section>
+
+  <section id="s4">
+    <h2>4. Maximize&#x27;ı minimize&#x27;a çevirmek</h2>
+<p>Genel formda hep <strong>minimize</strong> yazdık. Peki problem "maximize" ise? Hiçbir sorun yok, çünkü:</p>
+<div class="callout"><strong>Bir şeyi maximize etmek, onun eksilisini (negatifini) minimize etmekle aynıdır.</strong></div>
+<p>Neden? Sayı doğrusunda 36 en büyük sayı ise, −36 en küçüktür. Dolayısıyla:</p>
+<div class="code-pre">maximize  3·x1 + 5·x2     ⟺     minimize  -3·x1 - 5·x2</div>
+<p>Tahtada da aynısı yapıldı. Ayrıca <code>0 &lt;= x1</code> yazarken üst sınırı da dolduruyoruz: sınır yoksa <code>+∞</code> kabul ederiz → <code>0 &lt;= x1 &lt;= +∞</code>. Yani modelin tam hâli:</p>
+<div class="code-pre">minimize     -3·x1 - 5·x2
+
+subject to:  (A)  1·x1 + 0·x2 &lt;= 4
+             (B)  0·x1 + 2·x2 &lt;= 12
+             (C)  3·x1 + 2·x2 &lt;= 18
+             (D)  0 &lt;= x1 &lt;= +inf
+             (E)  0 &lt;= x2 &lt;= +inf</div>
+<div class="callout callout--warn"><strong>Dikkat:</strong> Çözümü bulunca amaç değerini kâra çevirmeyi unutmayın. Burada minimum −36 çıkacak; gerçek kâr <strong>+36</strong> dolar.</div>
+  </section>
+
+  <section id="s5">
+    <h2>5. Grafikle çözmek (2 değişken olduğu için mümkün)</h2>
+<p>Değişken sayısı 2 ise problemi kâğıda çizebiliriz. x1 yatay, x2 dikey eksen.</p>
+<p><strong>Her constraint bir yarım düzlem (half-plane) çizer:</strong></p>
+<ul>
+<li>(A) <code>x1 &lt;= 4</code> → x1 = 4 dikey çizgisinin <strong>solu</strong></li>
+<li>(B) <code>x2 &lt;= 6</code> (2·x2 ≤ 12'yi 2'ye bölün) → x2 = 6 yatay çizgisinin <strong>altı</strong></li>
+<li>(C) <code>3x1 + 2x2 &lt;= 18</code> → bu doğrunun <strong>altı</strong>. Doğru (6,0) ve (0,9) noktalarından geçer.</li>
+<li>(D), (E) → x1 ≥ 0, x2 ≥ 0, yani sadece <strong>ilk çeyrek</strong>.</li>
+</ul>
+<p><strong>Feasible region (uygun bölge):</strong> Bütün constraint'leri <em>aynı anda</em> sağlayan noktaların kümesi, yani bütün yarım düzlemlerin kesişimi. Tahtada taralı alan buydu. Bir nokta bu alanın içindeyse o üretim planı <strong>feasible</strong>'dır (yapılabilir).</p>
+<p>Bu bölge bir çokgendir ve köşeleri (vertex / corner point):</p>
+<table>
+<thead>
+<tr>
+<th>Köşe</th>
+<th>Koordinat</th>
+<th>Nasıl bulundu?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I</td>
+<td>(0, 0)</td>
+<td>eksenlerin kesişimi</td>
+</tr>
+<tr>
+<td>II</td>
+<td>(0, 6)</td>
+<td>x1 = 0 ve B'nin kesişimi</td>
+</tr>
+<tr>
+<td>III</td>
+<td>(2, 6)</td>
+<td>B ve C'nin kesişimi: x2 = 6 → 3x1 + 12 = 18 → x1 = 2</td>
+</tr>
+<tr>
+<td>IV</td>
+<td>(4, 3)</td>
+<td>A ve C'nin kesişimi: x1 = 4 → 12 + 2x2 = 18 → x2 = 3</td>
+</tr>
+<tr>
+<td>V</td>
+<td>(4, 0)</td>
+<td>A ve x2 = 0'ın kesişimi</td>
+</tr>
+</tbody>
+</table>
+<h3>Hangi köşe en iyi?</h3>
+<p>Amaç fonksiyonunu (<code>-3x1 - 5x2</code>) her köşede hesaplayalım:</p>
+<table>
+<thead>
+<tr>
+<th>Köşe</th>
+<th>f = -3x1 - 5x2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I (0,0)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>II (0,6)</td>
+<td>-30</td>
+</tr>
+<tr>
+<td><strong>III (2,6)</strong></td>
+<td><strong>-36</strong> ← en küçük</td>
+</tr>
+<tr>
+<td>IV (4,3)</td>
+<td>-27</td>
+</tr>
+<tr>
+<td>V (4,0)</td>
+<td>-12</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Optimal çözüm:</strong> <code>x1* = 2, x2* = 6</code>. (Yıldız <code>*</code> "optimal" demektir.) Yani 2 adet Product 1 ve 6 adet Product 2 üretilirse kâr 3·2 + 5·6 = <strong>36 dolar</strong>.</p>
+<div class="callout"><strong>Neden sadece köşelere baktık?</strong> Bu çok önemli bir fikir ve ilerideki derslerin temeli: <em>Linear</em> bir problemde optimal çözüm (varsa) <strong>her zaman feasible bölgenin bir köşesindedir.</strong> Amaç fonksiyonu düz bir çizgi/düzlem gibi davrandığı için, "kaydırdıkça" son değen yer her zaman bir köşe olur. Bu yüzden köşeleri gezmek yeterlidir. (Bu derste ispatı yapılmadı; bir kural olarak aklınızda kalsın. Simplex gibi algoritmalar esasen bu fikre dayanır.)</div>
+  </section>
+
+  <section id="s6">
+    <h2>6. Linear Programming (LP) problemleri</h2>
+<p>Fabrika örneğindeki her şey <strong>doğrusal</strong> (linear) idi: amaç fonksiyonu ve tüm constraint'ler değişkenlerin sabitlerle çarpılıp toplanmasından ibaret (<code>x1·x2</code> ya da <code>x1²</code> yok). Bu tür probleme <strong>Linear Programming (LP)</strong> denir.</p>
+<p>Genel LP:</p>
+<div class="code-pre">minimize     c1·x1 + c2·x2 + ... + cN·xN              →  c^T · x
+
+subject to:  a11·x1 + a12·x2 + ... + a1N·xN &lt;= b1
+             a21·x1 + a22·x2 + ... + a2N·xN &lt;= b2        →  A · x &lt;= b
+             ...
+             aM1·x1 + aM2·x2 + ... + aMN·xN &lt;= bM
+
+             l1 &lt;= x1 &lt;= u1
+             ...                                          →  l &lt;= x &lt;= u
+             lN &lt;= xN &lt;= uN</div>
+<p>Yani vektör/matris diliyle LP şu kadar kısa yazılır:</p>
+<div class="code-pre">minimize     c^T · x
+subject to:  A · x &lt;= b
+             l &lt;= x &lt;= u</div>
+<p>Bu <strong>çok</strong> önemli bir yazım. Bundan sonraki bütün derslerde göreceksiniz.</p>
+  </section>
+
+  <section id="s7">
+    <h2>Özet</h2>
+<ul>
+<li>Optimization problemi = decision variables + objective function + constraints.</li>
+<li>Modelleme adımları: (1) değişkenleri tanımla, (2) objective'i yaz, (3) constraint'leri yaz, (4) bound'ları yaz.</li>
+<li>Maximize f = minimize (−f).</li>
+<li>2 değişkenli problemler grafikle çözülebilir; feasible region'ın köşelerine bakılır.</li>
+<li>Hepsi doğrusalsa buna LP denir ve <code>min c^T x, Ax &lt;= b, l &lt;= x &lt;= u</code> diye yazılır.</li>
+</ul>
+  </section>
+
+  <section id="s8">
+    <h2>Kendini test et</h2>
+<ol>
+<li>Fabrika örneğinde Machine #2 için kısıt neden <code>2·x2 &lt;= 12</code> ve x1 neden yok?</li>
+<li><code>maximize 7x1 - 2x2</code> problemini minimize problemine çevir. Çözümde amaç değeri −10 çıksa gerçek kâr kaç olur?</li>
+<li>Feasible region ne demek? Bir nokta bunun dışındaysa ne olur?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>Product 1, Machine #2'yi hiç kullanmıyor (tablodaki 0 saat), dolayısıyla katsayısı 0. Product 2 adet başına 2 saat alıyor.</li>
+<li><code>minimize -7x1 + 2x2</code>. Minimize edilen değer −10 ise orijinal (maximize) değer −(−10) = <strong>10</strong>.</li>
+<li>Tüm constraint'leri aynı anda sağlayan noktaların kümesi. Dışındaki bir nokta en az bir constraint'i ihlal eder, yani yapılamaz bir plandır; ne kadar iyi görünürse görünsün çözüm olamaz.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="indr220-lecture2.html">Lecture 2 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>
