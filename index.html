@@ -4,429 +4,198 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kadir Hanbaba</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <meta name="description" content="Kadir Hanbaba — projeler ve ders notları." />
+  <link rel="icon" href="img.png" />
+  <link rel="preload" href="fonts/pixelify-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/home.css" />
   <script>
-    // Tema flash'ını önle: sayfa yüklenmeden önce uygula
-    (function() {
-      const saved = localStorage.getItem('theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', saved);
+    (function () {
+      var t = 'dark';
+      try { t = localStorage.getItem('theme') || 'dark'; } catch (e) {}
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.classList.add('js');
     })();
   </script>
 </head>
 <body>
 
-  <!-- ── NAVİGASYON ── -->
-  <nav class="navbar">
-    <a href="#hero" class="nav-logo">
-      <img src="img.png" alt="KH Logo" class="nav-logo-img" />
+  <div class="crt" aria-hidden="true"><div class="crt-line"></div></div>
+
+  <header class="nav" id="nav">
+    <a href="#top" class="nav-logo" aria-label="Başa dön">
+      <img src="img.png" alt="" width="36" height="36" />
+      <span>KHSatellite</span>
     </a>
-
-    <ul class="nav-links">
-      <li><a href="#projects">Projeler</a></li>
-      <li><a href="#notes">Notlar</a></li>
-      <li><a href="#contact">İletişim</a></li>
-    </ul>
-
+    <nav class="nav-links" id="navLinks" aria-label="Ana menü">
+      <a href="#projects">Projeler</a>
+      <a href="#notes">Ders notları</a>
+      <a href="#contact">İletişim</a>
+    </nav>
     <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
-        <span class="icon-sun">☀️</span>
-        <span class="icon-moon">🌙</span>
+      <button class="theme-btn" id="themeToggle" type="button" aria-label="Temayı değiştir">
+        <svg class="i-sun" viewBox="0 0 16 16" aria-hidden="true"><path d="M7 0h2v3H7zM7 13h2v3H7zM0 7h3v2H0zM13 7h3v2h-3zM2 2h2v2H2zM12 2h2v2h-2zM2 12h2v2H2zM12 12h2v2h-2zM5 5h6v6H5z"/></svg>
+        <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 1h4v1H6zM4 2h3v1H4zM3 3h3v1H3zM2 4h3v2H2zM1 6h3v4H1zM2 10h4v2H2zM3 12h7v1H3zM4 13h7v1H4zM6 14h5v1H6zM10 11h4v1h-4zM12 10h3v1h-3z"/></svg>
       </button>
-      <button class="nav-toggle" id="navToggle">☰</button>
+      <button class="menu-btn" id="menuToggle" type="button" aria-label="Menüyü aç" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </nav>
+  </header>
 
-  <!-- ── HERO ── -->
-  <section class="hero" id="hero">
-    <!-- Arka plan efektleri -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+  <main id="top">
 
-    <div class="hero-inner">
-      <p class="hero-greeting">
-        <span class="greeting-line"></span>
-        Merhaba, ben
-      </p>
-      <h1 class="hero-name">Kadir Hanbaba<span class="dot">.</span></h1>
-      <p class="hero-subtitle">Bilgisayar Mühendisliği Öğrencisi</p>
+    <section class="hero" id="projects" aria-labelledby="heroName">
+      <canvas class="stars" id="stars" aria-hidden="true"></canvas>
 
-      <!-- Navigasyon kartları -->
-      <div class="hero-cards">
-        <a href="#projects" class="hero-card">
-          <div class="hero-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          </div>
-          <div class="hero-card-text">
-            <span class="hero-card-title">Projeler</span>
-            <span class="hero-card-desc">Geliştirdiğim çalışmalar</span>
-          </div>
-          <span class="hero-card-arrow">→</span>
-        </a>
-
-        <a href="#notes" class="hero-card">
-          <div class="hero-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          </div>
-          <div class="hero-card-text">
-            <span class="hero-card-title">Ders Notları</span>
-            <span class="hero-card-desc">Engineering Economics, Optimizasyon ve diğerleri</span>
-          </div>
-          <span class="hero-card-arrow">→</span>
-        </a>
-
-        <a href="#contact" class="hero-card">
-          <div class="hero-card-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-          <div class="hero-card-text">
-            <span class="hero-card-title">İletişim</span>
-            <span class="hero-card-desc">Mail, GitHub, LinkedIn</span>
-          </div>
-          <span class="hero-card-arrow">→</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="scroll-hint">
-      <span>Aşağı kaydır</span>
-      <div class="scroll-arrow">↓</div>
-    </div>
-  </section>
-
-  <!-- ── PROJELER ── -->
-  <section class="section" id="projects">
-    <div class="section-inner">
-      <div class="section-header">
-        <span class="section-tag">/ projeler</span>
-        <h2 class="section-title">Neler Geliştirdim<span class="dot">?</span></h2>
-        <p class="section-sub">Üzerinde çalıştığım ve geliştirdiğim projeler.</p>
+      <div class="hero-copy">
+        <h1 class="hero-name" id="heroName"><span class="line">Kadir</span><span class="line">Hanbaba</span></h1>
+        <p class="hero-role">Bilgisayar Mühendisliği Öğrencisi</p>
+        <p class="hero-text">Projelerim etrafta yörüngede dönüyor. Birine tıkla, uydu kartuşu okusun ve detayları açsın. Derslerde tuttuğum notlar da aşağıda.</p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href="#notes">Ders notlarına git</a>
+          <a class="btn" href="#contact">Bana ulaş</a>
+        </div>
       </div>
 
-      <div class="projects-grid">
+      <div class="stage" id="stage">
+        <svg class="ring ring--outer" id="ringOuter" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          <ellipse cx="500" cy="200" rx="496" ry="196" />
+        </svg>
+        <svg class="ring ring--inner" id="ringInner" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          <ellipse cx="500" cy="200" rx="496" ry="196" />
+        </svg>
 
-        <div class="project-card" data-color="purple">
-          <div class="project-card-glow"></div>
-          <div class="project-header">
-            <div class="project-icon-wrap">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            </div>
-            <a href="https://github.com/KHSatellite" target="_blank" class="project-github-link" title="GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        <div class="bot" id="bot" aria-hidden="true">
+          <div class="bot-float">
+            <svg class="bot-svg" id="botSvg" viewBox="0 0 24 23" shape-rendering="crispEdges"></svg>
+          </div>
+        </div>
+
+        <ul class="orbit" id="orbit" aria-label="Projeler"></ul>
+
+        <p class="stage-hint" id="stageHint">Bir kartuşa tıkla</p>
+      </div>
+
+      <noscript>
+        <ul class="noscript-list">
+          <li><a href="https://github.com/KHSatellite/what-to-play">What to Play</a></li>
+          <li><a href="https://github.com/KHSatellite/KHSatellite.github.io">KHSatellite.github.io</a></li>
+          <li><a href="#notes">Ders notları</a></li>
+        </ul>
+      </noscript>
+    </section>
+
+    <section class="notes" id="notes" aria-labelledby="notesTitle">
+      <div class="wrap">
+        <div class="notes-head">
+          <h2 class="section-title" id="notesTitle">Ders notları</h2>
+          <p class="section-text">Derslerde işlenen konuları kendi anladığım şekilde, örneklerle yazdım. Her ders bir kayıt dosyası gibi; istediğin haftadan devam edebilirsin.</p>
+          <div class="loadbar" aria-hidden="true"><div class="loadbar-fill" id="loadbar"></div></div>
+        </div>
+
+        <div class="slots">
+
+          <article class="slot" style="--slot: var(--magenta)">
+            <header class="slot-head">
+              <span class="slot-code">INDR 202</span>
+              <h3 class="slot-title">Engineering Economics</h3>
+              <span class="slot-meta">7 hafta, sınav hazırlığı dahil</span>
+            </header>
+            <ol class="slot-list">
+              <li><a href="notes/indr202-hafta1.html"><span class="k">Hafta 1</span><span class="v">Time Value of Money, Faiz, MARR, Faktörler</span></a></li>
+              <li><a href="notes/indr202-hafta2.html"><span class="k">Hafta 2</span><span class="v">Shifted Gradients, Effective Interest, Geometric Gradient</span></a></li>
+              <li><a href="notes/indr202-hafta3.html"><span class="k">Hafta 3</span><span class="v">PW Analizi, Capitalized Cost, Payback, AW, Capital Recovery</span></a></li>
+              <li><a href="notes/indr202-hafta4.html"><span class="k">Hafta 4</span><span class="v">ROR/IRR, Multiple i*, Composite ROR, Incremental ROR, B/C Analizi</span></a></li>
+              <li><a href="notes/indr202-hafta5.html"><span class="k">Hafta 5</span><span class="v">Incremental B/C, D/E Mix, WACC, MARR Belirleme</span></a></li>
+              <li><a href="notes/indr202-hafta6.html"><span class="k">Hafta 6</span><span class="v">CAPM, ESL, Replacement &amp; Retention, Breakeven Analizi</span></a></li>
+              <li><a href="notes/indr202-hafta7.html"><span class="k">Hafta 7</span><span class="v">Breakeven (devamı), Ortalama Birim Maliyet, Excel &amp; Python CF Analizi</span></a></li>
+            </ol>
+            <h4 class="slot-sub">Sınav hazırlığı</h4>
+            <ul class="slot-list slot-list--exam">
+              <li><a href="notes/indr202-midterm-kapsamli.html"><span class="k">Midterm</span><span class="v">Kapsamlı konu özetleri, tüm formüller, 10 örnek problem</span></a></li>
+              <li><a href="notes/indr202-midterm.html"><span class="k">Midterm</span><span class="v">Geçmiş sınav soruları ve çözümler (Güz 2025)</span></a></li>
+              <li><a href="notes/indr202-cheatsheet.html"><span class="k">Midterm</span><span class="v">2 sayfalık yazdırılabilir cheatsheet</span></a></li>
+              <li><a href="notes/indr202-final-konu.html"><span class="k">Final</span><span class="v">B/C, Breakeven, Replacement &amp; Retention konu anlatımı</span></a></li>
+              <li><a href="notes/indr202-final-pratik.html"><span class="k">Final</span><span class="v">Çözümlü pratik soruları</span></a></li>
+              <li><a href="notes/indr202-final2-cheatsheet.html"><span class="k">Final</span><span class="v">2 sayfalık cheatsheet ve faktör tablosu (%10)</span></a></li>
+            </ul>
+          </article>
+
+          <article class="slot" style="--slot: var(--phosphor)">
+            <header class="slot-head">
+              <span class="slot-code">INDR 220</span>
+              <h3 class="slot-title">Optimizasyon Modelleme ve Bilimsel Hesaplama</h3>
+              <span class="slot-meta">6 lecture, devam ediyor</span>
+            </header>
+            <ol class="slot-list">
+              <li><a href="notes/indr220-lecture1.html"><span class="k">Lecture 1</span><span class="v">Optimization problemi, decision variable, objective, constraint, LP</span></a></li>
+              <li><a href="notes/indr220-lecture2.html"><span class="k">Lecture 2</span><span class="v">Binary değişkenler, atama problemi, LP / ILP / MILP / NLP / QP</span></a></li>
+              <li><a href="notes/indr220-lecture3.html"><span class="k">Lecture 3</span><span class="v">LP'nin matris formu, infeasible / unbounded, quadratic programming</span></a></li>
+              <li><a href="notes/indr220-lecture4.html"><span class="k">Lecture 4</span><span class="v">Warehouse location problem, MILP modelini matrise çevirme</span></a></li>
+              <li><a href="notes/indr220-lecture5.html"><span class="k">Lecture 5</span><span class="v">NumPy: array, indexing, axis, reshape, transpose</span></a></li>
+              <li><a href="notes/indr220-lecture6.html"><span class="k">Lecture 6</span><span class="v">Matris işlemleri, solve ve inv, sparse matrisler (CSR)</span></a></li>
+            </ol>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contactTitle">
+      <div class="wrap contact-wrap">
+        <div>
+          <h2 class="section-title" id="contactTitle">Bana ulaş</h2>
+          <p class="section-text">Bir proje fikrin ya da notlarla ilgili bir sorun varsa yazabilirsin.</p>
+        </div>
+        <ul class="links">
+          <li>
+            <a href="mailto:hanbaba.kadir7@gmail.com">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h14v10H1zM2 4v1h1v1h1v1h1v1h1v1h4V8h1V7h1V6h1V5h1V4zM2 7v5h12V7h-1v1h-1v1h-1v1H5V9H4V8H3V7z"/></svg>
+              <span class="lk">E-posta</span><span class="lv">hanbaba.kadir7@gmail.com</span>
             </a>
-          </div>
-          <h3 class="project-title">Proje Adı</h3>
-          <p class="project-desc">Projenin kısa açıklaması buraya gelecek. Ne yaptığını, hangi teknolojiyi kullandığını yaz.</p>
-          <div class="project-tags">
-            <span class="tag">C++</span>
-            <span class="tag">Python</span>
-          </div>
-        </div>
-
-        <div class="project-card" data-color="pink">
-          <div class="project-card-glow"></div>
-          <div class="project-header">
-            <div class="project-icon-wrap">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-            </div>
-            <a href="https://github.com/KHSatellite" target="_blank" class="project-github-link" title="GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </li>
+          <li>
+            <a href="https://github.com/KHSatellite" target="_blank" rel="noopener">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h2v2H4zM2 5h2v2H2zM0 7h2v2H0zM2 9h2v2H2zM4 11h2v2H4zM10 3h2v2h-2zM12 5h2v2h-2zM14 7h2v2h-2zM12 9h2v2h-2zM10 11h2v2h-2zM8 2h2v2H8zM7 5h2v3H7zM6 8h2v3H6zM5 11h2v3H5z"/></svg>
+              <span class="lk">GitHub</span><span class="lv">KHSatellite</span>
             </a>
-          </div>
-          <h3 class="project-title">Proje Adı 2</h3>
-          <p class="project-desc">İkinci projenin açıklaması. Yeni proje eklemek için bu kartı kopyalayabilirsin.</p>
-          <div class="project-tags">
-            <span class="tag">Algoritma</span>
-            <span class="tag">Veri Yapıları</span>
-          </div>
-        </div>
-
-        <div class="project-card project-card--wip" data-color="purple">
-          <div class="project-card-glow"></div>
-          <div class="project-header">
-            <div class="project-icon-wrap">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-            </div>
-            <span class="wip-badge">Geliştiriliyor</span>
-          </div>
-          <h3 class="project-title">Bu Site</h3>
-          <p class="project-desc">Kişisel portfolyo ve ders notu sitesi. Sıfırdan HTML/CSS/JS ile geliştirildi.</p>
-          <div class="project-tags">
-            <span class="tag">HTML</span>
-            <span class="tag">CSS</span>
-            <span class="tag">JavaScript</span>
-          </div>
-        </div>
-
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/kadir-hanbaba/" target="_blank" rel="noopener">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 1h4v1H6zM5 2h1v3H5zM10 2h1v3h-1zM6 5h4v1H6zM4 7h8v1H4zM3 8h10v1H3zM2 9h12v5H2z"/></svg>
+              <span class="lk">LinkedIn</span><span class="lv">Kadir Hanbaba</span>
+            </a>
+          </li>
+        </ul>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ── NOTLAR ── -->
-  <section class="section section--alt" id="notes">
-    <div class="section-inner">
-      <div class="section-header">
-        <span class="section-tag">/ notlar</span>
-        <h2 class="section-title">Ders Notları<span class="dot">.</span></h2>
-        <p class="section-sub">Derslerde işlenen konuları kendi anladığım şekilde, örneklerle yazdım.</p>
-      </div>
+  </main>
 
-      <div class="notes-grid">
-
-        <div class="note-card">
-          <div class="note-card-top">
-            <span class="note-badge">INDR 202</span>
-            <span class="note-course-name">Engineering Economics</span>
-          </div>
-          <ul class="note-weeks">
-            <li>
-              <a href="notes/indr202-hafta1.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Hafta 1</span>
-                  <span class="week-topic">Time Value of Money, Faiz, MARR, Faktörler</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-hafta2.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Hafta 2</span>
-                  <span class="week-topic">Shifted Gradients, Effective Interest, Geometric Gradient</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-hafta3.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Hafta 3</span>
-                  <span class="week-topic">PW Analizi, Capitalized Cost, Payback, AW, Capital Recovery</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-hafta4.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Hafta 4</span>
-                  <span class="week-topic">ROR/IRR, Multiple i*, Composite ROR, Incremental ROR, B/C Analizi</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-hafta5.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Hafta 5</span>
-                  <span class="week-topic">Incremental B/C, D/E Mix, WACC, MARR Belirleme</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-hafta6.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Hafta 6</span>
-                  <span class="week-topic">CAPM, ESL, Replacement &amp; Retention, Breakeven Analizi</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-hafta7.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Hafta 7</span>
-                  <span class="week-topic">Breakeven (devamı), Ortalama Birim Maliyet, Excel &amp; Python CF Analizi, Final Kapsamı</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-midterm-kapsamli.html" class="week-link" style="border-left: 3px solid #e67e22; background: rgba(230,126,34,0.07);">
-                <div class="week-info">
-                  <span class="week-label" style="color: #e67e22;">📚 Midterm Hazırlık</span>
-                  <span class="week-topic">Kapsamlı Konu Özetleri, Tüm Formüller, 10 Örnek Problem</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-midterm.html" class="week-link" style="border-left: 3px solid var(--pink); background: rgba(196,104,152,0.06);">
-                <div class="week-info">
-                  <span class="week-label" style="color: var(--pink-soft);">🎯 Midterm Soruları</span>
-                  <span class="week-topic">Geçmiş Sınav Soruları & Çözümler (Güz 2025)</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-cheatsheet.html" class="week-link" style="border-left: 3px solid #27ae60; background: rgba(39,174,96,0.07);">
-                <div class="week-info">
-                  <span class="week-label" style="color: #27ae60;">🖨️ Cheatsheet (Midterm)</span>
-                  <span class="week-topic">2 Sayfa Yazdırılabilir El Notu — Tüm Formüller & Kurallar</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-final-konu.html" class="week-link" style="border-left: 3px solid #8e44ad; background: rgba(142,68,173,0.07);">
-                <div class="week-info">
-                  <span class="week-label" style="color: #a569bd;">📖 Final Konu Anlatımı</span>
-                  <span class="week-topic">B/C, Breakeven, Replacement & Retention — Detaylı Akademik Anlatım</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-final-pratik.html" class="week-link" style="border-left: 3px solid #e67e22; background: rgba(230,126,34,0.07);">
-                <div class="week-info">
-                  <span class="week-label" style="color: #e67e22;">🎯 Final Pratik Soruları</span>
-                  <span class="week-topic">Tahtaya Benzer Çözümlü Örnek Sorular — B/C, Q_BE, Replacement</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr202-final2-cheatsheet.html" class="week-link" style="border-left: 3px solid #27ae60; background: rgba(39,174,96,0.07);">
-                <div class="week-info">
-                  <span class="week-label" style="color: #27ae60;">🖨️ Final Cheatsheet</span>
-                  <span class="week-topic">2 Sayfa — B/C, Breakeven, Replacement, Faktör Tablosu (%10)</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="note-card">
-          <div class="note-card-top">
-            <span class="note-badge">INDR 220</span>
-            <span class="note-course-name">Optimizasyon Modelleme ve Bilimsel Hesaplama</span>
-          </div>
-          <ul class="note-weeks">
-            <li>
-              <a href="notes/indr220-lecture1.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Lecture 1</span>
-                  <span class="week-topic">Optimization Problemi, Decision Variable, Objective, Constraint, LP</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr220-lecture2.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Lecture 2</span>
-                  <span class="week-topic">Binary Değişkenler, Atama Problemi, LP / ILP / MILP / NLP / QP Sınıfları</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr220-lecture3.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Lecture 3</span>
-                  <span class="week-topic">LP'nin Matris Formu (A, b, c, l, u), Infeasible / Unbounded, Quadratic Programming</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr220-lecture4.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Lecture 4</span>
-                  <span class="week-topic">Warehouse Location Problem, MILP Modelini Matrise Çevirme</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr220-lecture5.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Lecture 5</span>
-                  <span class="week-topic">NumPy: Array, Indexing, axis, reshape, Transpose, Sparse'a Giriş</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-            <li>
-              <a href="notes/indr220-lecture6.html" class="week-link">
-                <div class="week-info">
-                  <span class="week-label">Lecture 6</span>
-                  <span class="week-topic">Matris İşlemleri, solve vs inv, Sparse Matrisler (CSR)</span>
-                </div>
-                <span class="week-arrow">→</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="note-card note-card--empty">
-          <div class="note-card-top">
-            <span class="note-badge note-badge--empty">+ Yeni</span>
-            <span class="note-course-name">Başka Ders</span>
-          </div>
-          <p class="note-empty-hint">Yeni bir ders notu eklemek için bu kartı kullan.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ── İLETİŞİM ── -->
-  <section class="section" id="contact">
-    <div class="section-inner">
-      <div class="section-header" style="text-align:center">
-        <span class="section-tag">/ iletişim</span>
-        <h2 class="section-title">Bana Ulaş<span class="dot">.</span></h2>
-        <p class="section-sub">Bir proje fikrin mi var ya da soru mu sormak istiyorsun?</p>
-      </div>
-
-      <div class="contact-grid">
-        <a href="mailto:hanbaba.kadir7@gmail.com" class="contact-card">
-          <div class="contact-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-          <div class="contact-info">
-            <span class="contact-label">E-posta</span>
-            <span class="contact-value">hanbaba.kadir7@gmail.com</span>
-          </div>
-          <span class="contact-arrow">↗</span>
-        </a>
-
-        <a href="https://github.com/KHSatellite" target="_blank" rel="noopener" class="contact-card">
-          <div class="contact-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          </div>
-          <div class="contact-info">
-            <span class="contact-label">GitHub</span>
-            <span class="contact-value">KHSatellite</span>
-          </div>
-          <span class="contact-arrow">↗</span>
-        </a>
-
-        <a href="https://www.linkedin.com/in/kadir-hanbaba/" target="_blank" rel="noopener" class="contact-card">
-          <div class="contact-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-          </div>
-          <div class="contact-info">
-            <span class="contact-label">LinkedIn</span>
-            <span class="contact-value">Kadir Hanbaba</span>
-          </div>
-          <span class="contact-arrow">↗</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── FOOTER ── -->
-  <footer class="footer">
+  <footer class="foot">
     <p>© 2026 Kadir Hanbaba</p>
+    <p class="foot-note">HTML, CSS ve GSAP ile yazıldı.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <dialog class="dlg" id="dlg" aria-labelledby="dlgTitle">
+    <div class="dlg-inner">
+      <div class="dlg-screen" id="dlgScreen" aria-hidden="true"></div>
+      <div class="dlg-body">
+        <p class="dlg-status" id="dlgStatus"></p>
+        <h2 class="dlg-title" id="dlgTitle"></h2>
+        <p class="dlg-text" id="dlgText"></p>
+        <ul class="dlg-tags" id="dlgTags"></ul>
+        <div class="dlg-actions" id="dlgActions"></div>
+      </div>
+      <button class="dlg-close" id="dlgClose" type="button" aria-label="Kapat">
+        <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1h2v1h1v1h2V2h1V1h2v2H8v1H7v2h1v1h1v2H7V8H6V7H4v1H3v1H1V7h1V6h1V4H2V3H1z"/></svg>
+      </button>
+    </div>
+  </dialog>
+
+  <script src="js/vendor/gsap.min.js"></script>
+  <script src="js/vendor/ScrollTrigger.min.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>

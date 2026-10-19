@@ -1,0 +1,9 @@
+# Claude skills ve editör eklentileri (sitenin parçası değil)
+.claude/
+.vscode/
+.idea/
+
+# İşletim sistemi dosyaları
+.DS_Store
+Thumbs.db
+desktop.ini

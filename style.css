@@ -1,3 +1,5 @@
+@import url("css/fonts.css");
+
 /* ══════════════════════════════════════════════
    CSS DEĞİŞKENLERİ
    Renkleri değiştirmek için yalnızca buraya bak
@@ -5,60 +7,61 @@
 
 /* DARK TEMA (varsayılan) */
 [data-theme="dark"] {
-  --bg:           #1c1a2e;
-  --bg-alt:       #232140;
-  --surface:      #2a2748;
-  --border:       #38345a;
-  --border-hover: #5a4e90;
+  --bg:           #121233;
+  --bg-alt:       #18183f;
+  --surface:      #1c1c4b;
+  --border:       #343471;
+  --border-hover: #5c5cab;
 
-  --purple:       #a07ed8;
-  --pink:         #c46898;
-  --purple-soft:  #bca0e8;
-  --pink-soft:    #d888b0;
+  --purple:       #ff5c9a;
+  --pink:         #6fe6d2;
+  --purple-soft:  #ff8ab8;
+  --pink-soft:    #8ff0e0;
 
-  --gradient:     linear-gradient(135deg, #a07ed8 0%, #c46898 100%);
-  --gradient-soft:linear-gradient(135deg, rgba(160,126,216,0.13) 0%, rgba(196,104,152,0.13) 100%);
+  --gradient:     linear-gradient(135deg, #ff5c9a 0%, #ff8ab8 100%);
+  --gradient-soft:linear-gradient(135deg, rgba(255,92,154,0.10) 0%, rgba(111,230,210,0.08) 100%);
 
-  --text:         #d8d0f0;
-  --text-muted:   #8880b8;
-  --text-faint:   #504878;
+  --text:         #eceaff;
+  --text-muted:   #a09dce;
+  --text-faint:   #5f5c96;
 
-  --glow-purple:  rgba(160,126,216,0.18);
-  --glow-pink:    rgba(196,104,152,0.14);
+  --glow-purple:  rgba(255,92,154,0.16);
+  --glow-pink:    rgba(111,230,210,0.12);
 }
 
 /* LIGHT TEMA */
 [data-theme="light"] {
-  --bg:           #faf5ff;
-  --bg-alt:       #f3e8ff;
+  --bg:           #ecedf8;
+  --bg-alt:       #e2e3f4;
   --surface:      #ffffff;
-  --border:       #ddd6fe;
-  --border-hover: #a78bfa;
+  --border:       #c3c4e4;
+  --border-hover: #8d8ec9;
 
-  --purple:       #7c3aed;
-  --pink:         #be185d;
-  --purple-soft:  #9333ea;
-  --pink-soft:    #db2777;
+  --purple:       #d22f6c;
+  --pink:         #0f7f71;
+  --purple-soft:  #b8245c;
+  --pink-soft:    #0f7f71;
 
-  --gradient:     linear-gradient(135deg, #7c3aed 0%, #be185d 100%);
-  --gradient-soft:linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(190,24,93,0.1) 100%);
+  --gradient:     linear-gradient(135deg, #d22f6c 0%, #e5578c 100%);
+  --gradient-soft:linear-gradient(135deg, rgba(210,47,108,0.08) 0%, rgba(15,127,113,0.07) 100%);
 
-  --text:         #1e0a3c;
-  --text-muted:   #6b5b95;
-  --text-faint:   #c4b5fd;
+  --text:         #17173a;
+  --text-muted:   #50507c;
+  --text-faint:   #a3a4cc;
 
-  --glow-purple:  rgba(124,58,237,0.15);
-  --glow-pink:    rgba(190,24,93,0.12);
+  --glow-purple:  rgba(210,47,108,0.12);
+  --glow-pink:    rgba(15,127,113,0.10);
 }
 
 /* ══════════ GENEL DEĞİŞKENLER ══════════ */
 :root {
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Figtree', 'Inter', system-ui, sans-serif;
+  --font-pixel: 'Pixelify Sans', 'Figtree', sans-serif;
   --font-mono: 'Fira Code', monospace;
 
-  --radius:    14px;
-  --radius-sm: 8px;
-  --radius-xs: 5px;
+  --radius:    6px;
+  --radius-sm: 4px;
+  --radius-xs: 2px;
   --shadow:    0 8px 32px rgba(0,0,0,0.4);
   --ease:      cubic-bezier(0.4, 0, 0.2, 1);
   --speed:     0.25s;
@@ -801,3 +804,6 @@ img { display: block; max-width: 100%; }
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero-cards { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Pixel başlıklar (yeni tema) */
+.note-main-title, .note-content h2, .nav-logo { font-family: var(--font-pixel); letter-spacing: 0; }
