@@ -118,9 +118,9 @@ img { display: block; max-width: 100%; }
 .nav-logo svg { flex-shrink: 0; border-radius: 8px; }
 
 .nav-logo-img {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 0;
   object-fit: cover;
   display: block;
 }

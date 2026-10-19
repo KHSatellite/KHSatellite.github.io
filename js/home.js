@@ -11,15 +11,16 @@ const PROJECTS = [
     links: [{ label: "GitHub'da aç", href: "https://github.com/KHSatellite/what-to-play" }]
   },
   {
-    id: "lab",
-    title: "Local AI Lab",
-    sub: "Çok ajanlı asistan",
+    id: "planner",
+    title: "Ders Planlayıcı",
+    sub: "Öğrenci planlama uygulaması",
     color: "var(--sticker-phosphor)",
-    glyph: "chip",
-    status: "Geliştiriliyor",
-    text: "Kendi bilgisayarımda sıfır maliyetle çalışan bir yapay zekâ orkestrası. Bir yönlendirici ajan gelen işi analiz edip kodlayıcı, araştırmacı ve eleştirmen gibi uzman ajanlara dağıtıyor; yerel modellerle bulut modelleri birlikte kullanılıyor.",
-    tags: ["Ollama", "LangGraph", "LiteLLM", "MCP"],
-    links: []
+    glyph: "cal",
+    status: "Planlanıyor",
+    text: "Bir üniversite öğrencisinin derslerini, takvimini ve ders dokümanlarını tek yerde toplayacak bir mobil ve web uygulaması. Ders programı ekran görüntüsünden okunacak, takvim Google Calendar ile senkron olacak. Claude da MCP üzerinden ders dokümanlarına erişip çalışma notları ve örnek sorular hazırlayabilecek.",
+    tags: ["Flutter", "FastAPI", "Google Calendar", "MCP"],
+    links: [],
+    note: "Şu an planlama aşamasında; kod paylaşılınca link eklenecek."
   },
   {
     id: "site",
@@ -54,6 +55,17 @@ const GLYPHS = {
     "XXXXXXXXXXX",
     "XXX.....XXX",
     ".X.......X."
+  ],
+  cal: [
+    ".X.....X.",
+    "XXXXXXXXX",
+    "XXXXXXXXX",
+    "X.......X",
+    "X.X.X.X.X",
+    "X.......X",
+    "X.X.X.X.X",
+    "X.......X",
+    "XXXXXXXXX"
   ],
   chip: [
     ".X.X.X.X.",
@@ -525,7 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const s = document.createElement("p");
       s.className = "dlg-text";
       s.style.marginTop = "0";
-      s.textContent = "Kaynak kodu henüz paylaşılmadı.";
+      s.textContent = p.note || "Kaynak kodu henüz paylaşılmadı.";
       act.appendChild(s);
     }
     dScreen.innerHTML = "";

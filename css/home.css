@@ -129,7 +129,9 @@ ul, ol { list-style: none; }
   font-weight: 600;
   font-size: 1.15rem;
 }
-.nav-logo img { width: 36px; height: 36px; border-radius: 6px; }
+.nav-logo img { width: 32px; height: 32px; }
+.nav-logo:hover img { animation: hop 0.4s steps(3); }
+@keyframes hop { 50% { transform: translateY(-4px); } }
 .nav-links { display: flex; gap: 6px; }
 .nav-links a {
   position: relative;
