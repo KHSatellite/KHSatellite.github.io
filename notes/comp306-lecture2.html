@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COMP 306 – Lecture 2 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes306.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../logo.svg" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Temel tanımlar</a></li>
+    <li><a href="#s2">2. Neden önce tasarım? (Conceptual design)</a></li>
+    <li><a href="#s3">3. Entity ve attribute</a></li>
+    <li><a href="#s4">4. Attribute türleri</a></li>
+    <li><a href="#s5">5. Entity set, value set ve key attribute</a></li>
+    <li><a href="#s6">6. Relationship</a></li>
+    <li><a href="#s7">7. Degree ve recursive relationship</a></li>
+    <li><a href="#s8">8. Cardinality ve participation constraint</a></li>
+    <li><a href="#s9">9. Weak entity ve identifying relationship</a></li>
+    <li><a href="#s10">10. Büyük örnek: Company Database</a></li>
+    <li><a href="#s11">11. Subclass / superclass (Extended ER)</a></li>
+    <li><a href="#s12">12. Tasarım ipuçları (Final Remarks)</a></li>
+    <li><a href="#s13">Özet</a></li>
+    <li><a href="#s14">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-306">
+  <div class="note-meta">
+    <span class="note-course-badge">COMP 306</span>
+    <span class="note-week-label">Lecture 2</span>
+  </div>
+  <h1 class="note-main-title">Entity-Relationship (ER) Model</h1>
+  <p class="note-intro">Bu derste bir veritabanını <strong>kod yazmadan önce kâğıt üstünde tasarlamayı</strong> öğreniyoruz. Araç: ER diyagramı. Hedef: gerçek hayattaki bir durumu (örneğin bir şirketi) <strong>entity</strong>, <strong>attribute</strong> ve <strong>relationship</strong> parçalarına ayırıp diyagrama dökmek. (Klasörde Lecture 01 yoktu; notlar 02'den başlıyor.)</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Temel tanımlar</h2>
+<p>Önce kelimeleri oturtalım. Hepsi basit ama sınavda sorulabilecek tanımlar:</p>
+<table>
+<thead>
+<tr>
+<th>Terim</th>
+<th>Anlamı</th>
+<th>Örnek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Data</strong></td>
+<td>Kaydedilebilen, kendi içinde anlamı olan bilinen gerçekler</td>
+<td>"Ali, 20 yaşında"</td>
+</tr>
+<tr>
+<td><strong>Database (DB)</strong></td>
+<td>Birbiriyle ilişkili verilerin koleksiyonu</td>
+<td>Üniversitenin öğrenci kayıtları</td>
+</tr>
+<tr>
+<td><strong>DBMS</strong></td>
+<td>DB'yi oluşturmayı ve sürdürmeyi kolaylaştıran yazılım</td>
+<td>PostgreSQL, MySQL</td>
+</tr>
+<tr>
+<td><strong>Metadata</strong></td>
+<td>Veri hakkındaki veri ("data about data")</td>
+<td>Tablo adları, veri tipleri (int / string)</td>
+</tr>
+<tr>
+<td><strong>Mini-world</strong></td>
+<td>Gerçek dünyanın, verisini tuttuğumuz küçük parçası</td>
+<td>Hocalar, öğrenciler, dersler</td>
+</tr>
+</tbody>
+</table>
+<div class="callout"><strong>Aklında tut:</strong> Veritabanı gerçek dünyanın tamamını değil, sadece <strong>mini-world</strong> denen küçük bir parçasını modeller. Tasarım yaparken ilk iş, o parçanın sınırını çizmektir.</div>
+  </section>
+
+  <section id="s2">
+    <h2>2. Neden önce tasarım? (Conceptual design)</h2>
+<p>Her yazılım projesinde olduğu gibi, <strong>önce düşünüp planlamak</strong> gerekir. Veritabanı dünyasında sıra şöyle:</p>
+<ol>
+<li>Mini-world'ü anla.</li>
+<li>Gereksinimleri topla ve analiz et.</li>
+<li><strong>Conceptual design</strong> yap (ER diyagramı).</li>
+<li>Veritabanını gerçekle (implementation).</li>
+</ol>
+<p><strong>ER model</strong>, conceptual design için yaygın kabul görmüş bir standarttır. Belirli bir programlama diline ya da DBMS yazılımına bağlı değildir. Yani ER diyagramını çizerken PostgreSQL mi MySQL mi kullanacağını düşünmezsin; sadece "gerçek dünyada ne var, aralarında ne ilişki var" diye düşünürsün.</p>
+<p>Dersin kalıbı şu: <strong>Sözlü anlatım (verbal description) → ER diyagramı → (sonraki lecture'da) Relational model</strong>.</p>
+  </section>
+
+  <section id="s3">
+    <h2>3. Entity ve attribute</h2>
+<p>İki temel yapı taşı var: <strong>entity</strong> ve <strong>relationship</strong>. Attribute'lar entity'nin (ve bazen relationship'in) özellikleridir.</p>
+<ul>
+<li><strong>Entity:</strong> Mini-world'de var olan ve diğerlerinden ayırt edilebilen bir "şey" ya da "nesne". Örnek: <code>STUDENT</code>, <code>COURSE</code>, <code>EMPLOYEE</code>, <code>DEPARTMENT</code>, <code>PROJECT</code>. Diyagramda <strong>dikdörtgen</strong> ile gösterilir.</li>
+<li><strong>Attribute:</strong> Entity'yi tanımlayan özellik. <code>EMPLOYEE</code> için: Name, Emp_ID, SSN, Address, Sex, Birthdate. Diyagramda <strong>elips</strong> ile gösterilir ve entity'ye çizgiyle bağlanır.</li>
+</ul>
+<p>Somut bir çalışan (bir <strong>instance</strong>) her attribute için bir değer taşır:</p>
+<div class="code-pre">Name = &quot;John Smith&quot;      Emp_ID = &quot;00829&quot;      SSN = &quot;123456789&quot;
+Address = &quot;156 Peachtree St, Apt 13, Atlanta, GA&quot;
+Sex = &quot;Male&quot;             Birthdate = &quot;12 February 1972&quot;</div>
+<p>Diyagram gösterimleri (bu not boyunca kullanacağız):</p>
+<table>
+<thead>
+<tr>
+<th>Şekil</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dikdörtgen</td>
+<td>Entity</td>
+</tr>
+<tr>
+<td>Elips</td>
+<td>Attribute</td>
+</tr>
+<tr>
+<td>Elips, alt çizgili ad</td>
+<td>Key attribute</td>
+</tr>
+<tr>
+<td>Çift çizgili elips</td>
+<td>Multi-valued attribute</td>
+</tr>
+<tr>
+<td>Elipsin altında elipsler</td>
+<td>Composite attribute'un parçaları</td>
+</tr>
+<tr>
+<td>Baklava (diamond)</td>
+<td>Relationship</td>
+</tr>
+<tr>
+<td>Çift çizgili dikdörtgen</td>
+<td>Weak entity</td>
+</tr>
+<tr>
+<td>Çift çizgili baklava</td>
+<td>Identifying relationship</td>
+</tr>
+<tr>
+<td>Dikdörtgen ile baklava arası çift çizgi</td>
+<td>Total participation</td>
+</tr>
+</tbody>
+</table>
+  </section>
+
+  <section id="s4">
+    <h2>4. Attribute türleri</h2>
+<p>Üç tür var:</p>
+<ul>
+<li><strong>Simple attribute:</strong> Her entity için tek, bölünemez (atomic) bir değer. Örnek: SSN, Emp_ID.</li>
+<li><strong>Composite attribute:</strong> Birkaç parçadan oluşan attribute. Örnek: <code>Address</code> (Apt#, House#, Street, City, Country, Zip), <code>Name</code> (FirstName, MiddleName, LastName).</li>
+<li><strong>Multi-valued attribute:</strong> Bir entity'nin aynı attribute için <strong>birden fazla değeri</strong> olabilir. Örnek: <code>CAR</code> entity'sinin <code>Color</code> attribute'u (iki renkli bir araba). Diyagramda <strong>çift elips</strong> ile çizilir.</li>
+</ul>
+<p><strong>Composite attribute'larda iç içelik (nesting):</strong> Mümkün ama nadirdir. Pratik kural: <strong>en fazla 2 seviye.</strong> Daha fazla seviyeye ihtiyaç duyuyorsan bu bir ipucudur: büyük ihtimalle yanlış bir şey yapıyorsun, o attribute aslında bir <strong>entity</strong> olmalı.</p>
+<p>Bir attribute hem composite hem multi-valued olabilir. Örnek: bir çalışanın birden fazla adresi olabilir ve her adres City, State, Street gibi parçalardan oluşur.</p>
+<div class="callout"><strong>Soru (slayttan):</strong> Bu örnekte çift elips neden sadece <code>Address</code>'in çevresinde, <code>Zip</code>, <code>City</code>, <code>State</code>'in çevresinde değil?</p>
+<p><strong>Cevap:</strong> "Birden fazla" olma durumu <strong>adresin bütünü</strong> için geçerli: çalışanın birkaç adresi olabilir. Ama o adreslerin her birinde City, State, Zip'in <strong>tek bir değeri</strong> vardır. Yani çoklu olan, adresin kendisi; parçaları değil.</div>
+  </section>
+
+  <section id="s5">
+    <h2>5. Entity set, value set ve key attribute</h2>
+<p><strong>Entity set (entity collection):</strong> DB'de aynı türden birçok instance saklanır (çok sayıda çalışan, çok sayıda departman). Hepsinin özellikleri aynıdır. Bu topluluğa entity set denir. Örnek: Instructors = {Emre Gürsoy, Barış Akgün, ...}, Courses = {COMP306, COMP201, ...}.</p>
+<p><strong>Value set (domain):</strong> Her simple attribute'un alabileceği değerler kümesi.</p>
+<ul>
+<li>SSN → dokuz haneli sayı</li>
+<li>LastName → en fazla 15 karakterlik string</li>
+<li>State → ABD eyalet kısaltmaları {CA, GA, IL, NY, ...}</li>
+</ul>
+<p><strong>Key attribute:</strong> Entity set içindeki her entity için <strong>benzersiz (unique)</strong> değer taşıyan attribute. Diyagramda <strong>altı çizilir.</strong></p>
+<div class="callout"><strong>Soru (slayttan):</strong> EMPLOYEE için key attribute'lar hangileri? (Name, SSN, Emp_ID, Address, Sex, Birthdate)</p>
+<p><strong>Cevap:</strong> <strong>SSN</strong> ve <strong>Emp_ID.</strong> İki farklı çalışan aynı isme, adrese, cinsiyete ya da doğum tarihine sahip olabilir, ama aynı SSN'ye sahip olamaz.</div>
+<p>Key ile ilgili üç kural:</p>
+<ol>
+<li><strong>Bir entity'nin birden fazla key'i olabilir.</strong> EMPLOYEE: hem Emp_ID hem SSN. İkisinin de altı çizilir.</li>
+<li><strong>Key composite olabilir.</strong> <code>CAR</code> için <code>VehicleRegistration</code> bir key'dir ve (Number, State) parçalarından oluşur.</li>
+<li>Birinci ve ikinci kural <strong>ER model için</strong> geçerli. Sonraki lecture'da göreceğiz: <strong>Relational model'de sadece bir tane primary key</strong> seçilir ve altı çizilir.</li>
+</ol>
+  </section>
+
+  <section id="s6">
+    <h2>6. Relationship</h2>
+<p><strong>Relationship:</strong> İki veya daha fazla ayrı entity'yi anlamlı bir şekilde birbirine bağlar.</p>
+<ul>
+<li>Öğrenci bir derse <strong>kayıtlıdır</strong> (ENROLLED).</li>
+<li>Çalışan bir departmanda <strong>çalışır</strong> (WORKS_IN).</li>
+</ul>
+<p>Diyagramda <strong>baklava (diamond)</strong> ile gösterilir. <strong>Relationship'in de attribute'u olabilir.</strong> Örnek: ENROLLED ilişkisinin <code>semester</code> attribute'u: "bu öğrenci bu derse hangi dönem kayıtlı oldu?" Bu bilgi ne sadece öğrenciye ne sadece derse aittir; <strong>ikisi arasındaki bağa</strong> aittir.</p>
+<div class="code-pre">sid     name                 semester        cname
+  \     /                        |             |
+  [STUDENT] ------- &lt;ENROLLED&gt; ------- [COURSE]
+                                                \
+                                                 cid</div>
+  </section>
+
+  <section id="s7">
+    <h2>7. Degree ve recursive relationship</h2>
+<p><strong>Degree (derece):</strong> Bir relationship'e katılan entity set sayısı.</p>
+<ul>
+<li><strong>Binary</strong> relationship: degree = 2 (ENROLLED: student + course). En yaygın olanı.</li>
+<li><strong>Ternary</strong> relationship: degree = 3. Örnek: banka dünyasında <code>customer</code>, <code>branch</code> ve <code>loan</code>'ı bağlayan BORROWS.</li>
+<li>Daha yüksek dereceler nadirdir ve tercih edilmez.</li>
+</ul>
+<p><strong>Recursive (self-referencing) relationship:</strong> Bir entity <strong>kendisiyle</strong> ilişkidedir. Örnekler:</p>
+<ul>
+<li>Bir öğrenci başka bir öğrenciye ders verir: <code>STUDENT</code> — <code>helps</code> — <code>STUDENT</code> (roller: <strong>tutor</strong>, <strong>tutee</strong>).</li>
+<li>Bir çalışan başka bir çalışanı yönetir: <code>EMPLOYEE</code> — <code>supervises</code> — <code>EMPLOYEE</code> (roller: <strong>supervisor</strong>, <strong>subordinate</strong>).</li>
+</ul>
+<p>Recursive ilişkilerde aynı entity iki ayrı <strong>rolde</strong> bulunur ve bu roller diyagrama <strong>açıkça yazılmak zorundadır.</strong> Aksi hâlde "kim kimin yöneticisi?" belli olmaz. (Roller sadece recursive ilişkilerde gereklidir.)</p>
+  </section>
+
+  <section id="s8">
+    <h2>8. Cardinality ve participation constraint</h2>
+<h3>Cardinality (kaç tane?)</h3>
+<p>Bir ilişkinin her iki ucunda <strong>kaç entity</strong>'nin bağlanabildiğini söyler:</p>
+<table>
+<thead>
+<tr>
+<th>Tür</th>
+<th>Anlamı</th>
+<th>Örnek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1-1</strong></td>
+<td>Bire bir</td>
+<td>Employee <strong>manages</strong> Department (bir çalışan en fazla bir departman yönetir, bir departmanın bir yöneticisi vardır)</td>
+</tr>
+<tr>
+<td><strong>1-N</strong></td>
+<td>Bire çok</td>
+<td>Instructor <strong>teaches</strong> Course (bir hoca birçok ders verir, ama bir dersi tek hoca verir)</td>
+</tr>
+<tr>
+<td><strong>N-1</strong></td>
+<td>Çoğa bir</td>
+<td>Employee <strong>works in</strong> Department (bir çalışan en fazla bir departmanda çalışır, bir departmanda çok çalışan olur)</td>
+</tr>
+<tr>
+<td><strong>N‑M</strong></td>
+<td>Çoğa çok</td>
+<td>Student <strong>enrolled</strong> Course (öğrenciler birçok ders alır, bir dersi birçok öğrenci alır)</td>
+</tr>
+</tbody>
+</table>
+<p>Cardinality'ler <strong>diyagramın üstünde gösterilmek zorundadır:</strong></p>
+<div class="code-pre">employee --1-- &lt;Manages&gt;   --1-- department
+employee --N-- &lt;Works_in&gt;  --1-- department
+instructor --1-- &lt;Teaches&gt; --N-- course
+student --N-- &lt;Enrolled&gt;   --M-- course</div>
+<h3>Participation constraint (zorunlu mu?)</h3>
+<p>"Her departmanın bir yöneticisi <strong>olmak zorunda</strong>" gibi bir kural varsa, departman MANAGES ilişkisine <strong>zorunlu olarak katılıyor</strong> demektir. Buna <strong>participation constraint</strong> (total participation) denir ve diyagramda <strong>çift çizgi</strong> ile gösterilir. Zorunlu olmayan katılıma <strong>partial participation</strong> denir.</p>
+<div class="callout"><strong>Slayttaki sorular:</strong></p>
+<ul>
+<li>Her çalışan bir departmanda çalışmak zorunda mı? <strong>Evet</strong> (Employee, Works_In'e total katılır).</li>
+<li>Her departmanda en az bir çalışan olmak zorunda mı? <strong>Evet</strong> (Department, Works_In'e total katılır).</li>
+<li>Her çalışan bir departman yönetmek zorunda mı? <strong>Hayır.</strong> Yöneticilik bir istisnadır; Employee, Manages'e partial katılır. Ama her departman bir yönetici istiyorsa Department, Manages'e total katılır.</li>
+</ul></div>
+  </section>
+
+  <section id="s9">
+    <h2>9. Weak entity ve identifying relationship</h2>
+<p><strong>Weak entity:</strong> Kendini tanımlamak için <strong>başka bir entity'ye bağımlı</strong> olan entity.</p>
+<ul>
+<li>Diyagramda <strong>çift çizgili dikdörtgen</strong> ile gösterilir.</li>
+<li>Kendi başına bir <strong>key'i yoktur</strong>, bunun yerine bir <strong>partial key</strong>'i vardır. Partial key, <strong>kesikli (dashed) alt çizgi</strong> ile gösterilir.</li>
+</ul>
+<p>Klasik örnek: bir çalışanın <strong>dependent</strong>'ı (çocuğu, eşi). Dependent'ın <code>name</code> attribute'u tek başına benzersiz değildir (iki farklı çalışanın "Ayşe" adlı çocuğu olabilir). Ama <strong>"şu çalışanın Ayşe adlı dependent'ı"</strong> dendiğinde benzersiz olur. Yani kimlik = <strong>sahibinin key'i + partial key</strong>.</p>
+<p>Weak entity <strong>mutlaka bir identifying relationship</strong> ile sahibi olan (owner, strong) entity'ye bağlanır:</p>
+<ul>
+<li>Diyagramda <strong>çift çizgili baklava</strong> ile gösterilir (Dependents_of).</li>
+<li>Weak entity tarafında total participation vardır (sahibi olmayan dependent olamaz).</li>
+</ul>
+<div class="code-pre">ssn   name                                         sex   birthdate
+  \   /                                              \    /
+ [Employee] ---1--- &lt;&lt;Dependents_of&gt;&gt; ===N=== [[Dependent]]
+                                                    |
+                                                  _name_ (partial key, kesikli alt çizgi)</div>
+<div class="callout"><strong>Kural:</strong> Bir weak entity gördüğünde ilk sorun: "Identifying relationship'i hangisi?"</div>
+  </section>
+
+  <section id="s10">
+    <h2>10. Büyük örnek: Company Database</h2>
+<p>Dersin ana vaka çalışması. Önce sözlü anlatım, sonra adım adım ER diyagramı.</p>
+<p><strong>Şirketin tarifi (özet):</strong></p>
+<ul>
+<li>Şirketin birçok <strong>departmanı</strong> var. Her departmanın benzersiz bir adı ve benzersiz bir numarası var. Departmanın birden fazla <strong>konumu</strong> olabilir (New York, Los Angeles, Atlanta).</li>
+<li><strong>Çalışanlar:</strong> Benzersiz kimlik SSN. Ayrıca doğum tarihi, adres, maaş, cinsiyet ve ad (ad = first name + middle initial + last name).</li>
+<li>Her çalışan <strong>tam olarak bir</strong> departmanda çalışır. Bir departmanda <strong>en az bir</strong> çalışan olmak zorundadır. Her departmanı bir <strong>yönetici (manager)</strong> yönetir ve <strong>yönetici olmak zorunludur</strong>. Bir çalışan birden fazla departmanı yönetemez. Yöneticiliğin <strong>başlangıç tarihi</strong> tutulur.</li>
+<li>Bir departman birkaç <strong>proje</strong>yi kontrol eder; her projeyi <strong>tam olarak bir</strong> departman kontrol eder. Proje adı ve numarası benzersizdir. Proje <strong>tek bir konumda</strong> yürütülür.</li>
+<li>Bir çalışan birden fazla projede çalışabilir, bir projede birden fazla çalışan olabilir. Her çalışanın bir projede harcadığı <strong>saat</strong> tutulur. <strong>Boş proje olamaz</strong> ve <strong>her çalışan en az bir projede</strong> çalışmalıdır.</li>
+<li><strong>Supervision:</strong> Bir çalışan (supervisee), daha kıdemli bir çalışan (supervisor) tarafından denetlenebilir. Bir supervisor'ın birçok supervisee'si olur, ama bir supervisee'nin <strong>en fazla bir</strong> supervisor'ı vardır. Her çalışan supervisor olmak ya da denetlenmek zorunda değildir.</li>
+<li>Çalışanların <strong>dependent</strong>'ları olabilir. Dependent, belirli bir çalışana bağlıdır; çalışan ayrılırsa dependent'lar şirket için anlamsızdır. Dependent'ın adı (çalışanın dependent'ları arasında) benzersizdir. Ayrıca cinsiyet, doğum tarihi ve çalışanla ilişkisi tutulur.</li>
+</ul>
+<h3>Adım 1: Entity'leri bul</h3>
+<div class="code-pre">DEPARTMENT (Name, Number, Locations)           ← Locations multi-valued; Name ve Number ikisi de key
+PROJECT    (Name, Number, Location)            ← Name ve Number ikisi de key
+EMPLOYEE   (SSN, Birthdate, Name(Fname, Minit, Lname), Address, Salary, Sex)
+DEPENDENT  (Name, Sex, Birth_date, Relationship)   ← şüpheli weak entity</div>
+<h3>Adım 2: Relationship'leri bul</h3>
+<table>
+<thead>
+<tr>
+<th>Relationship</th>
+<th>Taraflar</th>
+<th>Cardinality</th>
+<th>Participation</th>
+<th>Attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>WORKS_FOR</strong></td>
+<td>Employee — Department</td>
+<td>N : 1</td>
+<td>Employee total (tam bir dept), Department total (en az bir çalışan)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>MANAGES</strong></td>
+<td>Employee — Department</td>
+<td>1 : 1</td>
+<td>Department total, Employee partial</td>
+<td>start date</td>
+</tr>
+<tr>
+<td><strong>CONTROLS</strong></td>
+<td>Department — Project</td>
+<td>1 : N</td>
+<td>Project total (tam bir dept)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>WORKS_ON</strong></td>
+<td>Employee — Project</td>
+<td>M : N</td>
+<td>İki taraf da total</td>
+<td>hours</td>
+</tr>
+<tr>
+<td><strong>SUPERVISION</strong></td>
+<td>Employee — Employee</td>
+<td>1 : N</td>
+<td>İki taraf da partial</td>
+<td>roller: supervisor / supervisee</td>
+</tr>
+<tr>
+<td><strong>DEPENDENTS_OF</strong></td>
+<td>Employee — Dependent</td>
+<td>1 : N</td>
+<td>Dependent total</td>
+<td>— (identifying)</td>
+</tr>
+</tbody>
+</table>
+<div class="callout"><strong>Bu tablo, sonraki lecture'ın girdisidir.</strong> Cardinality ve participation bilgisi, Relational model'e çevirirken hangi yöntemi kullanacağını belirler.</div>
+<p>Tablodaki bazı yerler metinden yorumlanarak çıkarıldı (mesela "bir departman birkaç proje kontrol eder" cümlesinde departmanın zorunlu olduğu yazmıyor, o yüzden Department tarafını partial aldım).</p>
+  </section>
+
+  <section id="s11">
+    <h2>11. Subclass / superclass (Extended ER)</h2>
+<p>Bazen bir entity'nin <strong>anlamlı alt grupları</strong> vardır:</p>
+<ul>
+<li><code>EMPLOYEE</code> → Hourly_EMP, Salaried_EMP</li>
+<li><code>VEHICLE</code> → Car, Truck</li>
+</ul>
+<p>Kural: <strong>subclass, superclass'ın tüm attribute'larını miras alır (inherit)</strong> ve kendine ait ek attribute'ları da olabilir.</p>
+<div class="code-pre">VEHICLE: vehicle_id, price
+  Car   miras alır + max_speed, no_of_passengers
+  Truck miras alır + tonnage</div>
+<p>Diyagramda superclass'tan subclass'a giden <strong>U şeklinde oklar</strong> yönü gösterir. Ortadaki daire içinde iki harften biri bulunur:</p>
+<ul>
+<li><strong>d</strong> = <strong>disjoint:</strong> Bir entity en fazla <strong>bir</strong> subclass'ta olabilir.</li>
+<li><strong>o</strong> = <strong>overlapping:</strong> Bir entity <strong>birden fazla</strong> subclass'ta olabilir.</li>
+</ul>
+<p>Superclass ile daire arasında <strong>çift çizgi</strong> varsa <strong>total participation</strong> vardır: her superclass entity'si en az bir subclass'a <strong>girmek zorundadır.</strong></p>
+<p><strong>{Disjoint / overlapping}</strong> ile <strong>{total / partial}</strong> birbirinden <strong>bağımsız iki karardır.</strong> Dört kombinasyon da mümkün.</p>
+<table>
+<thead>
+<tr>
+<th>Örnek</th>
+<th>Disjoint / Overlapping</th>
+<th>Total / Partial</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VEHICLE → Car, Truck</td>
+<td>d</td>
+<td>Total</td>
+<td>Her araç ya Car ya Truck'tır, ikisi birden olamaz</td>
+</tr>
+<tr>
+<td>EMPLOYEE → Secretary, Technician, Engineer</td>
+<td>d</td>
+<td>Partial</td>
+<td>Bir çalışan hiçbirinde olmayabilir; olursa <strong>sadece birinde</strong> olur</td>
+</tr>
+<tr>
+<td>PART → Manufactured_Part, Purchased_Part</td>
+<td>o</td>
+<td>Total</td>
+<td>Her parça en az bir türdendir; hem üretilmiş hem satın alınmış olabilir</td>
+</tr>
+</tbody>
+</table>
+<div class="callout"><strong>Slayttaki soru:</strong> "Disjoint ama participation constraint yok" ne demek?</p>
+<p><strong>Cevap:</strong> Bir çalışan Secretary, Technician veya Engineer'dan <strong>hiçbiri</strong> olmayabilir (sıradan çalışan). Ama bunlardan birinin üyesiyse, <strong>ikisinin birden</strong> üyesi olamaz.</div>
+<p>Bu eklenmiş sürüme bazen <strong>Extended ER (EER)</strong> denir.</p>
+  </section>
+
+  <section id="s12">
+    <h2>12. Tasarım ipuçları (Final Remarks)</h2>
+<p>Dersin sonunda üç tasarım ipucu verildi.</p>
+<h3>(1) Gereksiz (redundant) relationship ekleme</h3>
+<p>Bir ilişki zaten bir bilgiyi taşıyorsa, aynı bilgi için yeni bir ilişki ekleme. Slayttaki örnekte <code>OFFERS</code> üçlü ilişkisi (Instructor, Semester, Course) zaten "hangi hoca, hangi dönem, hangi dersi veriyor" bilgisini taşıyor. Bunun yanına <code>TAUGHT_DURING</code> (Instructor–Semester) ve <code>OFFERED_DURING</code> (Course–Semester) gibi ikili ilişkiler eklemek <strong>gereksizdir</strong>, çünkü OFFERS'tan türetilebilirler.</p>
+<p>(<code>CAN_TEACH</code> ise "bir hoca hangi dersleri <strong>verebilir</strong>" gibi farklı bir anlam taşıyorsa bağımsız olarak kalabilir. Slayt bunu açıkça söylemiyor, bu benim yorumum.)</p>
+<h3>(2) Bu bir entity mi attribute mu?</h3>
+<p>Slayttaki iki çizim (<code>Works_In2</code> ve <code>Works_In3</code>) aynı şeyi iki farklı yolla modelliyor: çalışanın bir departmanda <strong>hangi tarihler arasında</strong> çalıştığı.</p>
+<ul>
+<li><strong>Works_In2:</strong> <code>from</code> ve <code>to</code>, <strong>ilişkinin attribute'u.</strong> Bir çalışan–departman çifti için <strong>tek bir</strong> (from, to) değer saklanabilir. Yani bir çalışan aynı departmanda iki ayrı dönem çalıştıysa ikisini saklayamazsın.</li>
+<li><strong>Works_In3:</strong> <code>Duration</code> ayrı bir <strong>entity</strong>, <code>from</code> ve <code>to</code> onun attribute'ları. Artık aynı çalışan–departman çifti için <strong>birden fazla Duration</strong> olabilir.</li>
+</ul>
+<p>(Slayt cevabı yazmıyor; bu, standart ders kitabı örneğinin mantığı.) Pratik kural: <strong>Bir bilgiyi aynı bağ için birden fazla kez saklaman gerekiyorsa, onu entity yap.</strong></p>
+<h3>(3) İlişki superclass'a mı, subclass'a mı bağlanmalı?</h3>
+<p>Slayt sadece VEHICLE diyagramını gösteriyor. Genel mantık: ilişki <strong>tüm subclass'lar için geçerliyse superclass'a</strong>, <strong>sadece bir subclass için geçerliyse o subclass'a</strong> bağla. (Mesela "sadece kayıtlı müşteriler kitap ödünç alabilir" ise BORROWS, <code>CUSTOMER</code>'a değil <code>REGISTERED_CUSTOMER</code>'a bağlanır. Bunu PS notlarındaki örneklerde göreceksin.)</p>
+  </section>
+
+  <section id="s13">
+    <h2>Özet</h2>
+<ul>
+<li><strong>ER model</strong> = mini-world'ü veritabanı koduna geçmeden önce çizmek. Yapı taşları: <strong>entity, attribute, relationship.</strong></li>
+<li>Attribute türleri: <strong>simple, composite, multi-valued.</strong> Key attribute'un altı çizilir; birden fazla key olabilir.</li>
+<li>Relationship'te: <strong>degree</strong> (binary / ternary), <strong>cardinality</strong> (1-1, 1-N, N-1, N-M), <strong>participation</strong> (total = çift çizgi, partial = tek çizgi), <strong>recursive</strong> olursa roller yazılır.</li>
+<li><strong>Weak entity</strong> kendi key'i yok, <strong>partial key</strong> + sahibinin key'i ile tanımlanır; <strong>identifying relationship</strong> zorunlu.</li>
+<li><strong>Subclass/superclass:</strong> miras, <strong>d / o</strong> (disjoint / overlapping), <strong>total / partial.</strong></li>
+<li>İyi bir ER tasarımı = iyi bir veritabanı. Gereksiz ilişki ekleme; "tekrar edebilir" bilgi entity olsun.</li>
+</ul>
+  </section>
+
+  <section id="s14">
+    <h2>Kendini test et</h2>
+<ol>
+<li>Bir <code>CAR</code> entity'sinin <code>Color</code> attribute'u neden multi-valued olmalı, ve diyagramda bu nasıl gösterilir?</li>
+<li>"Bir öğrenci başka bir öğrenciye ders çalıştırır (tutor)." Bu ilişki hangi türdendir ve diyagramda neye dikkat edilmelidir?</li>
+<li>Bir <code>Building</code> ve <code>Room</code> düşün: oda numarası (101, 102, ...) her binada tekrar eder. Hangisi weak entity'dir? Partial key ne olur?</li>
+<li>"Her müşteri ya bireyseldir ya kurumsaldır; ikisi birden olamaz ve başka tür yoktur." Subclass diyagramında hangi iki karar verilir?</li>
+<li>"Bir çalışan aynı departmanda birkaç farklı dönem çalışabilir ve her dönemin başlangıç/bitişi tutulacak." <code>from</code>/<code>to</code> attribute olarak ilişkide mi kalmalı, yoksa ayrı entity mi olmalı?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>Bir arabanın birden fazla rengi olabilir (iki renkli araç), yani aynı attribute için birden çok değer vardır. Diyagramda <strong>çift elips</strong> ile çizilir.</li>
+<li><strong>Recursive (self-referencing) relationship</strong>: STUDENT, helps ilişkisi üzerinden kendisine bağlanır. Roller (<strong>tutor</strong> ve <strong>tutee</strong>) diyagrama <strong>açıkça yazılmalı.</strong></li>
+<li><strong>Room weak entity</strong>: oda numarası tek başına benzersiz değil. Partial key = oda numarası; Room, Building'e <strong>identifying relationship</strong> ile bağlanır; kimlik = (bina key'i, oda no).</li>
+<li><strong>Disjoint</strong> (ikisi birden olamaz → <code>d</code>) ve <strong>total participation</strong> (başka tür yok, her müşteri en az birinde → superclass–daire arası <strong>çift çizgi</strong>).</li>
+<li><strong>Ayrı entity</strong> (Duration). Çünkü ilişkinin attribute'u olarak bırakırsan çalışan–departman çifti için sadece <strong>tek</strong> (from, to) saklayabilirsin; birden fazla dönem için her dönemi ayrı bir kayıt yapman gerekir.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="comp306-lecture3.html">Lecture 3 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

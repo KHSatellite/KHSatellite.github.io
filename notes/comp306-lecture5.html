@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COMP 306 – Lecture 5 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes306.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../logo.svg" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Sorgu dilleri ve relational algebra</a></li>
+    <li><a href="#s2">2. Dersin örnek veritabanı: Sailors</a></li>
+    <li><a href="#s3">3. Operatörlere genel bakış</a></li>
+    <li><a href="#s4">4. Projection (π): kolon seç</a></li>
+    <li><a href="#s5">5. Selection (σ): satır seç</a></li>
+    <li><a href="#s6">6. Union, Intersection, Difference</a></li>
+    <li><a href="#s7">7. Cartesian product (×)</a></li>
+    <li><a href="#s8">8. Rename (ρ)</a></li>
+    <li><a href="#s9">9. Join (⋈)</a></li>
+    <li><a href="#s10">10. Division (/)</a></li>
+    <li><a href="#s11">11. Alıştırmalar (Sailors veritabanı)</a></li>
+    <li><a href="#s12">12. Sorgu kalıpları: hangi problem hangi araçla?</a></li>
+    <li><a href="#s13">Özet</a></li>
+    <li><a href="#s14">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-306">
+  <div class="note-meta">
+    <span class="note-course-badge">COMP 306</span>
+    <span class="note-week-label">Lecture 5</span>
+  </div>
+  <h1 class="note-main-title">Relational Algebra</h1>
+  <p class="note-intro">Elimizde artık tablolar var. Peki onlardan <strong>veriyi nasıl çekeriz</strong>? Bu derste, SQL'in matematiksel temelini oluşturan <strong>Relational Algebra</strong>'yı öğreniyoruz: tablolara uygulanan küçük operatörler (seç, kolon al, birleştir, böl...) ve bunları iç içe koyarak karmaşık sorgular yazma.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Sorgu dilleri ve relational algebra</h2>
+<p>Relational query language'ler, relational veritabanından veri <strong>çekmeyi ve işlemeyi</strong> sağlar. Birkaç tane var: SQL, relational algebra, tuple relational calculus, domain relational calculus, query-by-example...</p>
+<p>SQL gibi "pratik" dillerin temelinde iki matematiksel dil yatar:</p>
+<table>
+<thead>
+<tr>
+<th>Dil</th>
+<th>Tarzı</th>
+<th>Ne söyler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Relational Algebra</strong></td>
+<td><strong>Operasyonel (procedural)</strong></td>
+<td>"Şu adımları sırayla yap." Execution plan göstermek için kullanışlı</td>
+</tr>
+<tr>
+<td><strong>(Tuple) Relational Calculus</strong></td>
+<td><strong>Declarative</strong></td>
+<td>"Ben <strong>ne</strong> istiyorum", "nasıl yapılacağı" söylenmez</td>
+</tr>
+</tbody>
+</table>
+<p>Biz <strong>relational algebra</strong>'yı öğreniyoruz, çünkü popüler ve sorguların <strong>çalıştırılmasında ve optimizasyonunda</strong> kullanılıyor.</p>
+<p>Nasıl çalışır?</p>
+<ul>
+<li>Elimizde <strong>temel operatörler</strong> (küçük işlemler) var.</li>
+<li>Her operatör girdi olarak <strong>relation</strong> alır ve çıktı olarak yine bir <strong>relation</strong> verir.</li>
+<li>Bu yüzden operatörleri <strong>iç içe koyabiliriz</strong> (bir operatörün çıktısı diğerinin girdisi olur) ve karmaşık sorgular yazabiliriz.</li>
+<li>Sorgular, relation'ların <strong>state</strong>'leri (o anki satırlar) üzerinde çalışır.</li>
+</ul>
+  </section>
+
+  <section id="s2">
+    <h2>2. Dersin örnek veritabanı: Sailors</h2>
+<p>Slaytlardaki tüm örnekler "denizciler tekne kiralar" şemasından geliyor:</p>
+<div class="code-pre">Sailors  (sid, sname, rating, age)
+Boats    (bid, bname, color)
+Reserves (sid, bid, day)</div>
+<p>Örnek veriler (kendi kafanda sınamak için kullan):</p>
+<p><strong>Sailors</strong></p>
+<table>
+<thead>
+<tr>
+<th>sid</th>
+<th>sname</th>
+<th>rating</th>
+<th>age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>22</td>
+<td>dustin</td>
+<td>7</td>
+<td>45.0</td>
+</tr>
+<tr>
+<td>31</td>
+<td>lubber</td>
+<td>8</td>
+<td>55.5</td>
+</tr>
+<tr>
+<td>58</td>
+<td>rusty</td>
+<td>10</td>
+<td>35.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Boats</strong></p>
+<table>
+<thead>
+<tr>
+<th>bid</th>
+<th>bname</th>
+<th>color</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>101</td>
+<td>Interlake</td>
+<td>Blue</td>
+</tr>
+<tr>
+<td>102</td>
+<td>Interlake</td>
+<td>Red</td>
+</tr>
+<tr>
+<td>103</td>
+<td>Clipper</td>
+<td>Green</td>
+</tr>
+<tr>
+<td>104</td>
+<td>Marine</td>
+<td>Red</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reserves</strong></p>
+<table>
+<thead>
+<tr>
+<th>sid</th>
+<th>bid</th>
+<th>day</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>22</td>
+<td>101</td>
+<td>10/10/96</td>
+</tr>
+<tr>
+<td>58</td>
+<td>103</td>
+<td>11/12/96</td>
+</tr>
+</tbody>
+</table>
+<p>Operatörlerin ilk örneklerinde ayrıca <code>S1</code> (yukarıdaki üç denizci) ve <code>S2</code> adlı bir relation kullanılıyor:</p>
+<p><strong>S2</strong></p>
+<table>
+<thead>
+<tr>
+<th>sid</th>
+<th>sname</th>
+<th>rating</th>
+<th>age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>28</td>
+<td>yuppy</td>
+<td>9</td>
+<td>35.0</td>
+</tr>
+<tr>
+<td>31</td>
+<td>lubber</td>
+<td>8</td>
+<td>55.5</td>
+</tr>
+<tr>
+<td>44</td>
+<td>guppy</td>
+<td>5</td>
+<td>35.0</td>
+</tr>
+<tr>
+<td>58</td>
+<td>rusty</td>
+<td>10</td>
+<td>35.0</td>
+</tr>
+</tbody>
+</table>
+<p><code>R1</code> ise <code>Reserves</code> ile aynı iki satırdır.</p>
+  </section>
+
+  <section id="s3">
+    <h2>3. Operatörlere genel bakış</h2>
+<table>
+<thead>
+<tr>
+<th>Operatör</th>
+<th>Sembol</th>
+<th>Ne yapar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Projection</strong></td>
+<td>π (pi)</td>
+<td>Belirli <strong>kolonları</strong> tut</td>
+</tr>
+<tr>
+<td><strong>Selection</strong></td>
+<td>σ (sigma)</td>
+<td>Koşulu sağlayan <strong>satırları</strong> seç</td>
+</tr>
+<tr>
+<td><strong>Union</strong></td>
+<td>∪</td>
+<td>İki relation'ın birleşimi</td>
+</tr>
+<tr>
+<td><strong>Intersection</strong></td>
+<td>∩</td>
+<td>Kesişim</td>
+</tr>
+<tr>
+<td><strong>Difference</strong></td>
+<td>−</td>
+<td>Fark</td>
+</tr>
+<tr>
+<td><strong>Cartesian (Cross) Product</strong></td>
+<td>×</td>
+<td>Her satırı her satırla eşle</td>
+</tr>
+<tr>
+<td><strong>Rename</strong></td>
+<td>ρ (rho)</td>
+<td>Yeniden adlandır</td>
+</tr>
+<tr>
+<td><strong>Join</strong></td>
+<td>⋈ (bowtie)</td>
+<td>İki tabloyu bir koşulla birleştir</td>
+</tr>
+<tr>
+<td><strong>Division</strong></td>
+<td>/</td>
+<td>"Hepsine sahip olanları bul"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Pratik ayrım:</strong> π <strong>kolon</strong> keser, σ <strong>satır</strong> keser. Sorguların büyük kısmı bu ikisinin ve join'in kombinasyonudur.</p>
+  </section>
+
+  <section id="s4">
+    <h2>4. Projection (π): kolon seç</h2>
+<p>Projection listesindeki attribute'ları <strong>tut</strong>, geri kalanını at. Sonuç şeması <strong>tam olarak</strong> o listedeki attribute'lardır. <strong>Tekrar eden satırlar varsayılan olarak silinir</strong> (çünkü sonuç da bir relation, yani küme).</p>
+<div class="code-pre">π_{sname, rating}(S2)   →   (yuppy, 9), (lubber, 8), (guppy, 5), (rusty, 10)
+π_{age}(S2)             →   35.0, 55.5</div>
+<p>İkinci örnekte S2'de dört satır var ama sadece iki farklı yaş değeri var. 35.0 üç kere geçse de <strong>bir kere</strong> yazılır (duplicate elimination).</p>
+  </section>
+
+  <section id="s5">
+    <h2>5. Selection (σ): satır seç</h2>
+<p>Boolean bir <strong>koşulu</strong> sağlayan satırları seç. Sonuç şeması, girdi relation'ın şemasıyla <strong>aynıdır</strong> (kolonlar değişmez, satırlar azalır).</p>
+<div class="code-pre">σ_{rating &gt; 8}(S2)  →  (28, yuppy, 9, 35.0), (58, rusty, 10, 35.0)</div>
+<p><strong>İç içe kullanım:</strong> Önce satır seç, sonra kolon al:</p>
+<div class="code-pre">π_{sname, rating}( σ_{rating &gt; 8}(S2) )  →  (yuppy, 9), (rusty, 10)</div>
+<p>İçten dışa okunur: önce <code>σ</code>, sonra <code>π</code>.</p>
+  </section>
+
+  <section id="s6">
+    <h2>6. Union, Intersection, Difference</h2>
+<p>Üçü de <strong>küme işlemleri.</strong> İkisi arasında <strong>union-compatible</strong> olma şartı vardır:</p>
+<ul>
+<li>Aynı sayıda attribute.</li>
+<li>Karşılıklı attribute'ların <strong>veri tipleri</strong> aynı.</li>
+</ul>
+<div class="code-pre">S1 ∪ S2   →   dustin, lubber, rusty, guppy, yuppy      (5 satır; tekrar edenler bir kez)
+S1 ∩ S2   →   lubber, rusty                             (iki tabloda da olanlar)
+S1 − S2   →   dustin                                    (S1'de olup S2'de olmayan)</div>
+<p>Union'da tekrarlar silinir. <strong>Difference'ın sırası önemlidir:</strong> <code>S1 − S2</code> ile <code>S2 − S1</code> farklı sonuç verir (<code>S2 − S1</code> = yuppy, guppy).</p>
+  </section>
+
+  <section id="s7">
+    <h2>7. Cartesian product (×)</h2>
+<p><code>R(A1, ..., An) × S(B1, ..., Bm)</code> → <code>Q(A1, ..., An, B1, ..., Bm)</code>: <strong>n + m kolonlu</strong> bir relation. İçinde <strong>R ve S'nin tüm olası satır çiftleri</strong> bulunur.</p>
+<div class="callout">R'de <code>nR</code>, S'de <code>nS</code> satır varsa <code>R × S</code>'te <strong><code>nR × nS</code></strong> satır olur.</div>
+<p><strong>Slayttaki soru:</strong> R ve S, cross product için union-compatible olmalı mı? <strong>Hayır.</strong> Union-compatibility sadece ∪, ∩, − için şart. Cross product her ikili için tanımlıdır, çünkü zaten sadece <strong>yan yana koyuyor.</strong></p>
+<p><code>S1 × R1</code> örneği: S1'de 3, R1'de 2 satır → 3 × 2 = <strong>6 satır.</strong> Her denizci, her rezervasyonla eşleşir (saçma eşleşmeler dahil: dustin ile 58'in rezervasyonu).</p>
+<p><strong>Problem:</strong> Sonuçta iki tane <code>sid</code> kolonu oluşur (biri Sailors'tan, biri Reserves'ten). Adlar çakışır. Çözüm: <strong>rename.</strong></p>
+  </section>
+
+  <section id="s8">
+    <h2>8. Rename (ρ)</h2>
+<p><code>ρ</code> operatörü bir relation'ı ve/veya kolonlarını yeniden adlandırır.</p>
+<div class="code-pre">ρ( D(1 → sid1, 5 → sid2), S1 × R1 )</div>
+<p>Bu, sonuca <strong>D</strong> adını verir; <strong>1. kolonun</strong> adını <code>sid1</code>, <strong>5. kolonun</strong> adını <code>sid2</code> yapar. Böylece iki <code>sid</code> ayırt edilebilir.</p>
+<p>Rename'i ilerde "aynı tabloyu kendisiyle karşılaştırmak" gerektiğinde de kullanacağız (<code>ρ(S2, Sailors)</code>: Sailors'ın bir kopyasının adını <code>S2</code> yap).</p>
+  </section>
+
+  <section id="s9">
+    <h2>9. Join (⋈)</h2>
+<p>Join, tabloları birleştirmenin yoludur ve <strong>çok önemli</strong> bir kavram. En kolay anlayış şekli:</p>
+<div class="callout"><strong>Join = cross product + selection</strong>
+<code>R ⋈_c S = σ_c (R × S)</code></div>
+<p>Önce tüm çiftleri yap, sonra koşulu <strong>sağlamayanları ele.</strong> Sonuç şeması cross product ile aynıdır ama genelde çok daha az satır içerir.</p>
+<p><strong>Theta-join örneği:</strong></p>
+<div class="code-pre">S1 ⋈_{S1.sid &lt; R1.sid} R1</div>
+<p>→ (22 dustin ..., 58, 103, 11/12/96) ve (31 lubber ..., 58, 103, 11/12/96). Çünkü 22 &lt; 58 ve 31 &lt; 58. (R1'deki <code>sid = 22</code> satırı hiçbir S1 satırıyla koşulu sağlamaz, çünkü S1'de 22'den küçük sid yok.)</p>
+<h3>Equi-join</h3>
+<p>Pratikte en yaygın join: koşul <strong>sadece eşitlik</strong> içerir.</p>
+<div class="code-pre">S1 ⋈_{sid} R1        (Sailors.sid = Reserves.sid)</div>
+<p>Sonuç şemasında eşitliği sağlanan attribute <strong>tek kopya</strong> olarak yer alır (iki <code>sid</code> yerine bir <code>sid</code>).</p>
+<div class="code-pre">sid  sname   rating  age   bid  day
+22   dustin  7       45.0  101  10/10/96
+58   rusty   10      35.0  103  11/12/96</div>
+<p>Join koşulu şu biçimlerde yazılabilir: <code>S1.sid = R1.sid</code>, <code>sid = sid</code>, ya da kolon adları aynıysa ve bağlam açıksa <strong>koşulu hiç yazmadan</strong> <code>S1 ⋈ R1</code> (bu, <strong>natural join</strong>).</p>
+<h3>Örnek: Departman adı, numarası ve yöneticisinin soyadı</h3>
+<div class="code-pre">π_{Dname, Dnumber, Lname}( Department ⋈_{Mgr_ssn = Ssn} Employee )</div>
+<p><code>Department</code> tablosunun <code>Mgr_ssn</code> kolonu, <code>Employee</code> tablosunun <code>Ssn</code> kolonuyla eşleştiriliyor. Birleşen tablodan sadece üç kolon alınıyor.</p>
+  </section>
+
+  <section id="s10">
+    <h2>10. Division (/)</h2>
+<p><strong>A / B:</strong> A'da, <strong>B'nin tamamına</strong> sahip olan değerleri bul. "Hepsi" (all) sorularının operatörü.</p>
+<p>Slayttaki örnek: <code>A(sno, pno)</code> "hangi tedarikçi (supplier) hangi parçayı (part) sağlıyor" tablosu.</p>
+<table>
+<thead>
+<tr>
+<th>sno</th>
+<th>pno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s1</td>
+<td>p1, p2, p3, p4 (hepsi)</td>
+</tr>
+<tr>
+<td>s2</td>
+<td>p1, p2</td>
+</tr>
+<tr>
+<td>s3</td>
+<td>p2</td>
+</tr>
+<tr>
+<td>s4</td>
+<td>p2, p4</td>
+</tr>
+</tbody>
+</table>
+<p>Üç farklı <code>B</code>:</p>
+<table>
+<thead>
+<tr>
+<th>B</th>
+<th>İçerik</th>
+<th>A / B</th>
+<th>Anlamı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td>{p2}</td>
+<td>s1, s2, s3, s4</td>
+<td>p2'yi sağlayan herkes</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>{p2, p4}</td>
+<td>s1, s4</td>
+<td>hem p2 <strong>hem</strong> p4'ü sağlayanlar</td>
+</tr>
+<tr>
+<td>B3</td>
+<td>{p1, p2, p4}</td>
+<td>s1</td>
+<td>p1, p2, p4'ün <strong>üçünü de</strong> sağlayanlar</td>
+</tr>
+</tbody>
+</table>
+<div class="callout"><strong>Division'ın şeması:</strong> <code>A(sno, pno) / B(pno)</code> sonucu sadece <strong><code>sno</code></strong> kolonudur: A'da olup B'de olmayan kolonlar kalır.</div>
+  </section>
+
+  <section id="s11">
+    <h2>11. Alıştırmalar (Sailors veritabanı)</h2>
+<p>Her sorunun çözümünü önce <strong>kendin</strong> yazmaya çalış, sonra karşılaştır. Önce <strong>kelimeyle plan</strong> yap, sonra operatöre dök.</p>
+<h3>Q1: 103 numaralı tekneyi kiralayan denizcilerin isimleri</h3>
+<div class="code-pre">π_{sname}( (σ_{bid=103}(Reserves)) ⋈ Sailors )
+π_{sname}( σ_{bid=103}(Reserves ⋈ Sailors) )</div>
+<p><strong>İkisi de doğru.</strong> <em>Hangisi daha hızlı?</em> Genellikle <strong>birincisi</strong>: önce <code>Reserves</code>'ı küçültüp (σ) sonra join yapmak, tüm tabloyu join edip sonra filtrelemekten ucuzdur. (Slayt "hangisi daha hızlı?" diye soruyor ama cevap vermiyor; bu, query optimization'ın temel fikri olan "seçimi önce yap"a dayanan yorumum.)</p>
+<p>Örnek veride sonuç: <strong>rusty</strong> (sid 58, bid 103).</p>
+<h3>Q2: Kırmızı tekne kiralayan denizciler</h3>
+<div class="code-pre">π_{sname}( (σ_{color='red'}(Boats)) ⋈ Reserves ⋈ Sailors )</div>
+<p>Yol: kırmızı tekneleri bul → <code>Reserves</code> ile birleştir → <code>Sailors</code> ile birleştir → isim al. Bir de varyant (π ile ara kolon azaltma) var ama ikisi de doğru. Örnek veride Reserves'te 101 ve 103 var, kırmızı tekneler 102 ve 104 → sonuç <strong>boş.</strong></p>
+<h3>Q3: Kırmızı <strong>veya</strong> yeşil tekne kiralayanlar</h3>
+<div class="code-pre">π_{sname}( (σ_{color='red' ∨ color='green'}(Boats)) ⋈ Reserves ⋈ Sailors )</div>
+<p><code>∨</code> = veya. Tek bir selection içinde koşulları "veya" ile bağlayabilirsin.</p>
+<h3>Q4: Kırmızı <strong>ve</strong> yeşil tekne kiralayanlar (farklı günlerde olabilir)</h3>
+<div class="callout callout--warn"><strong>Dikkat (klasik tuzak):</strong> <code>σ_{color='red' ∧ color='green'}</code> yazamazsın: bir satırda renk aynı anda hem kırmızı hem yeşil olamaz, sonuç hep boş olur. "Ve"yi <strong>satır içinde</strong> değil, <strong>kümeler arasında</strong> (∩) kurarız.</div>
+<p>Plan: kırmızı tekne kiralayan sid'leri bul, yeşil tekne kiralayan sid'leri bul, <strong>kesişimini</strong> al, isimlerini getir.</p>
+<div class="code-pre">π_{sname}(
+  (   π_{sid}( (σ_{color='red'}(Boats))   ⋈ Reserves )
+    ∩ π_{sid}( (σ_{color='green'}(Boats)) ⋈ Reserves ) )
+  ⋈ Sailors )</div>
+<p>(Slaytta ara adımlar ayrı ayrı yazılmış: önce iki sid kümesi, sonra ∩, sonra Sailors ile join, sonra <code>sname</code>.)</p>
+<h3>Q5: <strong>Tüm</strong> tekneleri kiralayan denizciler (division!)</h3>
+<div class="code-pre">π_{sname}( ( π_{sid,bid}(Reserves) / π_{bid}(Boats) ) ⋈ Sailors )</div>
+<p>Bölünen (A) = <code>(sid, bid)</code> çiftleri (kim hangi tekneyi tutmuş). Bölen (B) = <strong>bütün tekne numaraları.</strong> Sonuç: tüm <code>bid</code>'lere sahip olan <code>sid</code>'ler. Division kullanırken <strong>girdi şemalarını dikkatle seç</strong>: A'da bölenin dışında yalnızca sonuçta görmek istediğin kolon (<code>sid</code>) olmalı.</p>
+<h3>Q6: Tüm "Interlake" teknelerini kiralayanlar</h3>
+<div class="code-pre">π_{sname}( ( π_{sid,bid}(Reserves) / π_{bid}( σ_{bname='Interlake'}(Boats) ) ) ⋈ Sailors )</div>
+<p>Q5 ile aynı kalıp; sadece bölen B artık <strong>sadece Interlake teknelerinin</strong> (101 ve 102) <code>bid</code>'leri.</p>
+<h3>Q7: Albert adlı denizcinin kiraladığı teknelerin renkleri</h3>
+<div class="code-pre">π_{color}( π_{sid}( σ_{sname='Albert'}(Sailors) ) ⋈ Reserves ⋈ Boats )</div>
+<h3>Q8: Kırmızı tekne <strong>kiralamamış</strong> denizcilerin isim ve sid'leri</h3>
+<p>"Değil / hiç" gördüğünde <strong>fark (−)</strong> düşün: <strong>tüm denizciler − kırmızı tekne kiralayanlar.</strong></p>
+<div class="code-pre">π_{sname, sid}( [ π_{sid}(Sailors)
+                  − π_{sid}( (σ_{color='red'}(Boats)) ⋈ Reserves ) ] ⋈ Sailors )</div>
+<div class="callout callout--warn"><strong>Dikkat:</strong> "Kırmızı olmayan tekne kiralayanlar" ile karıştırma. O başka bir sorudur (<code>color ≠ 'red'</code> ile σ). Burada hiç kırmızı tekne kiralamamış olanlar isteniyor, hiç tekne kiralamamış olanlar da dahil. Bu yüzden fark kullanmak zorundayız.</div>
+<h3>Q9: Rating'i, "Bob" adlı <strong>bir</strong> denizciden bile yüksek olanların sid'leri</h3>
+<p>(Birden çok "Bob" olabilir; <strong>herhangi birinden</strong> yüksek olmak yeter.)</p>
+<p>Burada <strong>aynı tabloyu kendisiyle</strong> karşılaştırıyoruz. Sailors'ın bir kopyasına <code>S2</code> adını verip (ρ), Bob'ları seçilmiş Sailors ile çarpıyoruz:</p>
+<div class="code-pre">π_{S2.sid}( σ_{S2.rating &gt; Sailors.rating}( ρ(S2, Sailors) × (σ_{sname='Bob'} Sailors) ) )</div>
+<h3>Q10: Rating'i <strong>her</strong> "Bob"dan yüksek olanların sid'leri</h3>
+<p>"Hepsinden yüksek" = "hiçbir Bob'dan düşük ya da eşit olmayan". Yani: <strong>tüm denizciler − (bir Bob'a eşit veya düşük olanlar).</strong></p>
+<div class="code-pre">π_{sid}(Sailors)
+ − π_{S2.sid}( σ_{S2.rating ≤ Sailors.rating}( ρ(S2, Sailors) × (σ_{sname='Bob'} Sailors) ) )</div>
+<h3>Q11: En yaşlı denizcinin (denizcilerin) ismi ve yaşı</h3>
+<p>"En büyük" için aggregate yok; <strong>fark</strong> ile çözüyoruz: tüm denizciler − <strong>kendisinden daha yaşlı birisi olanlar.</strong></p>
+<div class="code-pre">A = π_{sid}(Sailors)
+B = π_{S2.sid}( σ_{S2.age &lt; Sailors.age}( ρ(S2, Sailors) × Sailors ) )
+Cevap = π_{sname, age}( (A − B) ⋈ Sailors )</div>
+<p><code>B</code>, "kendisinden yaşlı biri var" olan denizcilerin sid'leri; <code>A − B</code> geriye <strong>en yaşlıları</strong> bırakır. Birden fazla en yaşlı varsa (eşitlik) hepsi çıkar.</p>
+  </section>
+
+  <section id="s12">
+    <h2>12. Sorgu kalıpları: hangi problem hangi araçla?</h2>
+<table>
+<thead>
+<tr>
+<th>Soru tipi</th>
+<th>Araç</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"X olan ..."</td>
+<td><strong>σ</strong></td>
+</tr>
+<tr>
+<td>"Y'yi göster"</td>
+<td><strong>π</strong></td>
+</tr>
+<tr>
+<td>"iki tablodan veri"</td>
+<td><strong>⋈</strong></td>
+</tr>
+<tr>
+<td>"A <strong>veya</strong> B"</td>
+<td>σ içinde <strong>∨</strong> ya da <strong>∪</strong></td>
+</tr>
+<tr>
+<td>"A <strong>ve</strong> B" (iki ayrı satırdan)</td>
+<td><strong>∩</strong></td>
+</tr>
+<tr>
+<td>"A <strong>olmayan</strong>" / "hiç"</td>
+<td><strong>−</strong> (tümü − olanlar)</td>
+</tr>
+<tr>
+<td>"<strong>hepsini</strong>" / "tümünü"</td>
+<td><strong>/</strong> (division)</td>
+</tr>
+<tr>
+<td>"bir başkasından <strong>daha ... olan</strong>"</td>
+<td><strong>ρ</strong> + <strong>×</strong> + σ (kendiyle karşılaştır)</td>
+</tr>
+<tr>
+<td>"en büyük / en küçük"</td>
+<td><strong>−</strong> ile "ondan büyüğü olanları çıkar"</td>
+</tr>
+</tbody>
+</table>
+  </section>
+
+  <section id="s13">
+    <h2>Özet</h2>
+<ul>
+<li>Relational algebra: <strong>operasyonel</strong> sorgu dili; SQL'in teorik temeli. Operatörler relation alıp relation verir, o yüzden <strong>iç içe</strong> konur.</li>
+<li><strong>π</strong> kolon seçer (duplicate'ları siler), <strong>σ</strong> satır seçer.</li>
+<li><strong>∪, ∩, −</strong>: union-compatible relation'lar gerekir. <strong>×</strong> her ikili için tanımlıdır, <code>nR × nS</code> satır üretir.</li>
+<li><strong>ρ</strong> adları değiştirir; kendi kendine karşılaştırma için şart.</li>
+<li><strong>Join</strong>: <code>R ⋈_c S = σ_c(R × S)</code>. Equi-join'de eşitlik koşulu ve tek kopya kolon; natural join'de koşul yazılmaz.</li>
+<li><strong>Division</strong> "hepsine sahip olanlar" için.</li>
+<li>"Ve" → kesişim; "değil/hiç" → fark; "hepsi" → division; "en büyük" → fark + rename.</li>
+</ul>
+  </section>
+
+  <section id="s14">
+    <h2>Kendini test et</h2>
+<p>(Sailors / Boats / Reserves şeması ile)</p>
+<ol>
+<li><code>σ_{rating&gt;8}(S2)</code> ile <code>π_{sname}(S2)</code> arasındaki en temel fark nedir?</li>
+<li>|R| = 5 ve |S| = 4 ise <code>R × S</code>'in satır sayısı kaç? <code>R ⋈_c S</code> en fazla kaç satır olabilir?</li>
+<li>"Hem 101 hem 102 numaralı tekneyi kiralayan denizcilerin sid'leri" nasıl yazılır?</li>
+<li>"Hiç tekne kiralamamış denizcilerin isimleri" nasıl yazılır?</li>
+<li><code>π_{sid,bid}(Reserves) / π_{bid}(Boats)</code> ne verir? <code>Reserves</code> direkt <code>Boats</code>'a bölünse (<code>Reserves / Boats</code>) neden uygun olmazdı?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li><code>σ</code> <strong>satırları</strong> filtreler (şema aynı kalır), <code>π</code> <strong>kolonları</strong> seçer (satır sayısı azalabilir ama sadece tekrarlar sayesinde).</li>
+<li><code>R × S</code> = 5 × 4 = <strong>20</strong> satır. <code>R ⋈_c S = σ_c(R × S)</code> olduğu için en fazla <strong>20</strong> (hepsi koşulu sağlarsa), genelde çok daha az.</li>
+<li>İki ayrı küme kur, kesiştir: <code>π_{sid}(σ_{bid=101}(Reserves)) ∩ π_{sid}(σ_{bid=102}(Reserves))</code>. (Tek σ'da <code>bid=101 ∧ bid=102</code> yazmak her zaman boş döner.)</li>
+<li>Tüm denizciler − kiralayanlar: <code>π_{sname}( (π_{sid}(Sailors) − π_{sid}(Reserves)) ⋈ Sailors )</code>.</li>
+<li><strong>Tüm tekneleri kiralayan denizcilerin <code>sid</code>'leri.</strong> <code>Reserves / Boats</code> uygun olmazdı: bölenin (<code>Boats</code>) kolonları (<code>bid, bname, color</code>) bölünenin (<code>Reserves</code>) içinde bulunmalı, ama <code>bname</code> ve <code>color</code> orada yok. Ayrıca sonuç şeması "bölünen − bölen" kolonları olduğundan, <code>day</code> de sonuçta kalırdı. Bu yüzden bölüneni <code>π_{sid,bid}</code> ile, böleni <code>π_{bid}</code> ile <strong>sadece gereken kolonlara</strong> indirgeriz.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="comp306-lecture4.html">← Lecture 4</a> · <a href="comp306-ps2.html">Problem Session 2 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

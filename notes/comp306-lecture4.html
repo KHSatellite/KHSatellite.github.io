@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COMP 306 – Lecture 4 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes306.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../logo.svg" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Dönüşümün hedefi ve genel plan</a></li>
+    <li><a href="#s2">2. Adım 1: Regular entity&#x27;ler</a></li>
+    <li><a href="#s3">3. Adım 2: Weak entity&#x27;ler</a></li>
+    <li><a href="#s4">4. Adım 3: Binary 1:1 relationship&#x27;ler</a></li>
+    <li><a href="#s5">5. Adım 4: Binary 1:N (veya N:1) relationship&#x27;ler</a></li>
+    <li><a href="#s6">6. Adım 5: Binary M:N relationship&#x27;ler</a></li>
+    <li><a href="#s7">7. Adım 6: Multi-valued attribute&#x27;lar</a></li>
+    <li><a href="#s8">8. Adım 7: N-ary relationship&#x27;ler</a></li>
+    <li><a href="#s9">9. Sonda yapılacak kontroller</a></li>
+    <li><a href="#s10">10. Tam örnek: Company Database</a></li>
+    <li><a href="#s11">Özet</a></li>
+    <li><a href="#s12">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-306">
+  <div class="note-meta">
+    <span class="note-course-badge">COMP 306</span>
+    <span class="note-week-label">Lecture 4</span>
+  </div>
+  <h1 class="note-main-title">ER Diyagramından Relational Model&#x27;e Dönüşüm</h1>
+  <p class="note-intro">Elimizde bir <strong>ER diyagramı</strong> var (Lecture 02). Şimdi onu <strong>tablolara</strong> (Lecture 03'teki relation'lara) çeviriyoruz. Bunun için 7 adımlı bir algoritma var. Her adımın <strong>ne zaman uygulanacağını</strong> bilmek bu dersin kalbi.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Dönüşümün hedefi ve genel plan</h2>
+<p>Amaç iki şey:</p>
+<ol>
+<li>ER'daki bilgiyi <strong>mümkün olduğunca koru</strong> (hiçbir entity, ilişki, attribute kaybolmasın).</li>
+<li><strong>Gereksiz tekrarı (redundancy) ve NULL değerleri en aza indir.</strong></li>
+</ol>
+<p>İkinci hedef önemli: adımlardaki "ne zaman FK ekle, ne zaman yeni tablo aç" kararlarının hepsi, <strong>NULL'dan ve tekrardan kaçınma</strong> mantığıyla verilir.</p>
+<p>Algoritma:</p>
+<table>
+<thead>
+<tr>
+<th>Adım</th>
+<th>Neyi çevirir</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td>Regular (weak olmayan) entity'ler (+ subclass/superclass)</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>Weak entity'ler (+ identifying relationship)</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>Binary <strong>1:1</strong> relationship'ler</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>Binary <strong>1:N</strong> (veya N:1) relationship'ler</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>Binary <strong>M:N</strong> relationship'ler</td>
+</tr>
+<tr>
+<td><strong>6</strong></td>
+<td><strong>Multi-valued</strong> attribute'lar</td>
+</tr>
+<tr>
+<td><strong>7</strong></td>
+<td><strong>N-ary</strong> relationship'ler (örn. ternary)</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout--warn"><strong>Dikkat (sıra önemli):</strong> Adım 1 ve 2'de her entity için tablo oluşturulur. Adım 3–7'de bu tablolar ya <strong>değiştirilir</strong> (FK eklenir) ya da yeni bir tablo eklenir. O yüzden önce adım 1'i bitirmek gerekir.</p>
+<p><strong>Not:</strong> Slaytlardaki <code>CREATE TABLE</code> yazımı basitleştirilmiş pseudo-SQL (<code>sid: CHAR(20)</code>). Burada da aynısını kullanıyorum; gerçek SQL'de iki nokta yok.</div>
+  </section>
+
+  <section id="s2">
+    <h2>2. Adım 1: Regular entity&#x27;ler</h2>
+<p>Her <strong>regular entity E</strong> için bir <strong>relation R</strong> oluştur:</p>
+<ul>
+<li>E'nin tüm <strong>simple attribute</strong>'larını R'ye koy.</li>
+<li>E'nin <strong>composite attribute</strong>'u varsa, onu oluşturan <strong>simple parçaları</strong> al (composite'in kendisini değil).</li>
+<li>E'nin key'lerinden <strong>birini primary key</strong> seç. Key composite ise, onu oluşturan parçaların <strong>birleşimi</strong> R'nin key'i olur.</li>
+</ul>
+<div class="code-pre">EMPLOYEE (Ssn, Bdate, Fname, Minit, Lname, Address, Salary, Sex)</div>
+<p><code>Name</code> composite idi (Fname, Minit, Lname); tabloda üç ayrı kolon oldu.</p>
+<p>İki örnek:</p>
+<div class="code-pre">CREATE TABLE Student (sid: CHAR(8), name: CHAR(30), PRIMARY KEY (sid))
+
+CREATE TABLE Car (reg_state: CHAR(2), reg_number: CHAR(10), vehicle_id: CHAR(15),
+                  model: CHAR(10), make: CHAR(15), year: INTEGER,
+                  PRIMARY KEY (reg_state, reg_number))</div>
+<p><code>Car</code>'da key composite (<code>reg_state</code>, <code>reg_number</code>) olduğu için PRIMARY KEY ikisinin birleşimi.</p>
+<h3>Subclass / superclass dönüşümü</h3>
+<p>Kitapta birden fazla yöntem var (bazıları disjoint, bazıları overlapping, bazıları total participation için daha uygun). Ders sadece <strong>en genel</strong> yöntemi öğretiyor:</p>
+<ul>
+<li><strong>Superclass relation'ı olduğu gibi</strong> kalır.</li>
+<li>Her <strong>subclass için ayrı bir relation</strong> oluştur:<ul>
+<li>Superclass'ın <strong>primary key</strong>'ini subclass relation'ına ekle ve bunu <strong>foreign key</strong> yap.</li>
+<li>Subclass'a özgü diğer attribute'ları ekle.</li>
+<li>Subclass relation'ının <strong>primary key</strong>'i = superclass'ın primary key'i.</li>
+</ul>
+</li>
+</ul>
+<div class="code-pre">CREATE TABLE Secretary (SSN: INTEGER, TypingSpeed: REAL,
+                        PRIMARY KEY (SSN),
+                        FOREIGN KEY SSN REFERENCES Employee)</div>
+<p><code>Secretary</code> bir çalışan olduğu için kimliği de çalışanınkiyle aynı (<code>SSN</code>) ve o <code>SSN</code>, <code>Employee</code> tablosuna işaret eder.</p>
+  </section>
+
+  <section id="s3">
+    <h2>3. Adım 2: Weak entity&#x27;ler</h2>
+<p>Weak entity ile <strong>identifying relationship</strong>'i <strong>birlikte</strong> tek yeni relation <code>R</code>'ye çeviririz. <code>R</code> şunları içerir:</p>
+<ul>
+<li><strong>Owner (strong) entity'nin primary key</strong>'i → R'de <strong>foreign key</strong>.</li>
+<li>Weak entity'nin <strong>tüm attribute</strong>'ları.</li>
+<li>Identifying relationship'in (varsa) attribute'ları.</li>
+</ul>
+<p><strong>R'nin primary key</strong>'i = <strong>owner'ın primary key'i + weak entity'nin partial key'i.</strong></p>
+<div class="code-pre">CREATE TABLE Emp_Dependents
+      (emp_ssn: INTEGER,
+       dep_name: CHAR(30),
+       dep_sex: CHAR(10),
+       dep_birthdate: CHAR(10),
+       PRIMARY KEY (emp_ssn, dep_name),
+       FOREIGN KEY emp_ssn REFERENCES Employee)</div>
+<p><code>dep_name</code> tek başına benzersiz değildi (partial key). <code>emp_ssn</code> ile birleşince benzersiz olur. Bu, ER'daki "kimlik = sahibin key'i + partial key" mantığının tablodaki karşılığı.</p>
+  </section>
+
+  <section id="s4">
+    <h2>4. Adım 3: Binary 1:1 relationship&#x27;ler</h2>
+<p>İki entity <code>S</code> ve <code>T</code> arasında 1:1 ilişki <code>R</code>. (Adım 1'den <code>S</code> ve <code>T</code> için zaten birer tablo var.) <strong>Üç durum</strong> var; hangisinin uygulanacağı <strong>participation constraint</strong>'e bağlıdır.</p>
+<h3>3A: Participation sadece <strong>bir tarafta</strong> zorunlu</h3>
+<p><code>S</code>, tam katılan (total participation) taraf olsun:</p>
+<ul>
+<li><strong><code>T</code>'nin primary key'ini <code>S</code>'in tablosuna foreign key olarak ekle.</strong></li>
+<li>R'nin attribute'ları da <code>S</code>'e eklenir.</li>
+</ul>
+<div class="code-pre">Employee --1-- &lt;Manages (since)&gt; ==1== Department      (çift çizgi: Department total)
+
+CREATE TABLE Department
+      (did: INTEGER, dname: CHAR(30), budget: REAL,
+       manager_ssn: INTEGER,
+       manager_since: CHAR(10),
+       PRIMARY KEY (did),
+       FOREIGN KEY (manager_ssn) REFERENCES Employee)</div>
+<p>Her departmanın yöneticisi olmak zorunda (Department total) olduğu için FK'yi <strong>Department</strong>'a koyduk. Her departmanda <code>manager_ssn</code> dolu olur, NULL çıkmaz. Tersini yapsaydık (FK'yi Employee'ye koysaydık), çoğu çalışan yönetici olmadığı için o kolon <strong>çoğunlukla NULL</strong> olurdu. Hedef NULL'u azaltmak.</p>
+<h3>3B: Participation <strong>iki tarafta da</strong> zorunlu</h3>
+<p><strong><code>S</code> ve <code>T</code>'nin tablolarını tek tabloda birleştir (merge).</strong></p>
+<p>Örnek: her müşteri bir daire satın almak zorunda ve her daire bir müşteriye ait olmak zorunda (<code>Customer</code> 1—1 <code>Buys</code> 1—1 <code>Apartment</code>, iki tarafta total).</p>
+<div class="code-pre">CREATE TABLE Customer_Apartment
+      (cid: INTEGER, name: CHAR(30), aid: INTEGER, address: CHAR(30),
+       PRIMARY KEY (cid))</div>
+<p>Eski <code>Customer</code> ve <code>Apartment</code> tabloları <strong>silinir</strong>, yerine bu tek tablo gelir. Her müşterinin tam bir dairesi, her dairenin tam bir müşterisi olduğu için birleştirme NULL üretmez.</p>
+<h3>3C: Participation constraint <strong>yok</strong></h3>
+<p><code>S</code> ve <code>T</code>'nin tabloları <strong>olduğu gibi kalır.</strong> İlişki için <strong>yeni bir relation R</strong> oluştur; <code>S</code> ve <code>T</code>'nin primary key'leri R'de foreign key olur.</p>
+<div class="code-pre">CREATE TABLE Buys
+      (cid: INTEGER, aid: INTEGER,
+       FOREIGN KEY cid REFERENCES Customer,
+       FOREIGN KEY aid REFERENCES Apartment,
+       PRIMARY KEY (cid))</div>
+<p>Burada participation zorunlu olmadığı için FK'yi herhangi bir tarafa koysaydık çok NULL çıkardı. Ayrı bir tablo ile hiç NULL olmaz.</p>
+<p><strong>Karar özeti (1:1):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Participation</th>
+<th>Ne yap</th>
+<th>Neden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sadece bir tarafta total</td>
+<td>FK'yi <strong>total olan tarafa</strong> koy (3A)</td>
+<td>NULL çıkmaz</td>
+</tr>
+<tr>
+<td>İki tarafta da total</td>
+<td>İki tabloyu <strong>birleştir</strong> (3B)</td>
+<td>Birebir eşleşme, NULL yok</td>
+</tr>
+<tr>
+<td>Hiçbirinde total değil</td>
+<td><strong>Ayrı ilişki tablosu</strong> (3C)</td>
+<td>Aksi halde çok NULL olur</td>
+</tr>
+</tbody>
+</table>
+<p>(3C örneğinde primary key olarak <code>cid</code> seçilmiş. 1:1 olduğu için <code>cid</code> de <code>aid</code> de tek başına benzersiz olur.)</p>
+  </section>
+
+  <section id="s5">
+    <h2>5. Adım 4: Binary 1:N (veya N:1) relationship&#x27;ler</h2>
+<p><code>S</code> <strong>N tarafı</strong>, <code>T</code> <strong>1 tarafı</strong> olsun (<code>S</code> —N— <code>R</code> —1— <code>T</code>):</p>
+<ul>
+<li><strong><code>T</code>'nin primary key'ini <code>S</code>'e (N tarafına) foreign key olarak ekle.</strong></li>
+<li>R'nin simple attribute'larını da <code>S</code>'e ekle.</li>
+</ul>
+<div class="code-pre">CREATE TABLE Employee
+      (ssn: INTEGER, name: CHAR(30),
+       in_deptid: INTEGER,
+       since: CHAR(10),
+       PRIMARY KEY (ssn),
+       FOREIGN KEY in_deptid REFERENCES Department)</div>
+<p><code>Employee</code> —N— <code>Works_In</code> —1— <code>Department</code>: bir çalışanın tek departmanı var, o yüzden departman bilgisini <strong>çalışanın satırına</strong> koyabiliyoruz (<code>in_deptid</code>). <code>since</code> (ilişkinin attribute'u) da oraya gider.</p>
+<div class="callout"><strong>Ezber kuralı:</strong> FK her zaman <strong>N tarafında</strong> durur. Çünkü N tarafındaki her kayıt, 1 tarafından <strong>tek</strong> bir kayda işaret eder. Tersi mümkün değil: 1 tarafındaki bir departmanın birçok çalışanı var, bir kolona sığmaz.</div>
+<p><strong>Recursive ilişki (supervision):</strong></p>
+<div class="code-pre">CREATE TABLE Employee
+      (ssn: INTEGER, name: CHAR(30),
+       supervisor_ssn: INTEGER,
+       PRIMARY KEY (ssn),
+       FOREIGN KEY supervisor_ssn REFERENCES Employee)</div>
+<p>Supervisor da bir <code>Employee</code> olduğu için FK <strong>aynı tabloya</strong> işaret eder. Supervisee N tarafı olduğu için kolon onda durur.</p>
+  </section>
+
+  <section id="s6">
+    <h2>6. Adım 5: Binary M:N relationship&#x27;ler</h2>
+<p>Burada FK koyacak tek bir taraf yok (her iki taraf da "çok"). Çözüm: <strong>yeni bir relation R</strong>.</p>
+<ul>
+<li><code>S</code> ve <code>T</code>'nin primary key'lerini R'ye <strong>foreign key</strong> olarak ekle.</li>
+<li>İlişkinin attribute'larını R'ye ekle.</li>
+<li>R'nin <strong>primary key</strong>'i = <code>S</code>'in PK'sı <strong>ve</strong> <code>T</code>'nin PK'sının <strong>birleşimi.</strong></li>
+</ul>
+<div class="code-pre">CREATE TABLE Works_On
+      (essn: INTEGER, pno: INTEGER, hours: INTEGER,
+       FOREIGN KEY essn REFERENCES Employee,
+       FOREIGN KEY pno REFERENCES Project,
+       PRIMARY KEY (essn, pno))</div>
+<p><code>hours</code> hem çalışana hem projeye ait değil; <strong>çiftin</strong> özelliği. Bu yüzden ilişki tablosuna girer.</p>
+  </section>
+
+  <section id="s7">
+    <h2>7. Adım 6: Multi-valued attribute&#x27;lar</h2>
+<p>Bir tablonun hücresine birden fazla değer koyamazsın (relation'da her hücre tek değer). Çözüm: <strong>her multi-valued attribute için yeni bir relation R</strong>:</p>
+<ul>
+<li>Entity'nin primary key'ini R'ye <strong>foreign key</strong> olarak ekle.</li>
+<li>R'nin <strong>primary key</strong>'i = <strong>multi-valued attribute + eklenen FK</strong> birleşimi.</li>
+</ul>
+<div class="code-pre">CREATE TABLE CarColors
+      (veh_id: CHAR(15), color: CHAR(10),
+       PRIMARY KEY (veh_id, color),
+       FOREIGN KEY veh_id REFERENCES Car)</div>
+<p>Arabanın 2 rengi varsa <code>CarColors</code>'ta 2 satır olur.</p>
+<p>(Slaytta bu örnekte <code>Car</code>'ın key'i <code>vehicle_id</code> olarak seçilmişti; Adım 1 örneğindeki (reg_state, reg_number) seçiminden farklı. Önemli olan ana fikir: entity'nin PK'sı FK olarak gelir.)</p>
+  </section>
+
+  <section id="s8">
+    <h2>8. Adım 7: N-ary relationship&#x27;ler</h2>
+<p>3 veya daha fazla entity'yi bağlayan ilişki (ternary vb.) için <strong>yeni bir relation R</strong>:</p>
+<ul>
+<li><strong>Katılan tüm entity'lerin primary key'lerini</strong> R'ye foreign key olarak ekle.</li>
+<li>İlişkinin kendi attribute'larını ekle.</li>
+<li>R'nin <strong>primary key</strong>'i = <strong>eklenen tüm FK'lerin birleşimi.</strong></li>
+</ul>
+<div class="code-pre">CREATE TABLE Supply
+      (Sname: CHAR(20), Proj_name: CHAR(10), Part_no: INTEGER, Quantity: INTEGER,
+       PRIMARY KEY (Sname, Proj_name, Part_no),
+       FOREIGN KEY Sname REFERENCES Supplier,
+       FOREIGN KEY Proj_name REFERENCES Project,
+       FOREIGN KEY Part_no REFERENCES Part)</div>
+<p>"Hangi tedarikçi, hangi projeye, hangi parçadan, ne kadar verdi?"</p>
+  </section>
+
+  <section id="s9">
+    <h2>9. Sonda yapılacak kontroller</h2>
+<p>Dönüşüm bitince şu üç şeyi kontrol et:</p>
+<ol>
+<li>ER'daki <strong>tüm bilgi</strong> (entity, ilişki, attribute) relational şemada karşılık buluyor mu?</li>
+<li>Her tabloda <strong>primary key</strong> var mı ve doğru mu?</li>
+<li>Her <strong>foreign key</strong> var mı ve doğru tabloya işaret ediyor mu?</li>
+</ol>
+  </section>
+
+  <section id="s10">
+    <h2>10. Tam örnek: Company Database</h2>
+<p>Lecture 02'deki şirket ER diyagramını adım adım çeviriyoruz.</p>
+<p><strong>Adım 1: EMPLOYEE, DEPARTMENT, PROJECT</strong></p>
+<div class="code-pre">Employee   (Ssn, Bdate, Fname, Minit, Lname, Address, Salary, Sex)
+Department (Dname, Dnumber)                    ← PK: Dnumber
+Project    (Pname, Pnumber, Plocation)         ← PK: Pnumber</div>
+<p><code>Locations</code> multi-valued olduğu için <strong>şimdilik yok</strong>; adım 6'da gelecek.</p>
+<p><strong>Adım 2: DEPENDENT + DEPENDENTS_OF</strong></p>
+<div class="code-pre">Emp_Dependents (Emp_ssn, Dep_name, Dep_sex, Dep_birthdate, Dep_relationship)
+    PK: (Emp_ssn, Dep_name)    FK: Emp_ssn → Employee</div>
+<p><strong>Adım 3: MANAGES (1:1)</strong></p>
+<p>Hangi durum? Department total, Employee partial → <strong>3A.</strong> FK Department'a eklenir:</p>
+<div class="code-pre">Department (Dname, Dnumber, Manager_SSN, Manager_startdate)
+    FK: Manager_SSN → Employee</div>
+<p><strong>Adım 4: WORKS_FOR, SUPERVISION, CONTROLS (hepsi 1:N)</strong></p>
+<ul>
+<li>WORKS_FOR: Employee N tarafı → <code>Employee</code>'ye <code>Works_In_Dno</code> FK ekle.</li>
+<li>SUPERVISION: Supervisee N tarafı → <code>Employee</code>'ye <code>Supervisor_SSN</code> FK ekle (aynı tabloya).</li>
+<li>CONTROLS: Project N tarafı → <code>Project</code>'e <code>Control_Dno</code> FK ekle.</li>
+</ul>
+<div class="code-pre">Employee (Ssn, Bdate, Fname, Minit, Lname, Address, Salary, Sex,
+          Works_In_Dno, Supervisor_SSN)
+    FK: Works_In_Dno → Department,  Supervisor_SSN → Employee
+Project  (Pname, Pnumber, Plocation, Control_Dno)
+    FK: Control_Dno → Department</div>
+<p><strong>Adım 5: WORKS_ON (M:N)</strong></p>
+<div class="code-pre">Works_On (Emp_Ssn, Proj_Pnum, Hours)
+    PK: (Emp_Ssn, Proj_Pnum)    FK: Emp_Ssn → Employee,  Proj_Pnum → Project</div>
+<p><strong>Adım 6: Department'ın Locations'ı (multi-valued)</strong></p>
+<div class="code-pre">Dept_Locations (Dnum, Location)
+    PK: (Dnum, Location)    FK: Dnum → Department</div>
+<p><strong>Adım 7:</strong> Şirket diyagramında ternary ilişki yok → <strong>işlem yok.</strong></p>
+<h3>Nihai sonuç: 6 tablo</h3>
+<div class="code-pre">Dept_Locations (Dnum, Location)
+Works_On       (Emp_Ssn, Proj_Pnum, Hours)
+Employee       (Ssn, Bdate, Fname, Minit, Lname, Address, Salary, Sex,
+                Works_In_Dno, Supervisor_Ssn)
+Department     (Dname, Dnumber, Manager_Ssn, Manager_startdate)
+Emp_Dependents (Emp_ssn, Dep_name, Dep_sex, Dep_Birthdate, Dep_Relationship)
+Project        (Pname, Pnumber, Plocation, Control_Dno)</div>
+<div class="callout callout--warn"><strong>Dikkat (sık hata):</strong> İlişkileri (MANAGES, WORKS_FOR, CONTROLS...) ayrı tablo yapma. 1:1 ve 1:N ilişkiler tablo <strong>açmaz</strong>, bir tabloya <strong>FK kolonu olarak</strong> girer. Sadece M:N, N-ary ve (3C durumunda) 1:1 ilişkiler kendi tablolarını alır.</div>
+  </section>
+
+  <section id="s11">
+    <h2>Özet</h2>
+<ul>
+<li>Dönüşümün hedefi: bilgiyi koru, <strong>NULL ve tekrarı azalt.</strong></li>
+<li>Adım 1: regular entity → tablo (composite attribute parçalara ayrılır). Subclass → kendi tablosu, PK superclass'tan gelen FK.</li>
+<li>Adım 2: weak entity → tablo, PK = owner PK + partial key.</li>
+<li>Adım 3 (1:1): tek tarafta total → FK total tarafa; iki tarafta total → tabloları birleştir; hiçbirinde total değil → ilişki tablosu.</li>
+<li>Adım 4 (1:N): <strong>FK N tarafında.</strong></li>
+<li>Adım 5 (M:N): ilişki tablosu, PK = iki PK'nın birleşimi.</li>
+<li>Adım 6: multi-valued attribute → ayrı tablo. Adım 7: N-ary → ilişki tablosu, PK = tüm FK'ler.</li>
+<li>Bitince: bilgi eksik mi, PK'lar ve FK'ler doğru mu kontrol et.</li>
+</ul>
+  </section>
+
+  <section id="s12">
+    <h2>Kendini test et</h2>
+<ol>
+<li><code>Employee</code> —N— <code>Works_In</code> —1— <code>Department</code> ilişkisini çevirirken FK'yi hangi tabloya koyarsın? Neden?</li>
+<li><code>Student</code> —M— <code>Enrolled</code> —N— <code>Course</code> (attribute: <code>grade</code>) için hangi tablo(lar) oluşur? Primary key ne olur?</li>
+<li>1:1 <code>Person</code> — <code>Passport</code> ilişkisinde her pasaport bir kişiye ait olmak zorunda ama her kişinin pasaportu yok. Hangi durum ve nasıl çevirirsin?</li>
+<li><code>Person(ssn, name, phone_numbers)</code> — burada <code>phone_numbers</code> multi-valued. Relational şemada nasıl ifade edersin?</li>
+<li>Bir weak entity'nin tablosunun primary key'i neden iki parçalıdır?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li><strong>Employee'ye</strong> (N tarafı). Her çalışanın tek bir departmanı var, o yüzden <code>in_deptid</code> kolonu yeter. Tersi mümkün değil (bir departmanın çok çalışanı var).</li>
+<li>M:N olduğu için <strong>yeni bir <code>Enrolled</code> tablosu</strong>: <code>Enrolled(sid, cid, grade)</code>, PK = (<code>sid</code>, <code>cid</code>), <code>sid</code> → Student, <code>cid</code> → Course FK'leri. <code>grade</code> ilişkiye ait olduğu için buraya girer.</li>
+<li>Participation sadece bir tarafta zorunlu → <strong>Durum 3A.</strong> Total olan taraf <code>Passport</code>: <code>Passport</code>'a <code>owner_ssn</code> FK'sini ekle (her pasaportun sahibi dolu, NULL çıkmaz). Eğer FK'yi <code>Person</code>'a koysaydık çok kişi için NULL olurdu.</li>
+<li>Ayrı bir tablo: <code>Person_Phones(ssn, phone)</code>, PK = (<code>ssn</code>, <code>phone</code>), <code>ssn</code> → Person FK. Bir kişinin 3 telefonu varsa 3 satır olur.</li>
+<li>Weak entity'nin kendi key'i yok, sadece <strong>partial key</strong>'i var (örneğin dependent adı, çalışanlar arasında tekrar eder). Benzersiz kimlik için <strong>sahibin PK'sı + partial key</strong> birleşimi gerekir.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="comp306-lecture3.html">← Lecture 3</a> · <a href="comp306-lecture5.html">Lecture 5 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

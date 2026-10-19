@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COMP 306 – Problem Session 2 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes306.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../logo.svg" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Nasıl çalışmalı? (Cümle cümle okuma yöntemi)</a></li>
+    <li><a href="#s2">2. Soru 1: TRAVEL-BEST seyahat acentesi</a></li>
+    <li><a href="#s3">3. Soru 2: Kütüphane</a></li>
+    <li><a href="#s4">4. Soru 3: Araba bayisi</a></li>
+    <li><a href="#s5">Özet</a></li>
+    <li><a href="#s6">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-306">
+  <div class="note-meta">
+    <span class="note-course-badge">COMP 306</span>
+    <span class="note-week-label">Problem Session 2</span>
+  </div>
+  <h1 class="note-main-title">ER Modelleme Alıştırmaları</h1>
+  <p class="note-intro">Problem session'daki üç soru da aynı işi ister: <strong>sözlü bir tarifi okuyup ER diyagramına çevirmek.</strong> Bu notta her soru için önce <strong>nasıl düşünüleceğini</strong>, sonra <strong>çözüm iskeletini</strong> (entity'ler, ilişkiler, cardinality, participation) veriyorum. Önce kendin çizmeyi dene, sonra karşılaştır. En sonda da Lecture 04'ün adımlarıyla tabloya çeviriyoruz.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Nasıl çalışmalı? (Cümle cümle okuma yöntemi)</h2>
+<p>Tarif metnini şu sırayla işle:</p>
+<ol>
+<li><strong>İsimler → entity ya da attribute adayı.</strong> ("müşteri", "uçuş", "kredi kartı" → entity; "adres", "tarih" → attribute)</li>
+<li><strong>Fiiller → relationship adayı.</strong> ("rezervasyon yapar", "içerir", "puanlar")</li>
+<li><strong>"benzersiz (unique)" → key.</strong> Altını çiz.</li>
+<li><strong>"birkaç / çok" → N, "en fazla bir" → 1.</strong> Cardinality'yi buradan çıkar.</li>
+<li><strong>"zorunda", "olmak zorunda", "asla" → participation (çift çizgi).</strong> "Olabilir" → partial.</li>
+<li><strong>"ya şu ya bu" → subclass/superclass.</strong> "Ya da, ikisi birden olamaz" → <strong>disjoint</strong>; "ikisi de olabilir" → <strong>overlapping</strong>; "başka tür yok" → <strong>total</strong>.</li>
+<li><strong>İlişkinin üstünde bir bilgi</strong> (tarih, puan, saat...) → relationship'in attribute'u.</li>
+<li>Bir şey sadece <strong>bir alt türe</strong> aitse (örn. sadece bireysel müşteriler puanlar) ilişkiyi <strong>o alt türe</strong> bağla (Lecture 02, ipucu 3).</li>
+</ol>
+  </section>
+
+  <section id="s2">
+    <h2>2. Soru 1: TRAVEL-BEST seyahat acentesi</h2>
+<div class="callout"><strong>Tarif (özet):</strong> İki tür müşteri var: bireysel ve kurumsal. Her müşteri ya bireysel ya kurumsaldır, başka tür yok. İkisi için de customer ID (benzersiz), ad, telefon ve adres tutulur. <strong>Kurumsal:</strong> hesap numarası ve birkaç çalışan (staff; her birinin adı ve telefonu). <strong>Bireysel:</strong> cep telefonu ve ad; ayrıca birkaç kayıtlı kredi kartı olabilir; bir kart <strong>en fazla bir</strong> müşteri tarafından kaydedilir; kartın adı, son kullanma tarihi ve benzersiz kart numarası var (<strong>ipucu: kredi kartı weak entity olsun</strong>). Bir müşteri birkaç <strong>rezervasyon</strong> yapabilir; bir rezervasyon en fazla bir müşteri tarafından yapılır; rezervasyonun tarihi, platformu (web, mobil, telefon...) ve benzersiz ID'si var. Bir rezervasyon birkaç <strong>uçuş</strong> içerir; aynı uçuş birçok rezervasyonda olabilir; uçuşun kalkış, varış ve benzersiz uçuş numarası var. Son olarak <strong>bireysel müşteriler uçuşları puanlar</strong> (kurumsal müşteriler <strong>puanlamaz!</strong>); bir bireysel müşteri çok uçuşu, bir uçuş çok bireysel müşteri tarafından puanlanabilir; puan değeri tutulur.</div>
+<h3>Nasıl düşünülür?</h3>
+<ul>
+<li><strong>"İki tür müşteri"</strong> → superclass <code>CUSTOMER</code>, subclass'lar <code>INDIVIDUAL</code> ve <code>CORPORATE</code>.</li>
+<li><strong>"Ya biri ya diğeri, başka tür yok"</strong> → <strong>disjoint (d)</strong> + <strong>total</strong> (çift çizgi).</li>
+<li><strong>Ortak attribute'lar</strong> (ID, ad, telefon, adres) → superclass'ta. Bireysel için "ad" tekrar yazılmış ama zaten miras alıyor; subclass'ta tekrar çizme.</li>
+<li><strong>"Puanlamayı sadece bireysel yapar"</strong> → <code>RATES</code> ilişkisi <code>CUSTOMER</code>'a değil <strong><code>INDIVIDUAL</code>'a</strong> bağlanır. (Bu sorunun asıl püf noktası.)</li>
+</ul>
+<h3>Çözüm iskeleti</h3>
+<p><strong>Entity'ler</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Attribute'lar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CUSTOMER</code></td>
+<td><strong>cust_id</strong> (key), name, phone, address</td>
+</tr>
+<tr>
+<td><code>INDIVIDUAL</code> (subclass)</td>
+<td>cell_phone</td>
+</tr>
+<tr>
+<td><code>CORPORATE</code> (subclass)</td>
+<td>account_no, <strong>staff</strong> (multi-valued <strong>composite</strong>: name, phone)</td>
+</tr>
+<tr>
+<td><code>CREDIT_CARD</code> (<strong>weak</strong>)</td>
+<td><em>card_no</em> (partial key), name, expiration_date</td>
+</tr>
+<tr>
+<td><code>RESERVATION</code></td>
+<td><strong>res_id</strong> (key), res_date, platform</td>
+</tr>
+<tr>
+<td><code>FLIGHT</code></td>
+<td><strong>flight_no</strong> (key), origin, destination</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subclass ilişkisi:</strong> <code>CUSTOMER</code> → {<code>INDIVIDUAL</code>, <code>CORPORATE</code>}, <strong>d</strong> + <strong>total</strong>.</p>
+<p><strong>İlişkiler</strong></p>
+<table>
+<thead>
+<tr>
+<th>İlişki</th>
+<th>Taraflar</th>
+<th>Cardinality</th>
+<th>Participation</th>
+<th>Attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SAVES</code> (identifying)</td>
+<td><code>INDIVIDUAL</code> — <code>CREDIT_CARD</code></td>
+<td>1 : N</td>
+<td>Credit card <strong>total</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>MAKES</code></td>
+<td><code>CUSTOMER</code> — <code>RESERVATION</code></td>
+<td>1 : N</td>
+<td>Müşteri <strong>partial</strong> (hiç rezervasyonu olmayabilir); rezervasyon tarafı "en fazla bir müşteri"</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>CONTAINS</code></td>
+<td><code>RESERVATION</code> — <code>FLIGHT</code></td>
+<td>M : N</td>
+<td>İki taraf partial (metinde "zorunlu" yazmıyor)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RATES</code></td>
+<td><code>INDIVIDUAL</code> — <code>FLIGHT</code></td>
+<td>M : N</td>
+<td>İki taraf partial</td>
+<td><strong>rating</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dikkat edilecek noktalar:</strong></p>
+<ul>
+<li><code>staff</code>, bir kurumsal müşterinin birkaç çalışanı olduğu ve her çalışanın birden fazla parçası (ad, telefon) olduğu için <strong>hem multi-valued hem composite</strong> bir attribute (çift elips; içinde name ve phone). Alternatif olarak weak entity de olurdu; ikisi de kabul edilebilir.</li>
+<li><code>CREDIT_CARD</code>'ın kart numarası aslında benzersiz, ama ipucu gereği weak entity yapıyoruz: partial key olarak kart numarası, identifying relationship <code>SAVES</code> ile bireysel müşteriye bağlı. Kartı bir müşteri kaydettiği için "en fazla bir müşteri" şartı da 1 : N ile karşılanıyor.</li>
+<li>"Rezervasyon en fazla bir müşteri tarafından yapılır" cümlesi <strong>cardinality'yi 1</strong> yapar. Zorunlu olduğunu söylemez; o yüzden rezervasyon tarafını total yapmak için ek bilgi lazım.</li>
+</ul>
+<h3>Relational model (Lecture 04'ün adımlarıyla)</h3>
+<div class="practice-q"><details><summary>Dönüşümü gör</summary><div class="solution"><div class="code-pre">CUSTOMER            (cust_id, name, phone, address)
+INDIVIDUAL          (cust_id, cell_phone)                       FK: cust_id → CUSTOMER
+CORPORATE           (cust_id, account_no)                       FK: cust_id → CUSTOMER
+CORP_STAFF          (cust_id, staff_name, staff_phone)          PK: üçü birlikte; FK: cust_id → CORPORATE
+CREDIT_CARD         (cust_id, card_no, name, expiration_date)   PK: (cust_id, card_no); FK: cust_id → INDIVIDUAL
+RESERVATION         (res_id, res_date, platform, cust_id)       FK: cust_id → CUSTOMER
+FLIGHT              (flight_no, origin, destination)
+CONTAINS            (res_id, flight_no)                         PK: ikisi birlikte; iki FK
+RATES               (cust_id, flight_no, rating)                PK: (cust_id, flight_no); FK: cust_id → INDIVIDUAL, flight_no → FLIGHT</div>
+<p>Hangi adım neyi üretti?</p>
+<ul>
+<li><strong>Adım 1</strong> → <code>CUSTOMER</code>, <code>RESERVATION</code>, <code>FLIGHT</code>; subclass kuralı → <code>INDIVIDUAL</code>, <code>CORPORATE</code></li>
+<li><strong>Adım 2</strong> → <code>CREDIT_CARD</code> (weak entity + SAVES birlikte)</li>
+<li><strong>Adım 4</strong> (1:N, <code>MAKES</code>) → <code>RESERVATION</code>'a <code>cust_id</code> FK'si (N tarafı)</li>
+<li><strong>Adım 5</strong> (M:N) → <code>CONTAINS</code>, <code>RATES</code></li>
+<li><strong>Adım 6</strong> (multi-valued) → <code>CORP_STAFF</code></li>
+</ul></div></details></div>
+  </section>
+
+  <section id="s3">
+    <h2>3. Soru 2: Kütüphane</h2>
+<div class="callout"><strong>Tarif (özet):</strong> Kütüphanede çok kitap var; her kitabın benzersiz <strong>ISBN</strong>'i, başlığı, fiyatı, kapak türü ve sayfa sayısı var. Kitapları <strong>yazarlar</strong> yazar; bir yazar birçok kitap, bir kitabı birçok ortak yazar yazabilir; yazarın adı ve benzersiz ID'si var. İki tür müşteri var: <strong>kayıtlı</strong> ve <strong>ziyaretçi</strong>. Her müşteri kayıtlı veya ziyaretçi olmak zorunda, <strong>ikisi birden de olabilir</strong> (John önce ziyaretçi, sonra kayıtlı olabilir). Her ikisi için ID (benzersiz), ad ve e-posta (<strong>birden fazla</strong> e-posta olabilir). Kayıtlı müşteri için <strong>kayıt tarihi</strong>, ziyaretçi için <strong>adres ve telefon</strong> tutulur. <strong>Her iki tür</strong> müşteri kitap <strong>satın alabilir</strong>; bir müşteri birkaç kitap alabilir ama bir kitap <strong>birden çok müşteri tarafından alınamaz</strong>; satın alma tarihi ve ödeme yöntemi (nakit, kredi kartı, çek...) tutulur; bir kitap alımında <strong>tek</strong> ödeme yöntemi kullanılır. <strong>Sadece kayıtlı</strong> müşteriler kitap <strong>ödünç alabilir</strong> (ziyaretçiler alamaz); ödünç alma ve iade tarihi tutulur.</div>
+<h3>Nasıl düşünülür?</h3>
+<ul>
+<li><strong>Subclass:</strong> <code>CUSTOMER</code> → {<code>REGISTERED</code>, <code>VISITING</code>}. "Her müşteri kayıtlı <strong>veya</strong> ziyaretçi, ikisi birden de olabilir" → <strong>overlapping (o)</strong> + <strong>total.</strong> (Soru 1'deki disjoint'ten farkı burada.)</li>
+<li><strong>E-posta birden fazla</strong> → <code>email</code> multi-valued attribute (çift elips), superclass'ta.</li>
+<li><strong>Satın alma "her iki tür" için</strong> → <code>BUYS</code> <strong><code>CUSTOMER</code>'a</strong> bağlanır (superclass).</li>
+<li><strong>Ödünç alma sadece kayıtlı için</strong> → <code>BORROWS</code> <strong><code>REGISTERED</code>'a</strong> bağlanır.</li>
+<li><strong>"Kitap birden çok müşteri tarafından alınamaz"</strong> → <code>BUYS</code> <strong>1 : N</strong> (bir müşteri çok kitap, bir kitap en fazla bir müşteri).</li>
+<li><strong>"Tek ödeme yöntemi"</strong> → <code>payment_method</code> <strong>tek değerli</strong> attribute (multi-valued değil). Birden fazla ödeme yöntemi mümkün olsaydı farklı modellerdik.</li>
+</ul>
+<h3>Çözüm iskeleti</h3>
+<p><strong>Entity'ler</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Attribute'lar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BOOK</code></td>
+<td><strong>isbn</strong> (key), title, price, cover_type, num_pages</td>
+</tr>
+<tr>
+<td><code>AUTHOR</code></td>
+<td><strong>author_id</strong> (key), name</td>
+</tr>
+<tr>
+<td><code>CUSTOMER</code></td>
+<td><strong>cust_id</strong> (key), name, <strong>email</strong> (multi-valued)</td>
+</tr>
+<tr>
+<td><code>REGISTERED</code> (subclass)</td>
+<td>registration_date</td>
+</tr>
+<tr>
+<td><code>VISITING</code> (subclass)</td>
+<td>address, phone</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subclass ilişkisi:</strong> <code>CUSTOMER</code> → {<code>REGISTERED</code>, <code>VISITING</code>}, <strong>o</strong> (overlapping) + <strong>total.</strong></p>
+<p><strong>İlişkiler</strong></p>
+<table>
+<thead>
+<tr>
+<th>İlişki</th>
+<th>Taraflar</th>
+<th>Cardinality</th>
+<th>Attribute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WRITES</code></td>
+<td><code>AUTHOR</code> — <code>BOOK</code></td>
+<td>M : N</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BUYS</code></td>
+<td><code>CUSTOMER</code> — <code>BOOK</code></td>
+<td>1 : N</td>
+<td>purchase_date, payment_method</td>
+</tr>
+<tr>
+<td><code>BORROWS</code></td>
+<td><code>REGISTERED</code> — <code>BOOK</code></td>
+<td>M : N</td>
+<td>borrow_date, return_date</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dikkat:</strong></p>
+<ul>
+<li><code>BORROWS</code> basit bir M:N olduğu için aynı kayıtlı müşteri aynı kitabı <strong>iki farklı zamanda</strong> ödünç alırsa, ikisini de saklayamazsın (Lecture 02'deki Works_In2/Works_In3 problemi). Sorunun metni bunu istemiyor, ama gerçek bir kütüphane için <strong>ödünç alma kaydı ayrı bir entity</strong> olurdu (bu benim ek notum).</li>
+<li><code>purchase_date</code> ve <code>payment_method</code>, bir kitabın alımına ait. Kitap en fazla bir kez satın alınabildiği için bunlar sonunda <code>BOOK</code> tablosuna iner (aşağıya bak).</li>
+</ul>
+<h3>Relational model</h3>
+<div class="practice-q"><details><summary>Dönüşümü gör</summary><div class="solution"><div class="code-pre">BOOK           (isbn, title, price, cover_type, num_pages, buyer_id, purchase_date, payment_method)
+                   FK: buyer_id → CUSTOMER     (NULL: kitap henüz satılmadıysa)
+AUTHOR         (author_id, name)
+WRITES         (author_id, isbn)                               PK: ikisi birlikte; iki FK
+CUSTOMER       (cust_id, name)
+CUSTOMER_EMAIL (cust_id, email)                                PK: ikisi birlikte; FK: cust_id → CUSTOMER
+REGISTERED     (cust_id, registration_date)                    FK: cust_id → CUSTOMER
+VISITING       (cust_id, address, phone)                       FK: cust_id → CUSTOMER
+BORROWS        (cust_id, isbn, borrow_date, return_date)       PK: (cust_id, isbn); FK: cust_id → REGISTERED, isbn → BOOK</div>
+<ul>
+<li><code>BUYS</code> (1:N) → <strong>Adım 4:</strong> FK, N tarafı olan <code>BOOK</code>'a gelir; <code>purchase_date</code> ve <code>payment_method</code> de oraya.</li>
+<li><code>WRITES</code>, <code>BORROWS</code> (M:N) → <strong>Adım 5.</strong></li>
+<li><code>email</code> (multi-valued) → <strong>Adım 6</strong> → <code>CUSTOMER_EMAIL</code>.</li>
+</ul></div></details></div>
+  </section>
+
+  <section id="s4">
+    <h2>4. Soru 3: Araba bayisi</h2>
+<div class="callout"><strong>Tarif (özet):</strong> Bayi <strong>araç</strong> satar; her aracın modeli, fiyatı ve benzersiz <strong>vin</strong>'i var. Her araç <strong>tam olarak bir</strong> kategoriye aittir: <strong>car, truck, SUV.</strong> Car için <strong>motor hacmi</strong>, truck için <strong>tonaj</strong>, SUV için <strong>koltuk sayısı</strong> tutulur. Bayi birkaç <strong>tam zamanlı satış elemanı</strong> çalıştırır (benzersiz ID, benzersiz olmayan ad). Satış elemanları araçları <strong>müşterilere</strong> satar. <strong>Her satışta bir satış elemanı ve bir müşteri</strong>, ama <strong>birden fazla araç</strong> olabilir (Ali, Ahmet'e X ve Y araçlarını satabilir; Ali ve Veli birlikte Ahmet'e satamaz; Ali aynı satışta hem Ahmet'e hem Ayşe'ye satamaz). Satış tarihi tutulur. <strong>Satılmamış araç</strong> ve <strong>hiç satış yapmamış satış elemanı</strong> olabilir; ama <strong>hiç araç almamış müşteri</strong> olamaz. Müşteri için <strong>SSN</strong> (benzersiz), ad ve adres (<strong>state, city, street</strong>) tutulur.</div>
+<h3>Nasıl düşünülür?</h3>
+<ul>
+<li><strong>"Tam olarak bir kategori: car, truck veya SUV"</strong> → superclass <code>VEHICLE</code>, üç subclass; <strong>d + total.</strong></li>
+<li><strong>Adres 3 parçalı</strong> → <strong>composite</strong> attribute: <code>address(state, city, street)</code>.</li>
+<li><strong>Satış:</strong> Üç taraf (satış elemanı, müşteri, araç) + tarih. En doğal model: <strong>ternary relationship</strong> <code>SALE</code>.</li>
+<li><strong>Participation:</strong><ul>
+<li>Satılmamış araç olabilir → <code>VEHICLE</code> <strong>partial</strong></li>
+<li>Hiç satış yapmamış satış elemanı olabilir → <code>SALESPERSON</code> <strong>partial</strong></li>
+<li>Hiç araç almamış müşteri olamaz → <code>CUSTOMER</code> <strong>total</strong> (çift çizgi)</li>
+</ul>
+</li>
+</ul>
+<h3>Çözüm iskeleti</h3>
+<p><strong>Entity'ler</strong></p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Attribute'lar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VEHICLE</code></td>
+<td><strong>vin</strong> (key), model, price</td>
+</tr>
+<tr>
+<td><code>CAR</code> (subclass)</td>
+<td>engine_size</td>
+</tr>
+<tr>
+<td><code>TRUCK</code> (subclass)</td>
+<td>tonnage</td>
+</tr>
+<tr>
+<td><code>SUV</code> (subclass)</td>
+<td>num_seats</td>
+</tr>
+<tr>
+<td><code>SALESPERSON</code></td>
+<td><strong>sp_id</strong> (key), name</td>
+</tr>
+<tr>
+<td><code>CUSTOMER</code></td>
+<td><strong>ssn</strong> (key), name, address (composite: state, city, street)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subclass ilişkisi:</strong> <code>VEHICLE</code> → {<code>CAR</code>, <code>TRUCK</code>, <code>SUV</code>}, <strong>d + total.</strong></p>
+<p><strong>İlişki:</strong> <code>SALE</code> — <strong>ternary</strong> (<code>SALESPERSON</code>, <code>CUSTOMER</code>, <code>VEHICLE</code>), attribute: <code>sale_date</code>.</p>
+<div class="code-pre">SALESPERSON --1--\
+                  &lt;SALE&gt; (sale_date) --N-- VEHICLE
+CUSTOMER ====1===/
+         (çift çizgi: her müşteri en az bir satışta)</div>
+<p>Cardinality'leri şöyle okuyoruz: 1 — 1 — N.</p>
+<ul>
+<li>Bir (müşteri, araç) çifti için <strong>en fazla bir</strong> satış elemanı → "Ali ve Veli Ahmet'e aynı aracı satamaz."</li>
+<li>Bir (satış elemanı, araç) çifti için <strong>en fazla bir</strong> müşteri → "Ali aynı aracı hem Ahmet'e hem Ayşe'ye satamaz."</li>
+<li>Bir (satış elemanı, müşteri) çifti için <strong>birçok</strong> araç → "Ali, Ahmet'e X ve Y'yi satabilir."</li>
+</ul>
+<div class="callout"><strong>Not (alternatif):</strong> Tarifte satış için ayrı bir ID verilmemiş. Pek çok çözüm yolu mümkün. Bir başka kabul edilebilir yaklaşım <code>SALE</code>'i <strong>ayrı bir entity</strong> yapmaktır (kendi <code>sale_id</code>'siyle; salesperson'a, customer'a ve vehicle'a bağlanır). Ternary çözüm cümleleri daha doğrudan karşıladığı için ben bunu seçtim. Bu, benim yorumum; sınavda hocanın çözümündeki notasyona dikkat et.</div>
+<h3>Relational model</h3>
+<div class="practice-q"><details><summary>Dönüşümü gör</summary><div class="solution"><div class="code-pre">VEHICLE      (vin, model, price)
+CAR          (vin, engine_size)           FK: vin → VEHICLE
+TRUCK        (vin, tonnage)               FK: vin → VEHICLE
+SUV          (vin, num_seats)             FK: vin → VEHICLE
+SALESPERSON  (sp_id, name)
+CUSTOMER     (ssn, name, state, city, street)
+SALE         (sp_id, ssn, vin, sale_date) PK: (sp_id, ssn, vin); FK: sp_id → SALESPERSON, ssn → CUSTOMER, vin → VEHICLE</div>
+<ul>
+<li>Subclass kuralı (Adım 1) → <code>CAR</code>, <code>TRUCK</code>, <code>SUV</code>, PK = superclass PK.</li>
+<li>Composite <code>address</code> → üç ayrı kolon (Adım 1).</li>
+<li>Ternary <code>SALE</code> → <strong>Adım 7</strong>: tüm FK'ler + kendi attribute'ı; PK = FK'lerin birleşimi (dersteki genel kural).</li>
+</ul></div></details></div>
+  </section>
+
+  <section id="s5">
+    <h2>Özet</h2>
+<ul>
+<li>ER tarifini <strong>cümle cümle</strong> oku: isim → entity/attribute, fiil → ilişki, "unique" → key, "birkaç/en fazla bir" → cardinality, "zorunda" → total participation.</li>
+<li><strong>"Ya biri ya diğeri"</strong> → disjoint; <strong>"ikisi birden olabilir"</strong> → overlapping; <strong>"başka tür yok"</strong> → total.</li>
+<li>İlişki sadece bir alt türe aitse (puanlama: bireysel; ödünç alma: kayıtlı) <strong>o alt türe</strong> bağla.</li>
+<li>Birden fazla değer → <strong>multi-valued</strong> (e-posta, staff); parçalı değer → <strong>composite</strong> (adres).</li>
+<li>İlişkinin üstünde bir bilgi (puan, tarih) → <strong>relationship attribute.</strong></li>
+<li>Üç taraflı olay (satış) → <strong>ternary</strong> relationship (ya da ayrı entity).</li>
+</ul>
+  </section>
+
+  <section id="s6">
+    <h2>Kendini test et</h2>
+<ol>
+<li>Soru 1'de <code>RATES</code> ilişkisini neden <code>CUSTOMER</code>'a değil <code>INDIVIDUAL</code>'a bağladık?</li>
+<li>Soru 2'de müşteriler için neden <strong>overlapping</strong>, Soru 1'de <strong>disjoint</strong> kullandık?</li>
+<li>Soru 3'te "hiç araç almamış müşteri olamaz" cümlesi diyagramda neyi değiştirir?</li>
+<li>Soru 2'de bir kayıtlı müşteri aynı kitabı iki kez ödünç alsa, mevcut modelde neden sorun çıkar? Nasıl çözersin?</li>
+<li>Soru 1'de kurumsal müşterinin birden fazla çalışanı (staff) neden ayrı bir tablo olarak çıkar?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>Çünkü <strong>kurumsal müşteriler uçuşları puanlamaz.</strong> <code>CUSTOMER</code>'a bağlasaydık kurumsal müşteriler de puanlayabilir olurdu, tarifle çelişirdi. Sadece bir alt türe ait olan ilişki o alt türe bağlanır.</li>
+<li>Soru 2'de "bir müşteri <strong>hem kayıtlı hem ziyaretçi</strong> olabilir" deniyor → <strong>overlapping.</strong> Soru 1'de müşteri <strong>ya bireysel ya kurumsal</strong>, ikisi birden olamaz → <strong>disjoint.</strong></li>
+<li><code>CUSTOMER</code>'ın <code>SALE</code> ilişkisine katılımı <strong>total</strong> olur, yani diyagramda <code>CUSTOMER</code> ile <code>SALE</code> arasına <strong>çift çizgi</strong> çizilir.</li>
+<li>Basit M:N ilişkide aynı (müşteri, kitap) çifti için <strong>tek bir</strong> (borrow_date, return_date) saklanabilir (relational modelde PK = (cust_id, isbn)). Çözüm: ödünç almayı <strong>ayrı bir entity</strong> yap (ör. <code>LOAN</code>) ya da tabloya tarihi PK'ya dahil et.</li>
+<li><code>staff</code> <strong>multi-valued</strong> bir attribute olduğu için Adım 6 gereği ayrı tablo (<code>CORP_STAFF</code>) olur: PK = (cust_id, staff_name, staff_phone), FK = cust_id → <code>CORPORATE</code>.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="comp306-lecture5.html">← Lecture 5</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>

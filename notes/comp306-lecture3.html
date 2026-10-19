@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COMP 306 – Lecture 3 | Kadir Hanbaba</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="notes.css"/>
+  <link rel="stylesheet" href="notes306.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>(function(){const s=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',s);})();</script>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo"><img src="../logo.svg" alt="KH Logo" class="nav-logo-img"/></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#projects">Projeler</a></li>
+    <li><a href="../index.html#notes">Notlar</a></li>
+    <li><a href="../index.html#contact">İletişim</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Tema değiştir">
+      <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+    </button>
+  </div>
+</nav>
+
+<div class="note-layout">
+<aside class="toc">
+  <p class="toc-title">İçindekiler</p>
+  <ul>
+    <li><a href="#s1">1. Relational model nereden çıktı?</a></li>
+    <li><a href="#s2">2. Relation&#x27;ın tanımı</a></li>
+    <li><a href="#s3">3. Key&#x27;ler: superkey, key, primary key</a></li>
+    <li><a href="#s4">4. Foreign key</a></li>
+    <li><a href="#s5">5. Integrity constraint&#x27;ler</a></li>
+    <li><a href="#s6">6. Referential integrity ve ihlallerin yönetimi</a></li>
+    <li><a href="#s7">7. Alıştırma: hangi işlem hangi constraint&#x27;i bozar?</a></li>
+    <li><a href="#s8">Özet</a></li>
+    <li><a href="#s9">Kendini test et</a></li>
+  </ul>
+</aside>
+
+<main class="note-content note-306">
+  <div class="note-meta">
+    <span class="note-course-badge">COMP 306</span>
+    <span class="note-week-label">Lecture 3</span>
+  </div>
+  <h1 class="note-main-title">Relational Model</h1>
+  <p class="note-intro">ER diyagramı bir <strong>çizim</strong>. Gerçek bir DBMS'in anlayacağı dil ise <strong>tablolar</strong>. Bu derste veritabanlarının neredeyse tamamının dayandığı <strong>Relational Model</strong>'i öğreniyoruz: relation, tuple, key, foreign key ve veritabanının bozulmasını engelleyen <strong>integrity constraint</strong>'ler.</p>
+  <div class="note-divider"></div>
+
+  <section id="s1">
+    <h2>1. Relational model nereden çıktı?</h2>
+<p>Relational model'i 1970'te IBM Research'ten <strong>Dr. E. F. Codd</strong> önerdi ("A relational model of data for large shared data banks", Communications of the ACM). DBMS alanında devrim yaratan bir makaledir ve Codd bunun için <strong>ACM Turing Award</strong> kazandı.</p>
+<p>Temel fikir, <strong>relation</strong> kavramıdır. Gündelik dille:</p>
+<ul>
+<li>Relation = <strong>çok satırlı bir tablo.</strong></li>
+<li>En üstteki <strong>başlık (header)</strong> relation'ın şemasıdır.</li>
+<li>Satırlar <strong>veri kayıtlarıdır (tuple).</strong></li>
+</ul>
+  </section>
+
+  <section id="s2">
+    <h2>2. Relation&#x27;ın tanımı</h2>
+<h3>Schema (şema)</h3>
+<p>Bir relation'ın <strong>schema</strong>'sı, onun nasıl tanımlandığını söyler: relation'ın adı, attribute'larının adları ve her attribute'un domain'i (izin verilen değerler). <strong>İçindeki veriler (tuple'lar) şemaya dahil değildir.</strong></p>
+<p>Yazılışı: <code>R(A1, A2, ..., An)</code></p>
+<div class="code-pre">STUDENT(Name, Ssn, Home_phone, Address, Office_phone, Age, Gpa)</div>
+<h3>Formel notasyon</h3>
+<table>
+<thead>
+<tr>
+<th>Sembol</th>
+<th>Anlam</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>R</code></td>
+<td>Relation'ın adı</td>
+</tr>
+<tr>
+<td><code>A1, ..., An</code></td>
+<td>Attribute'lar</td>
+</tr>
+<tr>
+<td><code>R(A1, ..., An)</code></td>
+<td>Relation'ın <strong>schema</strong>'sı</td>
+</tr>
+<tr>
+<td><code>dom(Aj)</code></td>
+<td><code>Aj</code>'nin domain'i (alabileceği değerler kümesi)</td>
+</tr>
+<tr>
+<td><code>r(R)</code></td>
+<td><code>R</code>'nin <strong>belirli bir durumu (state)</strong>: o an var olan tuple'lar kümesi</td>
+</tr>
+<tr>
+<td><code>t = &lt;v1, ..., vn&gt;</code></td>
+<td>Bir tuple; her <code>vj ∈ dom(Aj)</code></td>
+</tr>
+<tr>
+<td><code>t[Aj]</code></td>
+<td><code>t</code> tuple'ının <code>Aj</code> attribute'undaki değeri</td>
+</tr>
+</tbody>
+</table>
+<h3>Küçük örnek</h3>
+<p><code>R(A1, A2)</code> olsun. <code>dom(A1) = {0, 1}</code> ve <code>dom(A2) = {a, b, c}</code>.</p>
+<ul>
+<li>Tüm olası kombinasyonlar: <code>dom(A1) × dom(A2) = {&lt;0,a&gt;, &lt;0,b&gt;, &lt;0,c&gt;, &lt;1,a&gt;, &lt;1,b&gt;, &lt;1,c&gt;}</code></li>
+<li>Relation state, bu kümenin <strong>bir alt kümesidir</strong>: <code>r(R) ⊆ dom(A1) × dom(A2)</code></li>
+<li>Örneğin <code>r(R) = {&lt;0,a&gt;, &lt;0,b&gt;, &lt;1,c&gt;}</code> geçerli bir state'tir (3 tuple).</li>
+</ul>
+<div class="callout"><strong>Şema ile state'i karıştırma:</strong> Şema neredeyse hiç değişmez (tablonun başlığı). State sürekli değişir (satır ekle, sil, güncelle). Aynı şemaya sahip bir relation'ın zaman içinde sayısız farklı state'i olur.</div>
+<h3>Tuple'lar hakkında üç kural</h3>
+<ul>
+<li><strong>NULL:</strong> Bilinmeyen ya da mevcut olmayan değerleri göstermek için özel bir <code>NULL</code> değeri vardır. Örneğin bir öğrencinin <code>Office_phone</code> değeri yoksa <code>t[Office_phone] = NULL</code>.</li>
+<li><strong>Tuple'lar sıralı değildir.</strong> Tabloyu karıştırsan relation değişmez. <em>Neden?</em> Çünkü relation matematiksel olarak bir <strong>küme</strong>dir ve kümede sıra yoktur.</li>
+<li><strong>Tüm tuple'lar benzersizdir.</strong> <em>Neden?</em> Yine küme olduğu için: kümede aynı eleman iki kez bulunmaz. (Bunu ayrıca key'ler garanti eder, aşağıda.)</li>
+</ul>
+<h3>Resmî ve gündelik terimler</h3>
+<table>
+<thead>
+<tr>
+<th>Gündelik</th>
+<th>Resmî</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td><strong>Relation</strong></td>
+</tr>
+<tr>
+<td>Column header</td>
+<td><strong>Attribute</strong></td>
+</tr>
+<tr>
+<td>Bir kolonun alabileceği tüm değerler</td>
+<td><strong>Domain</strong> of attribute</td>
+</tr>
+<tr>
+<td>Row</td>
+<td><strong>Tuple</strong></td>
+</tr>
+<tr>
+<td>Tablo tanımı</td>
+<td><strong>Schema</strong> of a relation</td>
+</tr>
+<tr>
+<td>Dolu tablo</td>
+<td><strong>State</strong> of the relation</td>
+</tr>
+</tbody>
+</table>
+<p>Bir <strong>relational database</strong>, birkaç relation'ın (schema + state) koleksiyonudur. Şirket veritabanı örneği için şema, ER'dan çevirdiğimiz tablolardan oluşur; bunu sonraki lecture'da yapacağız.</p>
+  </section>
+
+  <section id="s3">
+    <h2>3. Key&#x27;ler: superkey, key, primary key</h2>
+<h3>Superkey</h3>
+<p>Bir relation <code>R</code> için <strong>superkey SK</strong>, şu özelliği taşıyan bir attribute kümesidir:</p>
+<div class="callout">İki farklı tuple, <code>SK</code>'daki <strong>tüm</strong> attribute'lar için aynı değerlere sahip olamaz. Yani farklı <code>t1, t2</code> için <code>t1[SK] ≠ t2[SK]</code>.</div>
+<p>Bu şart <code>R</code>'nin <strong>her geçerli state'inde</strong> sağlanmalıdır (sadece bugünkü satırlarda tesadüfen benzersiz olması yetmez).</p>
+<h3>Key</h3>
+<p><code>R</code>'nin <strong>key</strong>'i <code>K</code>, bir <strong>minimal superkey</strong>'dir: gereksiz attribute içermez. <code>K</code>'dan <strong>herhangi bir attribute'u çıkarırsan</strong> benzersizlik artık garanti olmaz (her attribute şarttır).</p>
+<h3>Örnek ve doğru/yanlış soruları</h3>
+<p><code>CAR(State, Reg#, SerialNo, Make, Model, Year)</code></p>
+<ul>
+<li><strong>Key1</strong> = <code>{State, Reg#}</code> (plaka: il + numara). İkisi birlikte benzersiz, birini çıkarırsan olmaz.</li>
+<li><strong>Key2</strong> = <code>{SerialNo}</code> (şasi no). Tek başına benzersiz.</li>
+<li>İkisi de aynı zamanda <strong>superkey</strong>.</li>
+<li><code>{SerialNo, Make}</code> bir <strong>superkey ama key değil</strong>, çünkü <code>Make</code>'i çıkarsan da hâlâ benzersiz kalır (yani <code>Make</code> gereksiz).</li>
+</ul>
+<p><strong>Slayttaki doğru/yanlış soruları:</strong></p>
+<table>
+<thead>
+<tr>
+<th>İfade</th>
+<th>Cevap</th>
+<th>Neden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bir key her zaman superkey'dir</td>
+<td><strong>Doğru</strong></td>
+<td>Key, minimal olan superkey'dir</td>
+</tr>
+<tr>
+<td>Bir superkey her zaman key'dir</td>
+<td><strong>Yanlış</strong></td>
+<td><code>{SerialNo, Make}</code> superkey ama key değil</td>
+</tr>
+<tr>
+<td>Bir key'i içeren her attribute kümesi superkey'dir</td>
+<td><strong>Doğru</strong></td>
+<td>Fazladan attribute eklemek benzersizliği bozmaz</td>
+</tr>
+</tbody>
+</table>
+<p>Bir relation'ın <strong>birden fazla key'i olabilir</strong> (CAR'da iki tane).</p>
+<h3>Primary key</h3>
+<p>Birden fazla aday key (candidate key) varsa, yönetici bunlardan <strong>birini primary key</strong> seçer. Şemada <strong>altı çizilir.</strong></p>
+<div class="code-pre">CAR(State, Reg#, SerialNo, Make, Model, Year)       ← bunlardan biri altı çizili
+STUDENT(Name, SSN, Home_phone, Address, Office_phone, Age, GPA)</div>
+<p>Primary key, her tuple'ın <strong>kimliği</strong>dir. Öneri (kural değil): <strong>en küçük</strong> aday key'i seç. Key1 iki attribute, Key2 bir attribute olduğu için <code>SerialNo</code> daha iyi seçimdir.</p>
+<div class="callout"><strong>ER'dan farkı:</strong> ER diyagramında bir entity'nin birden fazla key'inin altı çizilebiliyordu. Relational model'de <strong>yalnızca primary key'in altı çizilir.</strong></div>
+  </section>
+
+  <section id="s4">
+    <h2>4. Foreign key</h2>
+<p>Çok relation'lı bir veritabanında bir relation'daki attribute'lar başka bir relation'ın tuple'larına <strong>referans</strong> verir. Referans veren relation'daki bu attribute'lara <strong>foreign key (FK)</strong>, işaret edilen relation'ın key'ine ise <strong>primary key (PK)</strong> denir.</p>
+<div class="code-pre">STUDENTS                                  ENROLLMENT
+sid     name    login      age  gpa       sid    cid          grade
+53666   Jones   jones@cs   18   3.4       53688  Topology112  A
+53688   Smith   smith@ee   18   3.2       53666  History105   B</div>
+<ul>
+<li><code>sid</code>, <code>STUDENTS</code>'te <strong>primary key</strong>.</li>
+<li><code>sid</code>, <code>ENROLLMENT</code>'ta <strong>foreign key</strong>: "bu kaydın sahibi <code>STUDENTS</code> tablosundaki şu öğrencidir" der.</li>
+</ul>
+<p>Foreign key sayesinde veriyi <strong>tekrar etmeden</strong> (öğrencinin adını her kayıtta yeniden yazmadan) tablolar arası bağ kurarız.</p>
+<h3>CREATE TABLE ile tanımlama</h3>
+<p>Slayttaki yazım (basitleştirilmiş SQL):</p>
+<div class="code-pre">CREATE TABLE Students
+      (sid: CHAR(20),
+       name: CHAR(20),
+       login: CHAR(10),
+       age: INTEGER,
+       gpa: REAL,
+       PRIMARY KEY (sid))
+
+CREATE TABLE Enrollment
+      (sid: CHAR(20),
+       cid: CHAR(30),
+       grade: CHAR(2),
+       PRIMARY KEY (sid, cid),
+       FOREIGN KEY (sid) REFERENCES Students)</div>
+<div class="callout callout--warn"><strong>Dikkat:</strong> Slayttaki yazım sadelik için kullanılan bir pseudo-SQL. Gerçek SQL'de <code>sid CHAR(20)</code> yazılır (iki nokta üst üste yok). SQL'i ilerleyen derslerde göreceğiz.</div>
+<p><code>Enrollment</code>'ın primary key'inin <strong>iki attribute'lu</strong> <code>(sid, cid)</code> olduğuna dikkat et: bir öğrenci aynı dersi iki kez almaz, ama farklı dersler alabilir; bir dersi farklı öğrenciler alabilir. Çiftin birlikte benzersiz olması yeterli. Aynı zamanda <code>sid</code> bir <strong>foreign key</strong>: PK'nın bir parçası olan attribute FK da olabilir.</p>
+  </section>
+
+  <section id="s5">
+    <h2>5. Integrity constraint&#x27;ler</h2>
+<p>Veritabanının <strong>tutarlı kalmasını</strong> sağlayan kurallar. Relational model'de <strong>dört</strong> tür var:</p>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Kural</th>
+<th>Örnek ihlal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Domain constraint</strong></td>
+<td>Her değer, attribute'un domain'inden olmalı (ya da izin veriliyorsa NULL)</td>
+<td><code>age</code> için "abc" yazmak</td>
+</tr>
+<tr>
+<td><strong>Key constraint</strong></td>
+<td>Key attribute'larına göre her tuple benzersiz olmalı</td>
+<td>Aynı <code>sid</code>'li iki öğrenci</td>
+</tr>
+<tr>
+<td><strong>Entity integrity constraint</strong></td>
+<td>Primary key attribute'ları <strong>NULL olamaz</strong></td>
+<td><code>sid = NULL</code> olan öğrenci</td>
+</tr>
+<tr>
+<td><strong>Referential integrity constraint</strong></td>
+<td>Relation'lar arasında <strong>boşa düşmüş (dangling) referans</strong> olmamalı</td>
+<td><code>Enrollment</code>'ta olmayan bir öğrencinin <code>sid</code>'si</td>
+</tr>
+</tbody>
+</table>
+<p>Entity integrity mantıklı: primary key tuple'ın kimliğidir, kimliği olmayan kaydı kimse bulamaz.</p>
+  </section>
+
+  <section id="s6">
+    <h2>6. Referential integrity ve ihlallerin yönetimi</h2>
+<p>Aşağıdaki işlemlerde ne yapmalı?</p>
+<ul>
+<li><code>Enrollment</code>'a, <code>Students</code>'ta var olmayan bir <code>sid</code> ile tuple eklemek istiyorlar. → <strong>Reddet</strong> (olmayan bir öğrenciye referans = dangling).</li>
+<li><code>Students</code>'tan bir öğrenciyi silmek istiyorlar, ama <code>Enrollment</code>'ta ona bağlı kayıtlar var. → Ne yapılmalı? Onları da sil mi? Silmeye izin verme mi?</li>
+<li><code>Students</code>'ta bir öğrencinin <code>sid</code>'ini değiştirmek istiyorlar. → İzin verme mi? <code>Enrollment</code>'taki <code>sid</code>'leri de değiştir mi?</li>
+</ul>
+<p>Bunların hepsi <strong>referential integrity (RI) ihlali</strong> örnekleridir. FK tanımlarken ihlal olduğunda ne yapılacağını söyleyebilirsin:</p>
+<table>
+<thead>
+<tr>
+<th>Seçenek</th>
+<th>Ne yapar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NO ACTION</strong></td>
+<td>Silme/güncelleme işlemini <strong>reddeder</strong></td>
+</tr>
+<tr>
+<td><strong>CASCADE</strong></td>
+<td>Silinen/güncellenen tuple'a referans veren tüm tuple'ları da <strong>siler/günceller</strong></td>
+</tr>
+<tr>
+<td><strong>SET DEFAULT</strong></td>
+<td>FK değerini önceden belirlenmiş özel bir <strong>DEFAULT</strong> değere çeker</td>
+</tr>
+</tbody>
+</table>
+<div class="code-pre">CREATE TABLE Enrollment
+      (sid: CHAR(20),
+       cid: CHAR(30),
+       grade: CHAR(2),
+       PRIMARY KEY (sid, cid),
+       FOREIGN KEY (sid) REFERENCES Students
+            ON DELETE CASCADE
+            ON UPDATE NO ACTION)</div>
+<p>Bu tanım şunu der: öğrenci silinirse, onun tüm <code>Enrollment</code> kayıtları da silinsin; ama öğrencinin <code>sid</code>'ini güncellemeye izin verme.</p>
+<div class="callout"><strong>Ek not (slaytta yok):</strong> SQL'de bir de <strong>SET NULL</strong> seçeneği vardır (FK'yi NULL yapar). Slayt üç seçenek gösterdi, ben bunu bilgi olarak ekliyorum.</div>
+  </section>
+
+  <section id="s7">
+    <h2>7. Alıştırma: hangi işlem hangi constraint&#x27;i bozar?</h2>
+<p>Üç temel işlem: <strong>INSERT</strong>, <strong>DELETE</strong>, <strong>UPDATE</strong>. Her birinin hangi constraint'leri <strong>ihlal edebileceğini</strong> düşün.</p>
+<table>
+<thead>
+<tr>
+<th>İşlem</th>
+<th>İhlal edebileceği constraint'ler</th>
+<th>Örnek</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>INSERT</strong></td>
+<td><strong>Dördü de</strong>: domain, key, entity integrity, referential integrity</td>
+<td>Domain dışı değer ekle; var olan key'i ekle; PK'yı NULL bırak; olmayan bir FK'ye bağlan</td>
+</tr>
+<tr>
+<td><strong>DELETE</strong></td>
+<td>Sadece <strong>referential integrity</strong></td>
+<td>Silinen tuple'a başka tuple'lar referans veriyor olabilir</td>
+</tr>
+<tr>
+<td><strong>UPDATE</strong></td>
+<td><strong>Neyi güncellediğine bağlı</strong> (aşağıya bak)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>UPDATE'in ayrıntısı:</p>
+<ul>
+<li><strong>Sıradan attribute</strong> (key de FK de değil) güncellenirse: sadece <strong>domain constraint</strong>.</li>
+<li><strong>Primary key</strong> güncellenirse: <strong>key</strong> (başkasıyla çakışırsa), <strong>entity integrity</strong> (NULL yapılırsa) ve <strong>referential integrity</strong> (ona referans verenler boşa düşer).</li>
+<li><strong>Foreign key</strong> güncellenirse: <strong>domain</strong> ve <strong>referential integrity</strong> (yeni değer, referans edilen tabloda var olmalı).</li>
+</ul>
+<p><em>Neden DELETE sadece RI'yi bozar?</em> Bir tuple'ı silince geriye kalan tuple'lar hâlâ domain'e uygun, hâlâ benzersiz ve PK'ları hâlâ NULL değil. Tek risk: silinen tuple'a işaret eden başkaları kalmış olabilir.</p>
+  </section>
+
+  <section id="s8">
+    <h2>Özet</h2>
+<ul>
+<li><strong>Relation</strong> = tablo; <strong>schema</strong> = başlık (ad + attribute + domain); <strong>state</strong> = o anki tuple'lar. Tuple'lar <strong>sırasız ve benzersizdir</strong> (relation bir kümedir).</li>
+<li><strong>NULL</strong>: bilinmeyen/mevcut olmayan değer.</li>
+<li><strong>Superkey</strong> = tuple'ları ayırt eden attribute kümesi. <strong>Key</strong> = minimal superkey. <strong>Primary key</strong> = aday key'lerden seçilen (altı çizilen) biri. Key ⊆ superkey, ama superkey ≠ key.</li>
+<li><strong>Foreign key</strong>: bir relation'ın başka bir relation'ın primary key'ine verdiği referans.</li>
+<li>Dört <strong>integrity constraint</strong>: <strong>domain, key, entity integrity, referential integrity.</strong></li>
+<li>RI ihlalinde: <strong>NO ACTION, CASCADE, SET DEFAULT.</strong></li>
+</ul>
+  </section>
+
+  <section id="s9">
+    <h2>Kendini test et</h2>
+<ol>
+<li><code>STUDENT(Ssn, Email, Name, Age)</code> relation'ında <code>Ssn</code> ve <code>Email</code> ikisi de benzersiz olsun. Key'ler hangileri? <code>{Ssn, Name}</code> nedir?</li>
+<li>Bir relation'da iki tuple'ın tüm değerleri birebir aynı olabilir mi? Neden?</li>
+<li><code>Enrollment(sid, cid, grade)</code>'e <code>sid = 99999</code> (öğrenci tablosunda yok) olan satır eklenirse hangi constraint ihlal edilir?</li>
+<li><code>ON DELETE CASCADE</code> ile <code>ON DELETE NO ACTION</code> arasındaki fark ne?</li>
+<li><code>Students</code>'ta bir öğrencinin yaşını güncellersen hangi constraint'ler tehlikeye girer?</li>
+</ol>
+<div class="practice-q"><details><summary>Cevapları Gör</summary><div class="solution"><ol>
+<li>Key'ler: <code>{Ssn}</code> ve <code>{Email}</code> (ikisi de tek başına benzersiz ve minimal). <code>{Ssn, Name}</code> bir <strong>superkey</strong>'dir ama <strong>key değil</strong>: <code>Name</code> gereksiz, çıkarsan da benzersizlik bozulmaz.</li>
+<li><strong>Hayır.</strong> Relation bir <strong>küme</strong>dir ve kümede aynı eleman bir kez bulunur. Ayrıca primary key değerleri benzersiz olduğu için iki tuple'ın tüm değerleri aynı olamaz.</li>
+<li><strong>Referential integrity</strong>: <code>99999</code>, <code>Students</code>'ta olmayan bir <code>sid</code>'ye referans veriyor (dangling reference). İşlem reddedilmeli.</li>
+<li><strong>CASCADE</strong>: bir öğrenci silinince onun <code>Enrollment</code> kayıtları da otomatik silinir. <strong>NO ACTION</strong>: öğrenciye bağlı <code>Enrollment</code> kaydı varsa silme işlemi <strong>reddedilir</strong>.</li>
+<li>Sadece <strong>domain constraint</strong> (yeni yaş geçerli bir değer olmalı). Yaş ne key ne FK olduğu için diğer constraint'ler etkilenmez.</li>
+</ol></div></details></div>
+  </section>
+
+</main>
+</div>
+
+<footer class="footer">
+  <p>© 2026 Kadir Hanbaba — <a href="../index.html#notes">← Tüm Notlar</a> · <a href="comp306-lecture2.html">← Lecture 2</a> · <a href="comp306-lecture4.html">Lecture 4 →</a></p>
+</footer>
+<script src="../script.js"></script>
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    const c=document.documentElement.getAttribute('data-theme');
+    const n=c==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',n);
+    localStorage.setItem('theme',n);
+  });
+</script>
+</body>
+</html>
